@@ -18,8 +18,8 @@ class CreateFeaturesTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->integer('image_id')->nullable()->default(null);
-            $table->string('class')->nullable()->default(null);
-            $table->string('subclass')->nullable()->default(null);
+            $table->string('tag_id')->nullable()->default(null);
+            //$table->string('subclass')->nullable()->default(null);
             $table->json('region')->nullable()->default(null);
             $table->string('color')->nullable()->default(null);
             $table->integer('brand_id')->nullable()->default(null);
@@ -35,6 +35,6 @@ class CreateFeaturesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('features');
+        Schema::dropIfExists('tags');
     }
 }

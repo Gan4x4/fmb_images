@@ -5,7 +5,7 @@
 
     @include('components.errors')
     
-    {!! Form::open(['route' => 'categorys.store']) !!}
+    {!! Form::open(['route' => 'tags.store']) !!}
 
         @include('category.fillable')
         {!! Form::submit('Save') !!}

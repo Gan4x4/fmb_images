@@ -15,8 +15,8 @@
             @foreach($categorys as $cat) 
                 <li> 
                     {{ $cat->name }}
-                    <a href="{{ route('categorys.edit',$cat->id) }}" title="Edit"><i class="fas fa-edit"></i></a>
-                    {!! Html::deleteLink(route('categorys.destroy',$cat->id)) !!}
+                    <a href="{{ route('tags.edit',$cat->id) }}" title="Edit"><i class="fas fa-edit"></i></a>
+                    {!! Html::deleteLink(route('tags.destroy',$cat->id)) !!}
                 </li>
             @endforeach
             </ul>
@@ -24,6 +24,6 @@
     </div>    
     <hr>
     <br>
-    <a href="{{route('categorys.create')}}" role="button" class="btn btn-primary">Add</a>
+    <a href="{{route('tags.create')}}" role="button" class="btn btn-primary">Add</a>
     
 @endsection

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Image;
 use App\Feature;
 
+
 class ImageController extends Controller
 {
     /**
@@ -47,6 +48,9 @@ class ImageController extends Controller
         $path = $request->file->store('public/images');        
         $image = new Image();
         $image->path = $path;
+        $size = getimagesize(storage_path('app/'.$path));
+        $image->width = $size[0];
+        $image->height = $size[1];
         $image->save();
         return redirect()->route('images.index');
     }
@@ -71,11 +75,11 @@ class ImageController extends Controller
     public function edit($id)
     {
         $image = Image::findOrFail($id);
-        $classes = ['BMX','Hardtail'];
+        $tags = TagController::getTagSelect();
         
         return view('image.edit')->with([
             'image' => $image,
-            'classes' => $classes
+            'tags' => $tags
         ]);
     }
 
@@ -89,13 +93,31 @@ class ImageController extends Controller
     public function update(Request $request, $id)
     {
         $image = Image::findOrFail($id);
-        $feature = new Feature();
-        $feature->fill($request->all());
-        $feature->image_id = $id;
+        
+        if ($request->feature_id){
+            $feature = Feature::findOrFail($id);    
+        }else{
+            $feature = new Feature();    
+            $feature->image_id = $id;
+        }
+        
+        $feature->fill($request->all()); // Update tag id
+        $feature->region = $this->extractRegion($request);
+        
         $feature->save();
+        return redirect()->route('images.edit',$id);
         
     }
 
+    private function extractRegion($request){
+        $coords = [];
+        $keys = ['x1','y1','x2','y2'];
+        $coords[] = [$request->x1,$request->y1];
+        $coords[] = [$request->x2,$request->y2];
+        return json_encode($coords,true);
+    }
+    
+    
     /**
      * Remove the specified resource from storage.
      *

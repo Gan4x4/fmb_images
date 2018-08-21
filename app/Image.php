@@ -18,4 +18,9 @@ class Image extends Model
         return "/storage/".substr($this->path,7);
     }
     
+    public function size2region(){
+        $region = [[0,0],[$this->width,$this->height]];
+        return json_encode($region);
+    }
+    
 }

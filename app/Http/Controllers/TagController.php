@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Category;
+use App\Tag;
 
-class CategoryController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categorys = Category::all();
-        $categorys->sort(function($a,$b){
+        $tags = Tag::all();
+        $tags->sort(function($a,$b){
             
             if ($a->parent == $b->parent){
                 return strcasecmp($a->name,$b->name);
@@ -26,7 +26,7 @@ class CategoryController extends Controller
         });
         
         return view('category.index')->with([
-            'categorys' => $categorys
+            'categorys' => $tags
         ]);
     }
 
@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function create()
     {
         return view('category.create')->with([
-            'categorys' => $this->getCatSelect()
+            'categorys' => $this->getTagSelect()
         ]);
     }
 
@@ -50,8 +50,8 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $cat = Category::create($request->all());
-        return redirect()->route('categorys.index'); 
+        $cat = Tag::create($request->all());
+        return redirect()->route('tags.index'); 
     }
 
     /**
@@ -73,16 +73,16 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $cat = Category::findOrFail($id);
+        $tag = Tag::findOrFail($id);
         return view('category.edit')->with([
             'cat' => $cat,
-            'categorys' => $this->getCatSelect()
+            'categorys' => $this->getTagSelect()
         ]);
     }
 
-    private function getCatSelect(){
-        $categorys = Category::whereNull('parent')->get();
-        return self::collection2select($categorys,[null=>"No"]);
+    public static function getTagSelect(){
+        $tags = Tag::whereNull('parent')->get();
+        return self::collection2select($tags,[null=>"No"]);
     }
     
     /**
@@ -94,10 +94,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cat = Category::findOrFail($id);
+        $cat = Tag::findOrFail($id);
         $cat->fill($request->all());
         $cat->save();
-        return redirect()->route('categorys.index'); 
+        return redirect()->route('tags.index'); 
     }
 
     /**
@@ -110,7 +110,7 @@ class CategoryController extends Controller
     {
         $result = ['error'=>0, 'message'=>'OK'];
         try{
-            $cat = Category::findOrFail($id);
+            $cat = Tag::findOrFail($id);
             $cat->delete();
         }catch( \Exception $e){
             $result = ['error' =>1, 'message'=>$e->getMessage()];

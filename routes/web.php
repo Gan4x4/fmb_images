@@ -17,4 +17,4 @@ Route::get('/', function () {
 });
 
 Route::resource('images', 'ImageController');
-Route::resource('categorys', 'CategoryController');
+Route::resource('tags', 'TagController');
