@@ -4,15 +4,11 @@
 
     @include('components.errors')
     
-    {!! Form::model($cat,['route' => ['tags.update',$cat->id],'method' => 'PUT']) !!}
+    {!! Form::model($brand,['route' => ['brands.update',$brand->id],'method' => 'PUT']) !!}
 
-        @include('category.fillable')
+        @include('brand.fillable')
         {!! Form::submit('Save') !!}
         
     {!! Form::close() !!}
-    
-    
-    
-    
     
 @endsection

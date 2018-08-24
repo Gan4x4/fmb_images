@@ -7,16 +7,16 @@
 @endsection
 
 @section('content')
-    <h2>Category list</h2>
+    <h2>Tags list</h2>
     
     <div class="container">
         <div class="row">
             <ul>
-            @foreach($categorys as $cat) 
+            @foreach($tags as $tag) 
                 <li> 
-                    {{ $cat->name }}
-                    <a href="{{ route('tags.edit',$cat->id) }}" title="Edit"><i class="fas fa-edit"></i></a>
-                    {!! Html::deleteLink(route('tags.destroy',$cat->id)) !!}
+                    {{ $tag->name }}
+                    <a href="{{ route('tags.edit',$tag->id) }}" title="Edit"><i class="fas fa-edit"></i></a>
+                    {!! Html::deleteLink(route('tags.destroy',$tag->id)) !!}
                 </li>
             @endforeach
             </ul>

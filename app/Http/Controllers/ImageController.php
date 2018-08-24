@@ -63,7 +63,7 @@ class ImageController extends Controller
      */
     public function show($id)
     {
-        //
+        return redirect()->route('images.edit',$id);
     }
 
     /**
@@ -76,10 +76,10 @@ class ImageController extends Controller
     {
         $image = Image::findOrFail($id);
         $tags = TagController::getTagSelect();
-        
         return view('image.edit')->with([
             'image' => $image,
-            'tags' => $tags
+            'tags' => $tags,
+            'brands' => BrandController::getSelect()
         ]);
     }
 
@@ -92,19 +92,22 @@ class ImageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $image = Image::findOrFail($id);
         
+        $image = Image::findOrFail($id);
+        //dump($image);
         if ($request->feature_id){
-            $feature = Feature::findOrFail($id);    
+            $feature = Feature::findOrFail($request->feature_id);    
         }else{
             $feature = new Feature();    
             $feature->image_id = $id;
         }
-        
+        //dd("Here");
         $feature->fill($request->all()); // Update tag id
         $feature->region = $this->extractRegion($request);
         
         $feature->save();
+        //dump($request->all());
+        //dd($feature);
         return redirect()->route('images.edit',$id);
         
     }
@@ -127,5 +130,21 @@ class ImageController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    public function deleteFeature($imageId,$featureId)
+    {
+        $result = $this->getAjaxResponse();
+        try {
+            $feature = Feature::findOrFail($featureId); 
+            if ($imageId != $feature->image_id){
+                throw new \Exception('Invalid image id');
+            }
+            $feature->delete();
+        } catch (Exception $exc) {
+            $result = $this->getAjaxResponse(1,$exc->getMessage);
+        }
+        return response()->json($result);
+        
     }
 }

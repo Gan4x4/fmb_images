@@ -85,7 +85,7 @@
 
                 <div class="links">
                     <a href="/images">Images</a>
-                    <a href="/categorys">Tags</a>
+                    <a href="/tags">Tags</a>
                 </div>
             </div>
         </div>

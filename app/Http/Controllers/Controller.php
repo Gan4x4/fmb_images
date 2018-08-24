@@ -18,4 +18,12 @@ class Controller extends BaseController
         }
         return $select;
     }
+    
+    public function getAjaxResponse($errorCode = 0, $message = "OK"){
+        return [
+            'error' => $errorCode,
+            'message' => $message
+            ];
+    }
+    
 }

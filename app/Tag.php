@@ -15,4 +15,17 @@ class Tag extends Model
 {
     protected $guarded = ['id','created_at','updated_at'];
     
+    public function getChilds(){
+        return Tag::where('parent_id',$this->id)->get();
+    }
+    
+    // Override
+    public function delete(){
+        $childs = $this->getChilds();
+        foreach($childs as $child){
+            $child->delete();
+        }
+        parent::delete();
+    }
+    
 }

@@ -25,8 +25,8 @@ class TagController extends Controller
             }
         });
         
-        return view('category.index')->with([
-            'categorys' => $tags
+        return view('tag.index')->with([
+            'tags' => $tags
         ]);
     }
 
@@ -37,8 +37,8 @@ class TagController extends Controller
      */
     public function create()
     {
-        return view('category.create')->with([
-            'categorys' => $this->getTagSelect()
+        return view('tags.create')->with([
+            'tags' => $this->getTagSelect()
         ]);
     }
 
@@ -74,9 +74,9 @@ class TagController extends Controller
     public function edit($id)
     {
         $tag = Tag::findOrFail($id);
-        return view('category.edit')->with([
-            'cat' => $cat,
-            'categorys' => $this->getTagSelect()
+        return view('tag.edit')->with([
+            'tag' => $cat,
+            'tags' => $this->getTagSelect()
         ]);
     }
 
@@ -108,12 +108,12 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        $result = ['error'=>0, 'message'=>'OK'];
+        $result = $this->getAjaxResponse();
         try{
-            $cat = Tag::findOrFail($id);
-            $cat->delete();
+            $tag = Tag::findOrFail($id);
+            $tag->delete();
         }catch( \Exception $e){
-            $result = ['error' =>1, 'message'=>$e->getMessage()];
+            $result = $this->getAjaxResponse(1, $e->getMessage());
         }
         return response()->json($result);
     }

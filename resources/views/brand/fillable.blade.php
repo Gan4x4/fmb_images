@@ -1,0 +1,1 @@
+{!! Form::bsText('name','Name') !!}
