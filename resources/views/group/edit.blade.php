@@ -4,9 +4,9 @@
 
     @include('components.errors')
     
-    {!! Form::model($brand,['route' => ['brands.update',$brand->id],'method' => 'PUT']) !!}
+    {!! Form::model($group,['route' => ['groups.update',$group->id],'method' => 'PUT']) !!}
 
-        @include('brand.fillable')
+        @include('group.fillable')
         {!! Form::submit('Save') !!}
         
     {!! Form::close() !!}

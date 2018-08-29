@@ -14,9 +14,11 @@
             @foreach($images as $image) 
                 <div class="col">
                     <div class="card" >
-                        <img class="card-img-top" src="{{ $image->getThumbUrl() }}" alt="Card image cap">
+                        <a href='{{ route("images.edit",$image->id) }}'>
+                            <img class="card-img-top" src="{{ $image->getThumbUrl() }}" alt="Card image cap">
+                        </a>
                         <div class="card-body">
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <p class="card-text">{{ $image->description }}</p>
                             <a href="{{route('images.edit',[$image->id])}}" class="card-link">Edit</a>
                         </div>
                     </div>

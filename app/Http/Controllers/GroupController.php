@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Tag;
+use App\Group;
 
-class TagController extends Controller
+class GroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,8 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tags = Tag::all();
-        $tags->sort(function($a,$b){
+        $groups = Group::all();
+        $groups->sort(function($a,$b){
             
             if ($a->parent == $b->parent){
                 return strcasecmp($a->name,$b->name);
@@ -25,8 +25,8 @@ class TagController extends Controller
             }
         });
         
-        return view('tag.index')->with([
-            'tags' => $tags
+        return view('group.index')->with([
+            'groups' => $groups
         ]);
     }
 
@@ -37,8 +37,8 @@ class TagController extends Controller
      */
     public function create()
     {
-        return view('tag.create')->with([
-            'groups' => GroupController::getGroupSelect()
+         return view('group.create')->with([
+            'groups' => $this->getGroupSelect()
         ]);
     }
 
@@ -50,11 +50,8 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        $tag = Tag::create($request->all());
-        foreach($request->groups as $group_id){
-            $tag->groups()->attach($group_id);
-        }
-        return redirect()->route('tags.index'); 
+        $group = Group::create($request->all());
+        return redirect()->route('groups.index'); 
     }
 
     /**
@@ -76,23 +73,22 @@ class TagController extends Controller
      */
     public function edit($id)
     {
-        $tag = Tag::findOrFail($id);
-        return view('tag.edit')->with([
-            'tag' => $tag,
-            'tags' => $this->getTagSelect()
+        $group = Group::findOrFail($id);
+        return view('group.edit')->with([
+            'group' => $tag,
+            'groups' => $this->getGroupSelect()
         ]);
     }
-
-    public static function getTagSelect($exceptId = []){
-        //$tags = Tag::whereNull('parent')->get();
-        $tags = Tag::all();
-        $filtered = $tags->filter(function ($value, $key) use ($exceptId) {
+    
+    public static function getGroupSelect($exceptId = []){
+        $groups = Group::all();
+        $filtered = $groups->filter(function ($value, $key) use ($exceptId) {
             return ! in_array($value->id,$exceptId);
         });
         
-        return self::collection2select($tags,[null=>"No"]);
+        return self::collection2select($groups);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -102,10 +98,10 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cat = Tag::findOrFail($id);
-        $cat->fill($request->all());
-        $cat->save();
-        return redirect()->route('tags.index'); 
+        $group = Group::findOrFail($id);
+        $group->fill($request->all());
+        $group->save();
+        return redirect()->route('groups.index'); 
     }
 
     /**
@@ -118,11 +114,13 @@ class TagController extends Controller
     {
         $result = $this->getAjaxResponse();
         try{
-            $tag = Tag::findOrFail($id);
-            $tag->delete();
+            $group = Group::findOrFail($id);
+            $group->delete();
         }catch( \Exception $e){
             $result = $this->getAjaxResponse(1, $e->getMessage());
         }
         return response()->json($result);
     }
+    
+    
 }

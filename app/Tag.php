@@ -13,19 +13,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Tag extends Model
 {
-    protected $guarded = ['id','created_at','updated_at'];
+    protected $fillable = ['name','description'];
     
-    public function getChilds(){
-        return Tag::where('parent_id',$this->id)->get();
+    public function features()
+    {
+        return $this->belongsToMany('App\Feature');
     }
     
-    // Override
-    public function delete(){
-        $childs = $this->getChilds();
-        foreach($childs as $child){
-            $child->delete();
-        }
-        parent::delete();
+    public function groups()
+    {
+        return $this->belongsToMany('App\Group');
     }
+    
+    
     
 }

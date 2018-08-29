@@ -5,9 +5,9 @@
 
     @include('components.errors')
     
-    {!! Form::open(['route' => 'brands.store']) !!}
+    {!! Form::open(['route' => 'groups.store']) !!}
 
-        @include('brand.fillable')
+        @include('group.fillable')
         {!! Form::submit('Save') !!}
         
     {!! Form::close() !!}

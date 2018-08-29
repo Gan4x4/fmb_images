@@ -7,7 +7,7 @@
     
     {!! Form::open(['route' => 'tags.store']) !!}
 
-        @include('category.fillable')
+        @include('tag.fillable')
         {!! Form::submit('Save') !!}
         
     {!! Form::close() !!}

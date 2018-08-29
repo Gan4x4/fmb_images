@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Feature extends Model
 {
-    //protected $guarded = ['id','created_at','updated_at'];
-    protected $fillable = ['tag_id','color','brand_id','model_id'];
-    //protected $casts = ['region'];
+    protected $fillable = ['x1','y1','x2','y2','description'];
 
-    public function tag(){
-        return $this->belongsTo('App\Tag');
+    public function tags(){
+        return $this->belongsToMany('App\Tag');
     }
     
     public function getName(){

@@ -48,6 +48,7 @@ class ImageController extends Controller
         $path = $request->file->store('public/images');        
         $image = new Image();
         $image->path = $path;
+        $image->description = $request->description;
         $size = getimagesize(storage_path('app/'.$path));
         $image->width = $size[0];
         $image->height = $size[1];
@@ -75,11 +76,10 @@ class ImageController extends Controller
     public function edit($id)
     {
         $image = Image::findOrFail($id);
-        $tags = TagController::getTagSelect();
+        //$tags = TagController::getTagSelect();
         return view('image.edit')->with([
             'image' => $image,
-            'tags' => $tags,
-            'brands' => BrandController::getSelect()
+          //  'tags' => $tags,
         ]);
     }
 
@@ -92,24 +92,10 @@ class ImageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         $image = Image::findOrFail($id);
-        //dump($image);
-        if ($request->feature_id){
-            $feature = Feature::findOrFail($request->feature_id);    
-        }else{
-            $feature = new Feature();    
-            $feature->image_id = $id;
-        }
-        //dd("Here");
-        $feature->fill($request->all()); // Update tag id
-        $feature->region = $this->extractRegion($request);
-        
-        $feature->save();
-        //dump($request->all());
-        //dd($feature);
+        $image->fill($request->all()); // Update tag id
+        $image->save();
         return redirect()->route('images.edit',$id);
-        
     }
 
     private function extractRegion($request){
@@ -145,6 +131,23 @@ class ImageController extends Controller
             $result = $this->getAjaxResponse(1,$exc->getMessage);
         }
         return response()->json($result);
-        
     }
+    
+    public function updateOrCreateFeature(Request $request, $id){
+        $image = Image::findOrFail($id);
+        if ($request->feature_id){
+            $feature = Feature::findOrFail($request->feature_id);    
+        }else{
+            $feature = new Feature();    
+            $feature->image_id = $id;
+        }
+
+        $feature->fill($request->all()); // Update tag id
+        //$feature->region = $this->extractRegion($request);
+        
+        $feature->save();
+        return redirect()->route('images.edit',$id);
+    }
+    
+    
 }

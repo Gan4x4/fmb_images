@@ -31,7 +31,7 @@
                 @endforeach
                 <li class="nav-item"> </li>
                 <li class="nav-item ">
-                    <a href='javascript:void(0)' data='{ "id": 0, "tag_id": 1, "region": "{{ $image->size2region() }}" }' class='feature-edit'>New</a>
+                    <a href='javascript:void(0)' data='{ "id": 0, "tag_id": 1, "x1": 0, "y1": 0, "x2": "{{ $image->width }}", "y2": "{{ $image->height }}" }' class='feature-edit'>New</a>
                 </li>
             </ul>
             
@@ -42,11 +42,8 @@
                   </a>
             </h6>
                 @include('components.errors')
-                {!! Form::open(['route' => ['images.update',$image->id],'method'=>'put','id'=>'feature-edit-form']) !!}
+                {!! Form::open(['route' => ['images.features.update_or_create',$image->id],'method'=>'put','id'=>'feature-edit-form']) !!}
                     {{ Form::hidden('feature_id',0,['id'=>'feature_id']) }}
-                    {{ Form::bsSelect('tag_id','Tag',$tags) }}
-                    {{ Form::bsColorSelect('color','Color') }}
-                    {{ Form::bsSelect('brand_id','Brand',$brands) }}
                     
                     Coordinates
                     <div class="form-row ">
@@ -101,6 +98,10 @@
     <div class="container-fluid">
        <img class="img-responsive" src='{{ $image->getUrl() }}' id='image'>
     </div>        
+        {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
+            {!! Form::bsTextarea('description', 'Description'); !!}
+            {!! Form::submit('Save') !!}
+        {!! Form::close() !!}
     
 @endsection
 
@@ -127,7 +128,7 @@
             
             $('.feature-edit').on('click',function () {
                 var $form = $('#feature-edit-form');
-                var $data = JSON.parse($(this).attr('data'));
+                var data = JSON.parse($(this).attr('data'));
                 
                 
                 $('.feature-edit').removeClass('disabled');
@@ -135,19 +136,19 @@
                 
                 console.info($data);
                 $form.find('#feature_id').val($data.id);
-                $form.find('#tag_id').val($data.tag_id);
-                $form.find('#color').val($data.color);
-                $form.find('#brand_id').val($data.brand_id);
+                //$form.find('#tag_id').val($data.tag_id);
+                //$form.find('#color').val($data.color);
+                //$form.find('#brand_id').val($data.brand_id);
                 //console.log($data.tag_id);
-                var coords = JSON.parse($data.region);
-                console.info(coords);
+                //var coords = JSON.parse($data.region);
+                //console.info(coords);
                 
-                $form.find('#x1').val(coords[0][0]);
-                $form.find('#y1').val(coords[0][1]);
-                $form.find('#x2').val(coords[1][0]);
-                $form.find('#x2').val(coords[1][1]);
+                $form.find('#x1').val(data.x1);
+                $form.find('#y1').val(data.y1);
+                $form.find('#x2').val(data.x2);
+                $form.find('#x2').val(data.y2);
                 
-                jcrop_api.setSelect([coords[0][0],coords[0][1],coords[1][0],coords[1][1]]);
+                jcrop_api.setSelect([data.x1,data.y1,data.x2,data.y2]);
             });
             
              $('.coordinate').on('input',function () {
