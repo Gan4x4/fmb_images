@@ -1,14 +1,17 @@
+
 @extends('layout.common')
 
 @section('content')
 
     @include('components.errors')
     
-    {!! Form::model($group,['route' => ['groups.update',$group->id],'method' => 'PUT']) !!}
+    {!! Form::open(['route' => 'items.store']) !!}
 
-        @include('group.fillable')
+        @include('item.fillable')
         {!! Form::submit('Save') !!}
         
     {!! Form::close() !!}
     
 @endsection
+
+

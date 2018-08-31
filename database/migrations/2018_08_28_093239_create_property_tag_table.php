@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGroupTagTable extends Migration
+class CreatePropertyTagTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateGroupTagTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_tag', function (Blueprint $table) {
+        Schema::create('property_tag', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('group_id');
+            $table->integer('property_id');
             $table->integer('tag_id');
         });
     }
@@ -28,6 +28,6 @@ class CreateGroupTagTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_tag');
+        Schema::dropIfExists('property_tag');
     }
 }

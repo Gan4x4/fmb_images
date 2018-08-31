@@ -40,10 +40,11 @@
                             <a class="nav-link" href="{{ route('images.index' )}}">Images</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('tags.index' )}}">Tags</a>
+                            
+                            <a class="nav-link" href="{{ route('items.index' )}}">Items</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('groups.index' )}}">Groups</a>
+                            <a class="nav-link" href="{{ route('tags.index' )}}">Tags</a>
                         </li>
                     </ul>
                 </div>

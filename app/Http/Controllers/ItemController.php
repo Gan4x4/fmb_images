@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Group;
+use App\Item;
+use App\Property;
 
-class GroupController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $groups = Group::all();
-        $groups->sort(function($a,$b){
+        $items = Item::all();
+        $items->sort(function($a,$b){
             
             if ($a->parent == $b->parent){
                 return strcasecmp($a->name,$b->name);
@@ -25,8 +26,8 @@ class GroupController extends Controller
             }
         });
         
-        return view('group.index')->with([
-            'groups' => $groups
+        return view('item.index')->with([
+            'items' => $items
         ]);
     }
 
@@ -37,8 +38,11 @@ class GroupController extends Controller
      */
     public function create()
     {
-         return view('group.create')->with([
-            'groups' => $this->getGroupSelect()
+        $properties = Property::all();
+         return view('item.create')->with([
+            'items' => $this->getItemSelect(),
+            'properties' => $properties,
+            'selected_properties' => []
         ]);
     }
 
@@ -50,8 +54,9 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        $group = Group::create($request->all());
-        return redirect()->route('groups.index'); 
+        $item = Item::create($request->all());
+        $this->attachProperties($request,$item);
+        return redirect()->route('items.index'); 
     }
 
     /**
@@ -73,21 +78,37 @@ class GroupController extends Controller
      */
     public function edit($id)
     {
-        $group = Group::findOrFail($id);
-        return view('group.edit')->with([
-            'group' => $tag,
-            'groups' => $this->getGroupSelect()
+        $item = Item::findOrFail($id);
+        $properties = Property::all();
+        $selected = [];
+        foreach($item->properties as $p){
+            $selected[] = $p->id;
+        }
+        return view('item.edit')->with([
+            'item' => $item,
+            'items' => $this->getitemSelect(),
+            'properties' => $properties,
+            'selected_properties' => $selected
         ]);
     }
     
-    public static function getGroupSelect($exceptId = []){
-        $groups = Group::all();
-        $filtered = $groups->filter(function ($value, $key) use ($exceptId) {
+    public static function getitemSelect($exceptId = []){
+        $items = Item::all();
+        $filtered = $items->filter(function ($value, $key) use ($exceptId) {
             return ! in_array($value->id,$exceptId);
         });
         
-        return self::collection2select($groups);
+        return self::collection2select($items,[null=>"No"]);
     }
+    /*
+    public static function getPropertySelect($exceptId = []){
+        $props = Property::all();
+        $filtered = $props->filter(function ($value, $key) use ($exceptId) {
+            return ! in_array($value->id,$exceptId);
+        });
+        return self::collection2select($props);
+    }
+    */
 
     /**
      * Update the specified resource in storage.
@@ -98,12 +119,17 @@ class GroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $group = Group::findOrFail($id);
-        $group->fill($request->all());
-        $group->save();
-        return redirect()->route('groups.index'); 
+        $item = Item::findOrFail($id);
+        $item->fill($request->all());
+        $item->save();
+        $item->properties()->detach();
+        $this->attachProperties($request,$item);
+        return redirect()->route('items.index'); 
     }
 
+    
+    
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -114,8 +140,8 @@ class GroupController extends Controller
     {
         $result = $this->getAjaxResponse();
         try{
-            $group = Group::findOrFail($id);
-            $group->delete();
+            $item = Item::findOrFail($id);
+            $item->delete();
         }catch( \Exception $e){
             $result = $this->getAjaxResponse(1, $e->getMessage());
         }

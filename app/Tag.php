@@ -15,16 +15,15 @@ class Tag extends Model
 {
     protected $fillable = ['name','description'];
     
-    public function features()
-    {
-        return $this->belongsToMany('App\Feature');
+    
+     public function properties(){
+        return $this->belongsToMany('App\Property');
     }
     
-    public function groups()
-    {
-        return $this->belongsToMany('App\Group');
+    //Override
+    public function delete(){
+        $this->properties()->detach();
+        $parent->delete();
     }
-    
-    
     
 }

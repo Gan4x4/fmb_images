@@ -4,13 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Group extends Model
+class Item extends Model
 {
-    protected $guarded = ['id','created_at','updated_at'];
+    //protected $guarded = ['id','created_at','updated_at'];
+    protected $fillable = ['name','description','parent_id'];
     
+    
+    public function properties(){
+        return $this->belongsToMany('App\Property');
+    }
     
     public static function getDefault(){
-        return Group::whereNull('parent_id')->first();
+        return Item::whereNull('parent_id')->first();
     }
     
     public function getNameAttribute($val){
@@ -23,11 +28,11 @@ class Group extends Model
     }
     
     public function getChilds(){
-        return Group::where('parent_id',$this->id)->get();
+        return Item::where('parent_id',$this->id)->get();
     }
     
     public function getParent(){
-        return Group::find($this->parent_id);
+        return Item::find($this->parent_id);
     }
     
     // Override

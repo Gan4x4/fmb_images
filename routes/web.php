@@ -22,4 +22,4 @@ Route::delete('images/{image_id}/features/{id}', 'ImageController@deleteFeature'
 Route::resource('images', 'ImageController');
 
 Route::resource('tags', 'TagController');
-Route::resource('groups', 'GroupController');
+Route::resource('items', 'ItemController');

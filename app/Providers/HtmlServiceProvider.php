@@ -24,9 +24,11 @@ class HtmlServiceProvider extends ServiceProvider
             ],'selected'=>null]);
         Form::component('bsTextarea', 'components.textarea', ['name', 'title','value'=>null,'attr'=>[]]);
         Form::component('bsFile', 'components.file', ['name', 'title','value'=>null,'attr'=>[]]);
-        Form::component('bsCheckbox', 'components.checkbox', ['name', 'title','value'=>1,'attr'=>[]]);
+        Form::component('bsCheckbox', 'components.checkbox', ['name', 'title','value'=>1,'checked'=>false,'attr'=>[]]);
         
         Html::component('deleteLink', 'components.delete', ['route','message'=>'Delete ?','attr'=>[]]);
+        
+        Form::component('checklist', 'components.checklist', ['name','objects', 'selected_id' => []]);
     }
     
 

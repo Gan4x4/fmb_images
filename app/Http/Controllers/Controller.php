@@ -26,4 +26,12 @@ class Controller extends BaseController
             ];
     }
     
+    protected function attachProperties($request,$item){
+        if (! $request->properties ){
+            return;
+        }
+        foreach($request->properties as $property_id ){
+            $item->properties()->attach($property_id);
+        }
+    }
 }

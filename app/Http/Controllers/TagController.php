@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Tag;
+use App\Property;
 
 class TagController extends Controller
 {
@@ -37,8 +38,10 @@ class TagController extends Controller
      */
     public function create()
     {
+        $properties = Property::all();
         return view('tag.create')->with([
-            'groups' => GroupController::getGroupSelect()
+            'properties' => $properties,
+            'selected_properties' => []
         ]);
     }
 
@@ -51,9 +54,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $tag = Tag::create($request->all());
-        foreach($request->groups as $group_id){
-            $tag->groups()->attach($group_id);
-        }
+        $this->attachProperties($request,$tag);
         return redirect()->route('tags.index'); 
     }
 
@@ -77,9 +78,16 @@ class TagController extends Controller
     public function edit($id)
     {
         $tag = Tag::findOrFail($id);
+        $selected = [];
+        $properties = $tag->properties;
+        foreach($tag->properties as $p){
+            $selected[] = $p->id;
+        }
         return view('tag.edit')->with([
             'tag' => $tag,
-            'tags' => $this->getTagSelect()
+            'tags' => $this->getTagSelect(),
+            'properties' => $properties,
+            'selected_properties' => $selected
         ]);
     }
 
@@ -102,9 +110,11 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cat = Tag::findOrFail($id);
-        $cat->fill($request->all());
-        $cat->save();
+        $tag = Tag::findOrFail($id);
+        $tag->fill($request->all());
+        $tag->save();
+        $tag->properties()->detach();
+        $this->attachProperties($request,$tag);
         return redirect()->route('tags.index'); 
     }
 
