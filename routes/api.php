@@ -16,3 +16,11 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+/*
+Route::get('/feature/{feature_id}/item/{item_id}/properties/', 'ItemController@properties')->name('item.properties');
+Route::get('/features/{feature_id}', 'ImageController@feature')->name('feature.properties');
+*/
+
+Route::get('/items/{item_id}/properties/', 'ItemController@properties')->name('item.properties');
+Route::resource('images.features', 'FeatureController');

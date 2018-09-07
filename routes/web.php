@@ -17,9 +17,12 @@ Route::get('/', function () {
 });
 
 /* Images */
-Route::put('images/{image_id}/features/', 'ImageController@updateOrCreateFeature')->name('images.features.update_or_create');
-Route::delete('images/{image_id}/features/{id}', 'ImageController@deleteFeature')->name('images.features.delete');
+//Route::put('images/{image_id}/features/', 'ImageController@updateOrCreateFeature')->name('images.features.update_or_create');
+//Route::delete('images/{image_id}/features/{id}', 'ImageController@deleteFeature')->name('images.features.delete');
 Route::resource('images', 'ImageController');
+
+
+
 
 Route::resource('tags', 'TagController');
 Route::resource('items', 'ItemController');

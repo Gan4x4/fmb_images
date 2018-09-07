@@ -20,74 +20,23 @@
                     <span data-feather="plus-circle"></span>
                   </a>
             </h6>
+            <div id="features_list">
+                @include('feature.index',['features' => $image->features])
+            </div>
             
-            <ul class="nav flex-column">
-                @foreach($image->features as $feature)
-                    <li class="nav-item">
-                        <a href='javascript:void(0)' data='{{ $feature->toJson() }}' class='feature-edit'>{{ $feature->getName() }}</a>
-                         {!! Html::deleteLink(route('images.features.delete', [$image->id, $feature->id])) !!}
-                    </li>
-                    
-                @endforeach
-                <li class="nav-item"> </li>
-                <li class="nav-item ">
-                    <a href='javascript:void(0)' data='{ "id": 0, "tag_id": 1, "x1": 0, "y1": 0, "x2": "{{ $image->width }}", "y2": "{{ $image->height }}" }' class='feature-edit'>New</a>
-                </li>
-            </ul>
-            
+            <!--
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                   <span>Add feature</span>
                   <a class="d-flex align-items-center text-muted" href="#">
                     <span data-feather="plus-circle"></span>
                   </a>
             </h6>
-                @include('components.errors')
-                {!! Form::open(['route' => ['images.features.update_or_create',$image->id],'method'=>'put','id'=>'feature-edit-form']) !!}
-                    {{ Form::hidden('feature_id',0,['id'=>'feature_id']) }}
-                    
-                    Coordinates
-                    <div class="form-row ">
-                        <div class="form-group col-md-6">
-                             <div class="input-group mb-2 mr-sm-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">x1</div>
-                                </div>
-                                <input type="number"  name="x1" class='coordinate form-control' id="x1" min="0" max="{{ $image->width - 1 }}">
-                            </div>
-                        </div>
-                        <div class="form-group  col-md-6 ">
-                            <div class="input-group mb-2 mr-sm-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">y1</div>
-                                </div>
-                                <input type="number"  name="y1" class='coordinate form-control' id="y1" min="0" max="{{ $image->height - 1 }}">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <div class="input-group mb-2 mr-sm-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">x2</div>
-                                </div>
-                                <input type="number"  name="x2" class='coordinate form-control' id="x2" min="0" max="{{ $image->width - 1 }}">
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="input-group mb-2 mr-sm-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">y2</div>
-                                </div>
-                                <input type="number"  name="y2" class='coordinate form-control' id="y2" min="0" max="{{ $image->width - 1 }}">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    {!! Form::submit('Save') !!}
-                {!! Form::close() !!}
+            -->
+            
+            <div id="feature_block">
+                <!-- place to edit feature properties -->
+                
+            </div>
         </div>
     </nav>
 @endsection
@@ -108,7 +57,6 @@
 @section('page-js-script')
     <script src="/jcrop/js/jquery.Jcrop.min.js"></script>
     
-    
     <script language="Javascript">
         
         var jcrop_api;
@@ -123,52 +71,119 @@
             $("#y2").val(c.y2);
         };
         
-        jQuery(function($) {
-            
-            
-            $('.feature-edit').on('click',function () {
-                var $form = $('#feature-edit-form');
-                var data = JSON.parse($(this).attr('data'));
-                
-                
-                $('.feature-edit').removeClass('disabled');
-                $(this).addClass('disabled');
-                
-                console.info($data);
-                $form.find('#feature_id').val($data.id);
-                //$form.find('#tag_id').val($data.tag_id);
-                //$form.find('#color').val($data.color);
-                //$form.find('#brand_id').val($data.brand_id);
-                //console.log($data.tag_id);
-                //var coords = JSON.parse($data.region);
-                //console.info(coords);
-                
-                $form.find('#x1').val(data.x1);
-                $form.find('#y1').val(data.y1);
-                $form.find('#x2').val(data.x2);
-                $form.find('#x2').val(data.y2);
-                
-                jcrop_api.setSelect([data.x1,data.y1,data.x2,data.y2]);
-            });
-            
-             $('.coordinate').on('input',function () {
-                 var $form = $('#feature-edit-form');
+        function updateSelection(){
+            var $form = $('#feature_form');
                  jcrop_api.setSelect([
                      $form.find('#x1').val(),
                      $form.find('#y1').val(),
                      $form.find('#x2').val(),
                      $form.find('#y2').val()
                 ]);
-             });
+        }
+        
+        function itemOnChangeHandler(){
+            var featureId = $("#feature_id").val();
+                var itemId = $("#item_id").val();
+                $.get( "/api/items/"+itemId+"/properties",{ feature_id : featureId }, function( data ) {
+                    $( "#property_block" ).html( data );
+                });
+        };
+        
+        function setupFeatureBlock(data){
+            $( "#feature_block" ).html( data );
+            $('#item_id').on('change',itemOnChangeHandler);
+            $('#save_feature').on('click',saveFeature);
+            $('#delete_feature').on('click',deleteFeature);
+            $("#reset_coords").on('click',function(){
+                jcrop_api.release();
+            }); 
+            $('.coordinate').on('input',updateSelection);
+            updateSelection();
+        }
+        
+        function setupFeatureList(){
+            $('#new_feature').on('click',function () {
+                $.get( "/api/images/{{ $image->id }}/features/create/", setupFeatureBlock);
+            });
             
+            $('.feature-edit').on('click',function () {
+                var featureId = $(this).attr('data');
+                $.get( "/api/images/{{ $image->id }}/features/"+featureId+"/edit", setupFeatureBlock);
+            });
+        }
+        
+        function afterSave(result) {
+            if (result.error === 0){
+                // Reload features list
+                $.get( "/api/images/{{ $image->id }}/features/", function( data ) {
+                    $( "#features_list" ).html( data );
+                    setupFeatureList()
+                    $( "#feature_block" ).html( "" );
+                    jcrop_api.release();
+                });
+            }else{
+                alert(result.message);
+            }
+        }
+        
+        
+        function deleteFeature(){
+            var featureId = $("#feature_id").val();
+            if ( confirm("Delete ?") ){
+                $.ajax({
+                    url: "/api/images/{{ $image->id }}/features/"+featureId,
+                    type: 'DELETE',  
+                    dataType: 'json',
+                    success: afterSave
+                   });
+            }
+        }
+        
+        
+        function saveFeature(){
+            var featureId = $("#feature_id").val();
+            if (featureId){
+                // Update
+                $.ajax({
+                    url: "/api/images/{{ $image->id }}/features/"+featureId,
+                    type: 'PUT',  
+                    data:  $('#feature_form').serialize(),
+                    dataType: 'json',
+                    success: afterSave
+                });
+            }
+            else{
+                // Create
+                $.ajax({
+                    url: "/api/images/{{ $image->id }}/features",
+                    type: 'POST',  
+                    data:  $('#feature_form').serialize(),
+                    dataType: 'json',
+                    success:afterSave
+                });
+            }
+        }
+        
+        
+        jQuery(function($) {
+            /*
+            $('#new_feature').on('click',function () {
+                $.get( "/api/images/{{ $image->id }}/features/create/", setupFeatureBlock);
+            });
+            
+            $('.feature-edit').on('click',function () {
+                var featureId = $(this).attr('data');
+                $.get( "/api/images/{{ $image->id }}/features/"+featureId+"/edit", setupFeatureBlock);
+            });
+            */
+            setupFeatureList()
             
             $('#image').Jcrop({
                     onSelect: showCoords,
                     onChange: showCoords,
-//                    setSelect: [coords[0][0],coords[0][1],coords[1][0],coords[1][1]]
                 },function(){
                     jcrop_api = this;
-                });
+            });
             
             
         });

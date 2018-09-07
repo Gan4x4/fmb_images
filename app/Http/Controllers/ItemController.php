@@ -92,7 +92,7 @@ class ItemController extends Controller
         ]);
     }
     
-    public static function getitemSelect($exceptId = []){
+    public static function getItemSelect($exceptId = []){
         $items = Item::all();
         $filtered = $items->filter(function ($value, $key) use ($exceptId) {
             return ! in_array($value->id,$exceptId);
@@ -148,5 +148,21 @@ class ItemController extends Controller
         return response()->json($result);
     }
     
+    public function properties(Request $request,$itemId){
+        $item = Item::findOrFail($itemId);
+        $properties = $item->properties;
+        //dump($properties);
+        $featureId = $request->feature_id;
+        
+        if ($featureId){
+            foreach($properties as $property){
+                $property->setTagForFeature($featureId,$itemId);
+            }        
+        }
+        
+        return view('feature.properties',[
+            'properties' => $properties
+            ]);
+    }
     
 }

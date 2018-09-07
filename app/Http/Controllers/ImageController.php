@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Image;
 use App\Feature;
+use App\Item;
 
 
 class ImageController extends Controller
@@ -76,10 +77,10 @@ class ImageController extends Controller
     public function edit($id)
     {
         $image = Image::findOrFail($id);
-        //$tags = TagController::getTagSelect();
+        //$items = ItemController::getItemSelect();
         return view('image.edit')->with([
             'image' => $image,
-          //  'tags' => $tags,
+            'items' => Item::all(),
         ]);
     }
 
@@ -132,7 +133,7 @@ class ImageController extends Controller
         }
         return response()->json($result);
     }
-    
+    /*
     public function updateOrCreateFeature(Request $request, $id){
         $image = Image::findOrFail($id);
         if ($request->feature_id){
@@ -142,12 +143,43 @@ class ImageController extends Controller
             $feature->image_id = $id;
         }
 
-        $feature->fill($request->all()); // Update tag id
-        //$feature->region = $this->extractRegion($request);
+        $item = Item::findOrFail($request->item_id);
+        
+        $feature->fill($request->all()); // Update only coords and description
+        $feature->save(); // To obtain id
+        $feature->properties()->detach();
+        $prop_data = $this->extractProperties($request);
+        foreach($prop_data as $property_id=>$tag_id){
+            $feature->properties()->attach($property_id,[
+                'feature_id' => $feature->id,
+                'tag_id' => $tag_id,
+                'item_id' => $item->id
+                    ]);
+        }
         
         $feature->save();
         return redirect()->route('images.edit',$id);
     }
+    */
     
+    
+    
+    /*
+    public function feature($featureId){
+        //return "Here";
+        //$image = Image::findOrFail($imageId);
+        $feature = Feature::findOrFail($featureId);
+        $properties = $feature->properties;
+        //dd($properties);
+        
+        return view('image.feature')->with([
+                    'feature' => $feature,
+                    'item_id' => $feature->getItemId(),
+                    'items' => Item::all(),
+                    'properties' => $feature->properties,
+                    'image' => $feature->image
+                ]);
+    }
+    */
     
 }

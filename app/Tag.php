@@ -23,7 +23,7 @@ class Tag extends Model
     //Override
     public function delete(){
         $this->properties()->detach();
-        $parent->delete();
+        parent::delete();
     }
     
 }

@@ -79,14 +79,14 @@ class TagController extends Controller
     {
         $tag = Tag::findOrFail($id);
         $selected = [];
-        $properties = $tag->properties;
+        
         foreach($tag->properties as $p){
             $selected[] = $p->id;
         }
         return view('tag.edit')->with([
             'tag' => $tag,
             'tags' => $this->getTagSelect(),
-            'properties' => $properties,
+            'properties' => Property::all(),
             'selected_properties' => $selected
         ]);
     }
