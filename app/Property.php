@@ -4,11 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Tag;
 
 class Property extends Model
 {
-    protected $guarded = ['id','created_at','updated_at'];
-    //public $tag = null;
+    //protected $guarded = ['id','created_at','updated_at'];
+    protected $fillable = ['name','description'];
     
     public function items(){
         return $this->belongsToMany('App\Item');
@@ -25,6 +26,12 @@ class Property extends Model
         return null;
     }
     
+    public function getTag(){
+        if ($this->tagId()){
+            return Tag::find($this->tagId());
+        }
+        return null;
+    }
     
     public function setTagForFeature($featureId,$itemId){
          $line =  DB::table('bindings')->
@@ -37,5 +44,14 @@ class Property extends Model
         }
     }
     
+    // Override
+    public function delete(){
+        $this->tags()->detach();
+        $this->items()->detach();
+        return parent::delete();
+    }
+    
+    
+   
     
 }

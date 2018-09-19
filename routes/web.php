@@ -21,8 +21,8 @@ Route::get('/', function () {
 //Route::delete('images/{image_id}/features/{id}', 'ImageController@deleteFeature')->name('images.features.delete');
 Route::resource('images', 'ImageController');
 
-
-
-
+Route::resource('properties', 'PropertyController');
 Route::resource('tags', 'TagController');
+
+Route::get('items.build', 'ItemController@build')->name('build');
 Route::resource('items', 'ItemController');

@@ -14,6 +14,14 @@ class Item extends Model
         return $this->belongsToMany('App\Property');
     }
     
+    /*
+     * Return all features containing this item
+     */
+    public function features(){
+        return $this->belongsToMany('App\Feature','bindings','item_id','feature_id')->distinct('feature_id');
+    }
+    
+    
     public static function getDefault(){
         return Item::whereNull('parent_id')->first();
     }
@@ -44,5 +52,12 @@ class Item extends Model
         parent::delete();
     }
     
+    public function getDescription(){
+        $out = [];
+        $out = $this->name;
+        foreach($this->properties as $property){
+            
+        }
+    }
     
 }

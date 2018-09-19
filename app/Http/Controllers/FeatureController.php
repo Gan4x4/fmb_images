@@ -82,7 +82,7 @@ class FeatureController extends Controller
     public function edit($imageId,$featureId)
     {
         $feature = Feature::findOrFail($featureId);
-        $item = $feature->getItemId();
+        $item = $feature->getItem();
         return view('feature.edit')->with([
                     'feature' => $feature,
                     'item_id' => $item->id,

@@ -27,5 +27,26 @@ class Image extends Model
     }
     */
     
+    public function getFeatureDescription(){
+        $out = [];
+        foreach($this->features as $feature){
+            /*
+            print $feature->id." ". $feature->getItem()->name;
+            foreach($feature->properties as $p){
+                $tag = $p->getTag();
+                
+                //print $p->name." ".$p->tagId()." ";
+                if ($tag){
+                   // print $tag->name;
+                }
+            }
+            //print "<br>";
+             * 
+             */
+            $out[$feature->getItem()->name] = $feature->getDescription();
+        }
+        return $out;
+    }
+    
     
 }

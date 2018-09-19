@@ -8,7 +8,13 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+// Tree view
+@import '~bootstrap-tree-view/css/core.css';
+@import '~bootstrap-tree-view/css/tree.css';
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
+

@@ -6,6 +6,9 @@
  */
 
 require('./bootstrap');
+//require('bootstrap-tree-view/js/core.js');
+//require('bootstrap-tree-view/js/tree.js');
+
 
 window.Vue = require('vue');
 
@@ -16,7 +19,44 @@ window.Vue = require('vue');
  */
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
+//Vue.component('tree-component', require('./components/TestTree.vue'));
+
+/*
+var dataT = {
+      name: 'My Tree',
+      children: [
+        { name: 'hello' },
+        { name: 'wat' },
+        {
+          name: 'child folder',
+          children: [
+            {
+              name: 'child folder',
+              children: [
+                { name: 'hello' },
+                { name: 'wat' }
+              ]
+            },
+            { name: 'hello' },
+            { name: 'wat' },
+            {
+              name: 'child folder',
+              children: [
+                { name: 'hello' },
+                { name: 'wat' }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  */  
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    /*
+    data: {
+        treeData: dataT
+    }
+    */
 });

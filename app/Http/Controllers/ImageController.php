@@ -17,10 +17,13 @@ class ImageController extends Controller
      */
     public function index()
     {
-        $images = Image::all();
+        $images = Image::orderBy('updated_at',"DESC")->paginate(15);
+        
         return view('image.index')->with([
-            'images'=>$images
+            'images'=>$images,
+            'items'=>Item::all()
         ]);
+        
     }
 
     /**

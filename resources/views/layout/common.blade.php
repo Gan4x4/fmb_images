@@ -17,53 +17,60 @@
         
  
 
-        <!-- Styles -->
+        <!-- Styles 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        -->
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css">
         
         <!-- Custom css -->
         @yield('page-css')
-        
-        
     </head>
     <body>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="/"> Image DB for FMB.</a>
-                
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('images.index' )}}">Images</a>
-                        </li>
-                        <li class="nav-item">
+        <div id='app'> <!-- Start vue app block -->
+
+            <header>
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <a class="navbar-brand" href="/"> Image DB for FMB.</a>
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('images.index' )}}">Images</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('items.index' )}}">Items</a>
+                            </li>
                             
-                            <a class="nav-link" href="{{ route('items.index' )}}">Items</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('tags.index' )}}">Tags</a>
-                        </li>
-                    </ul>
-                </div>
-                
-                
-                @if (Route::has('login'))
-                    <div class="top-right links">
-                        @auth
-                            <a href="{{ url('/home') }}">Home</a>
-                        @else
-                            <a href="{{ route('login') }}">Login</a>
-                            <a href="{{ route('register') }}">Register</a>
-                        @endauth
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('properties.index' )}}">Properties</a>
+                            </li>
+
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('tags.index' )}}">Tags</a>
+                            </li>
+                        </ul>
                     </div>
-                @endif
-            </nav>
-        </header>
-        
-        <div class="container-fluid content">
+
+
+                    @if (Route::has('login'))
+                        <div class="top-right links">
+                            @auth
+                                <a href="{{ url('/home') }}">Home</a>
+                            @else
+                                <a href="{{ route('login') }}">Login</a>
+                                <a href="{{ route('register') }}">Register</a>
+                            @endauth
+                        </div>
+                    @endif
+                </nav>
+            </header>
+
+            <div class="container-fluid content">
             <div class="row">     
                 @yield('sidebar')
                 
@@ -74,23 +81,23 @@
                 </main>
            </div> 
         </div>
-        
+        </div> <!-- End Vue app block -->
         <!-- Bootstrap links -->
         <!--
             Slim build don't contain ajax function :(
             <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        -->
+        
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <!-- TODO integrate it  -->
-        <script src="{{ asset('js/gan.js') }}"></script>
+        -->
         
         <!-- Scripts -->
+        <script src="{{ asset('js/app.js') }}"></script>
+        <!-- TODO integrate it  -->
+        <script src="{{ asset('js/gan.js') }}"></script>
         @yield('page-js-script')
-        
-        
         
     </body>
 </html>

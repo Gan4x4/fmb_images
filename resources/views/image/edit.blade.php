@@ -166,16 +166,7 @@
         
         
         jQuery(function($) {
-            /*
-            $('#new_feature').on('click',function () {
-                $.get( "/api/images/{{ $image->id }}/features/create/", setupFeatureBlock);
-            });
             
-            $('.feature-edit').on('click',function () {
-                var featureId = $(this).attr('data');
-                $.get( "/api/images/{{ $image->id }}/features/"+featureId+"/edit", setupFeatureBlock);
-            });
-            */
             setupFeatureList()
             
             $('#image').Jcrop({
