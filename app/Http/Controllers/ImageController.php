@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Image;
 use App\Feature;
 use App\Item;
-
+use App\Parser\Avito;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 
 class ImageController extends Controller
 {
@@ -45,14 +47,26 @@ class ImageController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
-            'file' => 'required|image',
-        ]);
         
-        $path = $request->file->store('public/images');        
+        
+        if ($request->url){
+            // TODO select parser
+            $parser = new Avito($request->url);
+            $tmpImagePath = $parser->getImage(); 
+            $path = Storage::putFile('public/images', new File($tmpImagePath));
+            $description = $parser->getDescription();
+        }else{
+            $request->validate([
+                'file' => 'required|image',
+            ]);
+            $path = $request->file->store('public/images');    
+            $description = $request->description;
+        }
+            
+             
         $image = new Image();
         $image->path = $path;
-        $image->description = $request->description;
+        $image->description = $description;
         $size = getimagesize(storage_path('app/'.$path));
         $image->width = $size[0];
         $image->height = $size[1];

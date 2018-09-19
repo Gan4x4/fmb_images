@@ -24,5 +24,7 @@ Route::resource('images', 'ImageController');
 Route::resource('properties', 'PropertyController');
 Route::resource('tags', 'TagController');
 
-Route::get('items.build', 'ItemController@build')->name('build');
+Route::get('items/build', 'ItemController@build')->name('build');
 Route::resource('items', 'ItemController');
+
+Route::get('test','TestController@index');
