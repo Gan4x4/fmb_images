@@ -81,7 +81,6 @@ class Feature extends Model
         
     }
     
-    
     public function getDescription(){
         $out = [];
         foreach($this->properties as $property){
@@ -92,6 +91,11 @@ class Feature extends Model
         }
         return $out;
     }
+    
+    public function hasProperty($property_id){
+        return $this->properties()->where('properties.id',$property_id)->exists();
+    }
+    
     
     /*
     public function getFilledProperties(){

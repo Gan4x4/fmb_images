@@ -33,7 +33,7 @@ class FeatureController extends Controller
         $feature = new Feature();
         $feature->image_id = $image->id;
         $items = Item::all();
-        $item = Item::getDefault();
+        $item = $image->getPrposedItem();
                 
         return view('feature.edit')->with([
                     'feature' => $feature,

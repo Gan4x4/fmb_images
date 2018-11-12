@@ -51,4 +51,4 @@
 
     <button id="save_feature" class="btn btn-default">Save</button>
     <button id="delete_feature" class="btn btn-default">Delete</button>
-    <button id="reset_coords" class="btn btn-default">Reset</button>
+    <button class="btn btn-default reset_coords">Reset</button>

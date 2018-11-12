@@ -17,10 +17,28 @@
 @endsection
 
 @section('content')
+
+
+
     <h2>Image list</h2>
-    <a href="{{route('images.create')}}" role="button" class="btn btn-primary">Add</a>
+    
+    <div class='row'>
+        <div class='col-md-1'>
+            <a href="{{route('images.create')}}" role="button" class="btn btn-default">Add</a>
+        </div>
+        <div class='col-md-11'>
+            {!! Form::open(['route'=>'images.store','class'=>'form-inline'])  !!}
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="url" class="sr-only">URL</label>
+                    {!! Form::text('url',null,['class'=>'form-control', 'placeholder' => "URL",'size'=>70]) !!}
+                </div>
+             {!! Form::submit("Parse",['class'=>'btn btn-primary mb-2']) !!}
+            {!! Form::close() !!}
+            
+        </div>
+    </div>
     <hr>
-    <div class="container-fluid">
+    <div class="container-fluid ">
         <div class="row">
             @foreach($images as $image) 
                 <div class="col-md-3 d-flex"  >
@@ -46,11 +64,15 @@
                 </div>
             @endforeach
             
-            {{ $images->links() }}
+           
         </div>
+        <hr>
+        <div class='row '>
+            <div class='col-lg-4 offset-lg-4  d-flex' >
+            {{ $images->links() }}
+            </div>
+        </div>
+
     </div>    
-    
-    
-    
-    
+        
 @endsection

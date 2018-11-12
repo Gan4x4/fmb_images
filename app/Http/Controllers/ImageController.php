@@ -9,6 +9,7 @@ use App\Item;
 use App\Parser\Avito;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Auth;
 
 class ImageController extends Controller
 {
@@ -46,32 +47,26 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-
-        
+        $image = new Image();
+        $image->user_id = Auth::user()->id;
         
         if ($request->url){
             // TODO select parser
             $parser = new Avito($request->url);
             $tmpImagePath = $parser->getImage(); 
-            $path = Storage::putFile('public/images', new File($tmpImagePath));
-            $description = $parser->getDescription();
+            $image->path = Storage::putFile('public/images', new File($tmpImagePath));
+            $image->description = $parser->getDescription();
+            $image->source_id = 1;
         }else{
             $request->validate([
                 'file' => 'required|image',
             ]);
-            $path = $request->file->store('public/images');    
-            $description = $request->description;
+            $image->path = $request->file->store('public/images');    
+            $image->description = $request->description;
         }
-            
-             
-        $image = new Image();
-        $image->path = $path;
-        $image->description = $description;
-        $size = getimagesize(storage_path('app/'.$path));
-        $image->width = $size[0];
-        $image->height = $size[1];
+
         $image->save();
-        return redirect()->route('images.index');
+        return redirect()->route('images.edit',$image->id);
     }
 
     /**
@@ -94,7 +89,6 @@ class ImageController extends Controller
     public function edit($id)
     {
         $image = Image::findOrFail($id);
-        //$items = ItemController::getItemSelect();
         return view('image.edit')->with([
             'image' => $image,
             'items' => Item::all(),
@@ -112,19 +106,11 @@ class ImageController extends Controller
     {
         $image = Image::findOrFail($id);
         $image->fill($request->all()); // Update tag id
+        $image->status = Image::STATUS_EDITED;
         $image->save();
         return redirect()->route('images.edit',$id);
     }
 
-    private function extractRegion($request){
-        $coords = [];
-        $keys = ['x1','y1','x2','y2'];
-        $coords[] = [$request->x1,$request->y1];
-        $coords[] = [$request->x2,$request->y2];
-        return json_encode($coords,true);
-    }
-    
-    
     /**
      * Remove the specified resource from storage.
      *

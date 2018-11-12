@@ -13,18 +13,20 @@
 
 Route::get('/', function () {
     return view('welcome');
-    
 });
 
-/* Images */
-//Route::put('images/{image_id}/features/', 'ImageController@updateOrCreateFeature')->name('images.features.update_or_create');
-//Route::delete('images/{image_id}/features/{id}', 'ImageController@deleteFeature')->name('images.features.delete');
-Route::resource('images', 'ImageController');
+Route::get('/home', function () {
+    return redirect()->route('images.index');
+})->name('home');
 
-Route::resource('properties', 'PropertyController');
-Route::resource('tags', 'TagController');
+Auth::routes();  // Registration inside
 
-Route::get('items/build', 'ItemController@build')->name('build');
-Route::resource('items', 'ItemController');
+Route::middleware('auth')->resource('images', 'ImageController');
+
+Route::middleware('auth')->resource('properties', 'PropertyController');
+Route::middleware('auth')->resource('tags', 'TagController');
+
+Route::middleware('auth')->get('items/build', 'ItemController@build')->name('build');
+Route::middleware('auth')->resource('items', 'ItemController');
 
 Route::get('test','TestController@index');

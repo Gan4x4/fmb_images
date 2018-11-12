@@ -38,35 +38,17 @@
 
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('images.index' )}}">Images</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('items.index' )}}">Items</a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('properties.index' )}}">Properties</a>
-                            </li>
-
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('tags.index' )}}">Tags</a>
-                            </li>
+                            @foreach( __('menu.common') as $url => $title)
+                                <a class="nav-item nav-link {{ request()->url() == $url ? 'active' : '' }}" href="{{ $url }}">{{ $title }}</a>
+                            @endforeach
                         </ul>
-                    </div>
-
-
-                    @if (Route::has('login'))
-                        <div class="top-right links">
-                            @auth
-                                <a href="{{ url('/home') }}">Home</a>
-                            @else
-                                <a href="{{ route('login') }}">Login</a>
-                                <a href="{{ route('register') }}">Register</a>
-                            @endauth
+                        
+                        <div class="navbar-nav ml-auto">
+                            @include('auth.menu')
                         </div>
-                    @endif
+                        
+                    </div>
+                   
                 </nav>
             </header>
 

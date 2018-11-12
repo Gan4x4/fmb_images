@@ -24,15 +24,6 @@
                 @include('feature.index',['features' => $image->features])
             </div>
             
-            <!--
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                  <span>Add feature</span>
-                  <a class="d-flex align-items-center text-muted" href="#">
-                    <span data-feather="plus-circle"></span>
-                  </a>
-            </h6>
-            -->
-            
             <div id="feature_block">
                 <!-- place to edit feature properties -->
                 
@@ -42,7 +33,15 @@
 @endsection
 
 @section('content')
-    <h2>Edit image</h2>
+    <div class='row' >
+        <div class='col-8-md'>
+            <h2>Edit image</h2>
+        </div>
+
+        <div class='col-4-md'>
+            <a href='javascript:void(0)' class='reset_coords' ><i class="far fa-file"></i></a>
+        </div>
+    </div>
     
     <div class="container-fluid">
        <img class="img-responsive" src='{{ $image->getUrl() }}' id='image'>
@@ -94,7 +93,7 @@
             $('#item_id').on('change',itemOnChangeHandler);
             $('#save_feature').on('click',saveFeature);
             $('#delete_feature').on('click',deleteFeature);
-            $("#reset_coords").on('click',function(){
+            $(".reset_coords").on('click',function(){
                 jcrop_api.release();
             }); 
             $('.coordinate').on('input',updateSelection);
@@ -103,7 +102,7 @@
         
         function setupFeatureList(){
             $('#new_feature').on('click',function () {
-                $.get( "/api/images/{{ $image->id }}/features/create/", setupFeatureBlock);
+                $.get( "/api/images/{{ $image->id }}/features/create/", setupFeatureBlock);                
             });
             
             $('.feature-edit').on('click',function () {

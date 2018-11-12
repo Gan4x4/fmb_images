@@ -6,4 +6,5 @@
     @endforeach
     
 </ul>
+<hr>
 <button class="btn btn-default" id='new_feature'>Add</button>
