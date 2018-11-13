@@ -4,8 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Item;
+use App\Interfaces\Owned;
 
-class Image extends Model
+class Image extends Model implements Owned
 {
     const STATUS_NEW = null;
     const STATUS_EDITED = 1;
@@ -15,6 +16,11 @@ class Image extends Model
     public function features(){
         return $this->HasMany('App\Feature');
     }
+    
+    public function user(){
+        return $this->BelongsTo('App\User');
+    }
+    
     
     public function getThumbUrl(){
         return $this->getUrl();
@@ -28,29 +34,9 @@ class Image extends Model
         return storage_path('app/'.$this->path);
     }
     
-    /*
-    public function size2region(){
-        $region = [[0,0],[$this->width,$this->height]];
-        return json_encode($region);
-    }
-    */
-    
     public function getFeatureDescription(){
         $out = [];
         foreach($this->features as $feature){
-            /*
-            print $feature->id." ". $feature->getItem()->name;
-            foreach($feature->properties as $p){
-                $tag = $p->getTag();
-                
-                //print $p->name." ".$p->tagId()." ";
-                if ($tag){
-                   // print $tag->name;
-                }
-            }
-            //print "<br>";
-             * 
-             */
             $out[$feature->getItem()->name] = $feature->getDescription();
         }
         return $out;
@@ -58,17 +44,14 @@ class Image extends Model
     
     
     public function getPrposedItem(){
-        
         $features = $this->features;
         $existingItemIds = [];
-        //dump($features);
         foreach($features as $feature){
             $f_item = $feature->getItem();
             if ($f_item){
                 $existingItemIds[] = $f_item->id;
             }
         }
-        //dd($existingItemIds);
         $items = Item::all();
         foreach($items as $item){ 
             if (! in_array($item->id, $existingItemIds)){
@@ -76,7 +59,6 @@ class Image extends Model
             }
         }
         return $items->first(); 
-        
     }
     
     // Override
@@ -86,6 +68,17 @@ class Image extends Model
         $this->height = $size[1];
         $this->hash = md5_file($this->getFullPath());
         parent::save($options);
+    }
+    
+    public function updateStatus(){
+        
+        if ($this->features->count() == 0){
+            $this->status = self::STATUS_NEW;    
+        }
+        else{
+            $this->status = self::STATUS_EDITED;
+        }
+        parent::save();
     }
     
 }

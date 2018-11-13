@@ -15,12 +15,15 @@
                     {{ csrf_field() }}
                 </form>
 
-                @if (Auth::user()->isAdmin())
-                    <!-- Admin -->
-                    @foreach( __('menu.admin') as $url => $title)
-                        <a class="dropdown-item" href="{{ $url }}">{{ $title }}</a>
-                    @endforeach
-                @endif
+                <!-- Admin
+                if ( Auth::user()->isAdmin() && __('menu.admin') != 'menu.admin' )
+                     
+                    foreach( __('menu.admin') as $url => $title)
+                        <a class="dropdown-item" href=" $url "> $title </a>
+                    endforeach
+                endif
+                -->
+                
 
             </div>
         </li>

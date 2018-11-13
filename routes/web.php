@@ -23,10 +23,10 @@ Auth::routes();  // Registration inside
 
 Route::middleware('auth')->resource('images', 'ImageController');
 
-Route::middleware('auth')->resource('properties', 'PropertyController');
-Route::middleware('auth')->resource('tags', 'TagController');
+Route::middleware('auth.admin')->resource('properties', 'PropertyController');
+Route::middleware('auth.admin')->resource('tags', 'TagController');
 
-Route::middleware('auth')->get('items/build', 'ItemController@build')->name('build');
-Route::middleware('auth')->resource('items', 'ItemController');
+Route::middleware('auth.admin')->get('items/build', 'ItemController@build')->name('build');
+Route::middleware('auth.admin')->resource('items', 'ItemController');
 
 Route::get('test','TestController@index');

@@ -18,15 +18,34 @@ class ImageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $images = Image::orderBy('updated_at',"DESC")->paginate(15);
+        $user = Auth::user();
+        $images = Image::orderBy('updated_at',"DESC");
+        if (! $user->isAdmin()){
+            $images->where('user_id',$user->id);
+        }
+        
+        if ($request->has('new')){
+            $images->whereNull('status');
+            $active_tab = 1;
+        }
+        else{
+            $active_tab = 0;
+        }
+        
+        $tabs = [
+            route('images.index') => 'All',
+            route('images.index',['new' => true]) => 'New',
+        ];
         
         return view('image.index')->with([
-            'images'=>$images,
-            'items'=>Item::all()
+            'images'=>$images->paginate(self::ITEMS_PER_PAGE),
+            'items'=>Item::all(),
+            'tabs' => $tabs,
+            'active_tab' => $active_tab
+            
         ]);
-        
     }
 
     /**
@@ -36,7 +55,7 @@ class ImageController extends Controller
      */
     public function create()
     {
-         return view('image.create');
+        return view('image.create');
     }
 
     /**
@@ -89,6 +108,7 @@ class ImageController extends Controller
     public function edit($id)
     {
         $image = Image::findOrFail($id);
+        $this->checkAccess($image);
         return view('image.edit')->with([
             'image' => $image,
             'items' => Item::all(),
@@ -105,8 +125,8 @@ class ImageController extends Controller
     public function update(Request $request, $id)
     {
         $image = Image::findOrFail($id);
+        $this->checkAccess($image);
         $image->fill($request->all()); // Update tag id
-        $image->status = Image::STATUS_EDITED;
         $image->save();
         return redirect()->route('images.edit',$id);
     }
@@ -119,11 +139,14 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->checkAccess($image);
     }
     
     public function deleteFeature($imageId,$featureId)
     {
+        $image = Image::findOrFail($id);
+        $this->checkAccess($image);
+        
         $result = $this->getAjaxResponse();
         try {
             $feature = Feature::findOrFail($featureId); 
@@ -136,53 +159,6 @@ class ImageController extends Controller
         }
         return response()->json($result);
     }
-    /*
-    public function updateOrCreateFeature(Request $request, $id){
-        $image = Image::findOrFail($id);
-        if ($request->feature_id){
-            $feature = Feature::findOrFail($request->feature_id);    
-        }else{
-            $feature = new Feature();    
-            $feature->image_id = $id;
-        }
-
-        $item = Item::findOrFail($request->item_id);
-        
-        $feature->fill($request->all()); // Update only coords and description
-        $feature->save(); // To obtain id
-        $feature->properties()->detach();
-        $prop_data = $this->extractProperties($request);
-        foreach($prop_data as $property_id=>$tag_id){
-            $feature->properties()->attach($property_id,[
-                'feature_id' => $feature->id,
-                'tag_id' => $tag_id,
-                'item_id' => $item->id
-                    ]);
-        }
-        
-        $feature->save();
-        return redirect()->route('images.edit',$id);
-    }
-    */
-    
-    
-    
-    /*
-    public function feature($featureId){
-        //return "Here";
-        //$image = Image::findOrFail($imageId);
-        $feature = Feature::findOrFail($featureId);
-        $properties = $feature->properties;
-        //dd($properties);
-        
-        return view('image.feature')->with([
-                    'feature' => $feature,
-                    'item_id' => $feature->getItemId(),
-                    'items' => Item::all(),
-                    'properties' => $feature->properties,
-                    'image' => $feature->image
-                ]);
-    }
-    */
+   
     
 }

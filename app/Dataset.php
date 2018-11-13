@@ -35,32 +35,29 @@ class Dataset {
         Storage::makeDirectory($this->dir);
         
         foreach($this->items as $item_id => $propIds){
-            $item = Item::findOrFail($item_id);
-            $features = $item->features;
-            if (! $features){
-                // No images found
-                continue;
-            }
-            
-            foreach($features as $feature){
-                if (! $this->hasSelectedProps($item_id)){
-                    $this->saveWithoutProps($item,$feature);
-                }elseif($this->subdirs){
-                //$this->savePropsInSubdirs($item);
-                    $this->savePropsInSubdirs($item,$feature);
-                }else{
-                    //$this->savePropsAsNewItems($item);
-                    $this->savePropsAsNewItems($item,$feature);
-                }
-                
-            }
-          
+            $this->extractAndSaveImages($item_id);
         }
         
-        $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';;
+        $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
         $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
 
         return $target;
+    }
+    
+    private function extractAndSaveImages($item_id){
+        $item = Item::findOrFail($item_id);
+        $features = $item->features;
+        if (! $features) return;
+            
+        foreach($features as $feature){
+            if (! $this->hasSelectedProps($item_id)){
+                $this->saveWithoutProps($item,$feature);
+            }elseif($this->subdirs){
+                $this->savePropsInSubdirs($item,$feature);
+            }else{
+                $this->savePropsAsNewItems($item,$feature);
+            }
+        }
     }
     
     private function hasSelectedProps($itemId){

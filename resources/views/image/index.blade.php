@@ -38,7 +38,12 @@
         </div>
     </div>
     <hr>
+    
+    
     <div class="container-fluid ">
+        
+        {{ Html::bsTabs($tabs,$active_tab) }}
+        
         <div class="row">
             @foreach($images as $image) 
                 <div class="col-md-3 d-flex"  >
@@ -57,7 +62,15 @@
                                 {{ $item }} : 
                                 {{ implode(", ",$props) }}
                                 <br>
+                                
                             @endforeach
+                            <hr>
+                            @if ( Auth::user()->isAdmin() )
+                                {{ $image->user->name }}
+                            @endif
+                            @if ($image->status == 0 )
+                                <i class="fab fa-yelp"></i>
+                            @endif
                            
                         </div>
                     </div>
