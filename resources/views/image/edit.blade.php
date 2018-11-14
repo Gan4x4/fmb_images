@@ -6,6 +6,12 @@
         http://deepliquid.com/content/Jcrop_Manual.html
     -->
     <link rel="stylesheet" href="/jcrop/css/jquery.Jcrop.css" type="text/css" />
+    
+    <!-- https://github.com/selectize/selectize.js -->
+    <link rel="stylesheet" href="/selectize/css/selectize.default.css">
+    <link rel="stylesheet" href="/selectize/css/selectize.bootstrap3.css">
+   
+    
 @endsection
 
 
@@ -55,6 +61,7 @@
 
 @section('page-js-script')
     <script src="/jcrop/js/jquery.Jcrop.min.js"></script>
+    <script src="/selectize/js/selectize.min.js"></script>
     
     <script language="Javascript">
         
@@ -85,6 +92,7 @@
                 var itemId = $("#item_id").val();
                 $.get( "/api/items/"+itemId+"/properties",{ feature_id : featureId }, function( data ) {
                     $( "#property_block" ).html( data );
+                    $('.make_selectized').selectize();
                 });
         };
         
@@ -97,6 +105,7 @@
                 jcrop_api.release();
             }); 
             $('.coordinate').on('input',updateSelection);
+            $('.make_selectized').selectize();
             updateSelection();
         }
         

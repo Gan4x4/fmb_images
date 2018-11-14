@@ -7,7 +7,7 @@
     {!! Form::model($property,['route' => ['properties.update',$property->id],'method' => 'PUT']) !!}
 
         @include('property.fillable')
-        {!! Form::submit('Save') !!}
+        {!! Form::submit('Save',['id'=>'save']) !!}
         
     {!! Form::close() !!}
     

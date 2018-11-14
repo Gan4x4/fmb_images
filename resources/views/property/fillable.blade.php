@@ -24,17 +24,22 @@
     <script src="/typeahead/bootstrap3-typeahead.min.js"></script>
     <script language="Javascript">
         jQuery(function($) {
+            on_submit = false;
             $("input[name=new_tag]").typeahead({ 
                 source:{!!  $tags->toJson() !!},
                 updater:function (item) {
-                    //item = selected item
-                    $("input[value="+item.id+"]").prop('checked',true);
+                    //var userInput = $("input[name=new_tag]").val();
+                    // Check only full - matching items
+                    //if (userInput == item.name){
+                    
+                        $("input[value="+item.id+"]").prop('checked',true);
+                    
+                    //}
                     //dont forget to return the item to reflect them into input
                     //return item;
                 }
             });
-            
-            
+
         });
     </script>
     

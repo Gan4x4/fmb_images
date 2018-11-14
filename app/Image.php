@@ -13,6 +13,15 @@ class Image extends Model implements Owned
     
     protected $fillable = ['description'];
     
+    public static function findByHash($path){
+        $hash =  self::hashFunction($path);
+        return Image::where('hash',$hash)->first();
+    }
+    
+    public static function hashFunction($path){
+        return md5_file($path);
+    }
+    
     public function features(){
         return $this->HasMany('App\Feature');
     }
@@ -66,7 +75,7 @@ class Image extends Model implements Owned
         $size = getimagesize($this->getFullPath());
         $this->width = $size[0];
         $this->height = $size[1];
-        $this->hash = md5_file($this->getFullPath());
+        $this->hash = self::hashFunction($this->getFullPath());
         parent::save($options);
     }
     

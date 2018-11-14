@@ -73,6 +73,12 @@ class ImageController extends Controller
             // TODO select parser
             $parser = new Avito($request->url);
             $tmpImagePath = $parser->getImage(); 
+            
+            $duplicate = Image::findByHash($tmpImagePath);
+            if ($duplicate){
+                return redirect()->route('images.exists',[$duplicate->id]);
+            }
+                
             $image->path = Storage::putFile('public/images', new File($tmpImagePath));
             $image->description = $parser->getDescription();
             $image->source_id = 1;
@@ -86,6 +92,14 @@ class ImageController extends Controller
 
         $image->save();
         return redirect()->route('images.edit',$image->id);
+    }
+    
+    public function alreadyExists($id){
+        $image = Image::find($id);
+        return view('image.edit')->with([
+            'image' => $image,
+            'link' => $this->hasAccess($image),
+        ]);
     }
 
     /**

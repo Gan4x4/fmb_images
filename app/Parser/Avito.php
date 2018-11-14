@@ -23,14 +23,6 @@ class Avito extends Parser{
         //print $url;
         //dd($this->raw);
         $this->crawler = new Crawler($this->raw);
-
-        
-        
-        
-        
-        
-        
-        
           /*
         $nodeValues = $images->each(function (Crawler $node, $i) {
             return $node->attr('data-url');
@@ -59,15 +51,18 @@ class Avito extends Parser{
     
     
     public function getDescription(){
-        
         $title = $this->crawler->filterXPath('//span[contains(@class, "title-info-title-text")]');
         $body = $this->crawler->filterXPath('//div[contains(@class, "item-description-text")]');
-        
-        
-        return $title->text()."\n".$body->text();
-        
-        
+        $price = $this->getPrice();
+        return $title->text()."\n".$body->text()."\n Цена: ".$price;
     }
+    
+    
+    public function getPrice(){
+        $price = $this->crawler->filterXPath('//span[contains(@class, "js-item-price")]');
+        return $price->text();
+    }
+
     
         
 }

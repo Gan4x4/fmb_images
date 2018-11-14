@@ -103,6 +103,8 @@ class PropertyController extends Controller
      */
     public function update(Request $request, Property $property)
     {
+        
+        //dd($request->all());
         $property->fill($request->all());
         $property->save();
         $this->attachTags($request,$property);

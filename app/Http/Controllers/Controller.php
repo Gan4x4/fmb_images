@@ -40,14 +40,19 @@ class Controller extends BaseController
     }
     
     protected function checkAccess(Owned $object){
+        if (! $this->hasAccess($object)){
+            abort(403, 'Unauthorized action.');
+        }
+    }
+    
+    
+    public function hasAccess(Owned $object){
         $user = Auth::user();
         if ($user->isAdmin()){
             return true;
         }
         
-        if ($user->id != $object->user->id){
-            abort(403, 'Unauthorized action.');
-        }
+        return $user->id == $object->user->id;
     }
     
 }

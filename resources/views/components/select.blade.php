@@ -8,6 +8,6 @@
     @endphp
     
     
-    {!! Form::select($name,$values,$selected,array_merge(['class'=>'form-control','id'=>$name],$attr)); !!}
+    {!! Form::select($name,$values,$selected,App\Helper\Utils::mergeHtmlAttr(['class'=>'form-control','id'=>$name],$attr)); !!}
     
 </div>

@@ -101,7 +101,7 @@ class FeatureController extends Controller
      */
     public function update(Request $request, $imageId, $featureId)
     {
-        $feature = Feature::findOrFail($featureId);    
+        $feature = Feature::findOrFail($featureId);
         $feature->fill($request->all()); // Update only coords and description
         $feature->save(); // To obtain id
         $this->updateProperties($request,$feature);
@@ -109,8 +109,11 @@ class FeatureController extends Controller
     }
     
     private function updateProperties($request,$feature){
+        
+        
         $feature->properties()->detach();
         $prop_data = $this->extractProperties($request);
+        //dd($prop_data);
         $item = Item::findOrFail($request->item_id);
         foreach($prop_data as $property_id=>$tag_id){
             $feature->properties()->attach($property_id,[
@@ -130,6 +133,9 @@ class FeatureController extends Controller
         foreach($request->all() as $key=>$val){
             if (strpos($key, $perfix) === 0){
                 $id = substr($key,strlen($perfix));
+                if ($val == null){
+                    $val = 0;
+                }
                 $out[$id] = $val;
             }
         }

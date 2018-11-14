@@ -21,6 +21,8 @@ Route::get('/home', function () {
 
 Auth::routes();  // Registration inside
 
+
+Route::middleware('auth')->get('images/{id}/exists', 'ImageController@alreadyExists')->name('images.exists');
 Route::middleware('auth')->resource('images', 'ImageController');
 
 Route::middleware('auth.admin')->resource('properties', 'PropertyController');
