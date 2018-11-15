@@ -19,12 +19,6 @@ function deleteEntity(path,title){
     }
 }
 
-
-
-
-
-
-
 // https://stackoverflow.com/questions/11338774/serialize-form-data-to-json
 function getFormData($form){
     var unindexed_array = $form.serializeArray();

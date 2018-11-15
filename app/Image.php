@@ -80,7 +80,6 @@ class Image extends Model implements Owned
     }
     
     public function updateStatus(){
-        
         if ($this->features->count() == 0){
             $this->status = self::STATUS_NEW;    
         }
@@ -89,5 +88,14 @@ class Image extends Model implements Owned
         }
         parent::save();
     }
+    
+    // Override
+    public function delete(){
+        foreach($this->features as $feature){
+            $feature->delete();
+        }
+        parent::delete();
+    }
+    
     
 }

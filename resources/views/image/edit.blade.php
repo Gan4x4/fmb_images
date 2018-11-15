@@ -1,4 +1,4 @@
-@extends('layout.common')
+@extends('layouts.common')
 
 @section('page-css')
     <!-- 
@@ -56,6 +56,14 @@
             {!! Form::bsTextarea('description', 'Description'); !!}
             {!! Form::submit('Save') !!}
         {!! Form::close() !!}
+        
+        
+        
+        {!! Form::model($image,['route' => ['images.delete',$image->id],'method'=>'delete']) !!}
+            <button onClick="if (confirm('Delete image?')) submit(); )"></button>
+        {!! Form::close() !!}
+        
+        
     
 @endsection
 

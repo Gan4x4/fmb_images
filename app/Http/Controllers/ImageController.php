@@ -153,7 +153,10 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
+        $image = Image::findOrFail($id);
         $this->checkAccess($image);
+        //$image->delete();
+        return redirect()->route('images.index');
     }
     
     public function deleteFeature($imageId,$featureId)

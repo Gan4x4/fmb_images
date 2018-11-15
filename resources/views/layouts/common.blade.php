@@ -41,7 +41,7 @@
                             @foreach( __('menu.common') as $url => $title)
                                 <a class="nav-item nav-link {{ request()->url() == $url ? 'active' : '' }}" href="{{ $url }}">{{ $title }}</a>
                             @endforeach
-                            @if (Auth::user()->isAdmin())
+                            @if (Auth::check() && Auth::user()->isAdmin())
                                 @foreach( __('menu.admin') as $url => $title)
                                     <a class="nav-item nav-link {{ request()->url() == $url ? 'active' : '' }}" href="{{ $url }}">{{ $title }}</a>
                                 @endforeach
