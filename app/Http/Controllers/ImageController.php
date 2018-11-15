@@ -96,7 +96,7 @@ class ImageController extends Controller
     
     public function alreadyExists($id){
         $image = Image::find($id);
-        return view('image.edit')->with([
+        return view('image.exists')->with([
             'image' => $image,
             'link' => $this->hasAccess($image),
         ]);
