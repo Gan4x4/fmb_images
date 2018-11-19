@@ -9,8 +9,9 @@
         </div>
         
         <a class="btn btn-primary" id="save_feature" class="btn btn-default" {{ $disable_save ? 'disabled' : ''  }} >Save</a>
-        <a class="btn" id="delete_feature" class="btn btn-default">Delete</a>
+        <a class="btn btn-light" id="delete_feature" class="btn btn-default">Delete</a>
         
+        <hr>
         Coordinates
         <div class="form-row ">
             <div class="form-group col-md-6">
