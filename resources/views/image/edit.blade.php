@@ -10,6 +10,9 @@
     <!-- https://github.com/selectize/selectize.js -->
     <link rel="stylesheet" href="/selectize/css/selectize.default.css">
     <link rel="stylesheet" href="/selectize/css/selectize.bootstrap3.css">
+    
+    
+    <link rel="stylesheet" href="/tagsinput/css/tagsinput.css" type="text/css" />
    
     
 @endsection
@@ -41,11 +44,11 @@
 @section('content')
     <div class='row' >
         <div class='col-8-md'>
-            <h2>Edit image</h2>
+            <h2>Edit image </h2>
         </div>
 
         <div class='col-4-md'>
-            <a href='javascript:void(0)' class='reset_coords' ><i class="far fa-file"></i></a>
+            <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
         </div>
     </div>
     
@@ -70,6 +73,7 @@
 @section('page-js-script')
     <script src="/jcrop/js/jquery.Jcrop.min.js"></script>
     <script src="/selectize/js/selectize.min.js"></script>
+    <script src="/typeahead/bootstrap3-typeahead.min.js"></script>
     
     <script language="Javascript">
         
@@ -93,7 +97,6 @@
             $('#save_feature').prop('disabled',disableSave);
             //}
         }
-        
         
         function resetSelection(){
             jcrop_api.release();
@@ -127,9 +130,20 @@
                 $.get( "/api/items/"+itemId+"/properties",{ feature_id : featureId }, function( data ) {
                     $( "#property_block" ).html( data );
                     $('.make_selectized').selectize();
+                    enableTaginputs();
                     resetSelection();
                 });
         };
+        
+        
+        function enableTaginputs(){
+            $(".tag_input").each(function(i,val){
+               var data = JSON.parse($(this).attr('data'));
+               $(".tag_input").typeahead({ 
+                    source: data 
+                });
+            });
+        }
         
         function setupFeatureBlock(data){
             $( "#feature_block" ).html( data );
@@ -141,6 +155,7 @@
             $(".reset_coords").on('click',resetSelection); 
             $('.coordinate').on('input',updateSelection);
             $('.make_selectized').selectize();
+            enableTaginputs();
             updateSelection();
         }
         
@@ -219,6 +234,8 @@
                     jcrop_api = this;
             });
             
+           
+
             
         });
     </script>

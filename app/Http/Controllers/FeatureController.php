@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Feature;
 use App\Item;
 use App\Image;
+use App\Property;
 
 class FeatureController extends Controller
 {
@@ -39,12 +40,13 @@ class FeatureController extends Controller
         $feature->image_id = $image->id;
         $items = Item::all();
         $item = $image->getPrposedItem();
-               //dump($item->isFullImage(). "-".$item->name ); 
+        $properties = $item->properties;
+
         return view('feature.edit')->with([
                     'feature' => $feature,
                     'items' => $items,
                     'item_id' => $item->id,
-                    'properties' => $item->properties,
+                    'properties' => $properties,
                     'image' => $image,
                     'disable_save' => ! $item->isFullImage()
                 ]);
@@ -135,18 +137,33 @@ class FeatureController extends Controller
     
     
     private function extractProperties($request){
-        $perfix = 'property_';
+        $select_perfix = 'property_';
+        $manual_perfix = 'manual_property_';
         $out = [];
         foreach($request->all() as $key=>$val){
-            if (strpos($key, $perfix) === 0){
-                $id = substr($key,strlen($perfix));
+            $selectId = $this->getPropertyId($key,$select_perfix);
+            $manualId = $this->getPropertyId($key,$manual_perfix);
+            if ($selectId){
                 if ($val == null){
                     $val = 0;
                 }
-                $out[$id] = $val;
+                $out[$selectId] = $val;
+            }elseif($manualId){
+                $property = Property::find($manualId);
+                $tag = $property->lookupTag($val);
+                if ($tag){
+                    $out[$manualId] = $tag->id;    
+                }
             }
         }
         return $out;
+    }
+    
+    private function getPropertyId($key,$perfix){
+         if (strpos($key, $perfix) === 0){
+            return substr($key,strlen($perfix));
+         }
+         return false;
     }
 
     /**

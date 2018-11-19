@@ -137,6 +137,10 @@ class ImageController extends Controller
     {
         $image = Image::findOrFail($id);
         $this->checkAccess($image);
+        
+        //$model = Property::getModel();
+        
+        
         return view('image.edit')->with([
             'image' => $image,
             'items' => Item::all(),

@@ -45,7 +45,7 @@ class PropertyController extends Controller
     {
         $property = Property::create($request->all());
         $this->attachTags($request,$property);
-        $this->createNewTag($property,$request->new_tag);
+        $property->lookupTag($request->new_tag);
         return redirect()->route('properties.index'); 
     }
 
@@ -108,11 +108,12 @@ class PropertyController extends Controller
         $property->fill($request->all());
         $property->save();
         $this->attachTags($request,$property);
-        $this->createNewTag($property,$request->new_tag);
+        $property->lookupTag($request->new_tag);
         return redirect()->route('properties.index'); 
     }
-
+/*
     private function createNewTag($property,$tag_name){
+    
         if (! empty($tag_name)){
             $newTag = Tag::where(DB::raw("LOWER(name) LIKE '".mb_strtolower($tag_name)."'"))->first();
             if (! $newTag){
@@ -124,7 +125,7 @@ class PropertyController extends Controller
         }
         
     }
-    
+  */  
     
     /**
      * Remove the specified resource from storage.

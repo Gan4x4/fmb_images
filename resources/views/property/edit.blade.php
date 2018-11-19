@@ -11,8 +11,5 @@
         
     {!! Form::close() !!}
     
-   
-    
-    
 @endsection
 

@@ -5,10 +5,11 @@
         {!! Form::bsSelect('item_id','Item',$items,$item_id,['id'=>'item_id']) !!}
         
         <div id="property_block">
-            @include('feature.properties',['properties' => $properties])
+            @include('feature.properties')
         </div>
-
         
+        <a class="btn btn-primary" id="save_feature" class="btn btn-default" {{ $disable_save ? 'disabled' : ''  }} >Save</a>
+        <a class="btn" id="delete_feature" class="btn btn-default">Delete</a>
         
         Coordinates
         <div class="form-row ">
@@ -30,7 +31,6 @@
             </div>
         </div>
 
-    
         <div class="form-row">
             <div class="form-group col-md-6">
                 <div class="input-group mb-2 mr-sm-2">
@@ -51,6 +51,4 @@
         </div>
     </form>
 
-    <button id="save_feature" class="btn btn-default" {{ $disable_save ? 'disabled' : ''  }} >Save</button>
-    <button id="delete_feature" class="btn btn-default">Delete</button>
-    <button class="btn btn-default reset_coords">Reset</button>
+
