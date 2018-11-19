@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/selectize/css/selectize.default.css">
     <link rel="stylesheet" href="/selectize/css/selectize.bootstrap3.css">
     
-    
     <link rel="stylesheet" href="/tagsinput/css/tagsinput.css" type="text/css" />
    
     
@@ -94,7 +93,14 @@
             showCoords(c);
             var disableSave = isSelectionEmpty(c) || isSelectionFull(c);
             //if (can_disable_save){
-            $('#save_feature').prop('disabled',disableSave);
+            console.log(disableSave);
+            if (disableSave){
+                $('#save_feature').addClass('disabled');
+            }else{
+                $('#save_feature').removeClass('disabled');
+            }
+            
+            //$('#save_feature').prop('disabled',disableSave);
             //}
         }
         
