@@ -22,22 +22,24 @@
 
     <h2>Image list</h2>
     
-    <div class='row'>
-        <div class='col-md-1'>
-            <a href="{{route('images.create')}}" role="button" class="btn btn-default">Add</a>
+    @if ( Auth::user()->isAdmin() )
+        <div class='row'>
+            <div class='col-md-1'>
+                <a href="{{route('images.create')}}" role="button" class="btn btn-default">Add</a>
+            </div>
+            <div class='col-md-11'>
+                {!! Form::open(['route'=>'images.store','class'=>'form-inline'])  !!}
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="url" class="sr-only">URL</label>
+                        {!! Form::text('url',null,['class'=>'form-control', 'placeholder' => "URL",'size'=>70]) !!}
+                    </div>
+                 {!! Form::submit("Parse",['class'=>'btn btn-primary mb-2']) !!}
+                {!! Form::close() !!}
+
+            </div>
         </div>
-        <div class='col-md-11'>
-            {!! Form::open(['route'=>'images.store','class'=>'form-inline'])  !!}
-                <div class="form-group mx-sm-3 mb-2">
-                    <label for="url" class="sr-only">URL</label>
-                    {!! Form::text('url',null,['class'=>'form-control', 'placeholder' => "URL",'size'=>70]) !!}
-                </div>
-             {!! Form::submit("Parse",['class'=>'btn btn-primary mb-2']) !!}
-            {!! Form::close() !!}
-            
-        </div>
-    </div>
-    <hr>
+        <hr>
+    @endif
     
     
     <div class="container-fluid ">
@@ -48,7 +50,18 @@
             @foreach($images as $image) 
                 <div class="col-md-3 d-flex"  >
                     <div class="card card-body "  >
-                        <a href='{{ route("images.edit",$image->id) }}'>
+                        
+                        @php
+                            if ( Auth::user()->isAdmin() || $image->user){
+                            
+                                $route = route( "images.edit",$image->id);
+                            }else{
+                                $route = route( "images.show",$image->id);
+                            }
+                        
+                        @endphp
+                        
+                        <a href='{{ $route }}'>
                             <img class="card-img-top" src="{{ $image->getThumbUrl() }}" alt="Card image cap">
                         </a>
                         <div class="card-body">
@@ -62,15 +75,31 @@
                                 {{ $item }} : 
                                 {{ implode(", ",$props) }}
                                 <br>
-                                
                             @endforeach
+                            
+                            
                             <hr>
-                            @if ( Auth::user()->isAdmin() )
+                            @if ( Auth::user()->isAdmin() && $image->user)
                                 {{ $image->user->name }}
+                                
+                            @endif   
+                                
+                            @if( Auth::check() && ! $image->user)
+                                {!! Form::open(['route' => ['images.take',$image->id],'method'=>'post']) !!}
+                                    {!! Form::submit('Take it') !!}
+                                {!! Form::close() !!}
+                                
                             @endif
+                            
+                            
                             @if ($image->status == 0 )
                                 <i class="fab fa-yelp"></i>
                             @endif
+                            
+                            
+                            
+                            
+                            
                            
                         </div>
                     </div>

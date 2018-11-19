@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -30,7 +31,38 @@ class User extends Authenticatable
     ];
     
     
+    public function images(){
+        return $this->hasMany('App\Image');
+    }
+    
+    public function features(){
+        return $this->hasManyThrough('App\Feature', 'App\Image');
+    }
+    
+    public function tags(){
+        return $this->hasManyThrough('App\Tag', 'App\Image');
+    }
+    
     public function isAdmin(){
         return in_array($this->role,[self::ADMIN]);
     }
+    
+    public function getStat(){
+        
+        $props = DB::table('images')
+            ->where('images.user_id',$this->id)
+            ->join('features', 'features.image_id', '=', 'images.id')
+            ->join('bindings', 'bindings.feature_id', '=', 'features.id')
+            ->select('bindings.tag_id')
+            ->where('bindings.tag_id','<>',0)
+            ->count();
+
+        return [
+            'images' => $this->images()->count(),
+            'features' => $this->features()->count(),
+            'properties' => $props
+        ];
+        
+    }
+    
 }

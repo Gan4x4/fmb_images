@@ -51,8 +51,21 @@ class Controller extends BaseController
         if ($user->isAdmin()){
             return true;
         }
-        
-        return $user->id == $object->user->id;
+        return ! $object->user || $user->id == $object->user->id;
     }
+    
+    public function owned(Owned $object){
+        $user = Auth::user();
+        if ($user->isAdmin()){
+            return true;
+        }
+        
+        if (! $object->user){
+            return false;
+        }
+        
+        return  $user->id == $object->user->id;
+    }
+    
     
 }

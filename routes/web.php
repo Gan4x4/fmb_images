@@ -13,7 +13,7 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/home', function () {
     return redirect()->route('images.index');
@@ -22,6 +22,7 @@ Route::get('/home', function () {
 Auth::routes();  // Registration inside
 
 
+Route::middleware('auth')->post('images/{id}/take', 'ImageController@take')->name('images.take');
 Route::middleware('auth')->get('images/{id}/exists', 'ImageController@alreadyExists')->name('images.exists');
 Route::middleware('auth')->resource('images', 'ImageController');
 

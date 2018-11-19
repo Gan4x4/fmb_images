@@ -15,7 +15,20 @@
                 {!! Form::bsCheckbox('subdirs','Subdirs',true) !!}
                 {!! Form::submit('Build') !!}
             {!! Form::close() !!}
+            
+        @else
+        
+            Images {{ $count['images'] }}
+            <br>
+            Features {{ $count['features'] }}
+            <br>
+            Filled properties {{ $count['properties'] }}
+        
         @endif
+        
+        
+        
+        
     </div>
 </nav>  
      

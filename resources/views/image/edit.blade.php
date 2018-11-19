@@ -59,8 +59,8 @@
         
         
         
-        {!! Form::model($image,['route' => ['images.delete',$image->id],'method'=>'delete']) !!}
-            <button onClick="if (confirm('Delete image?')) submit(); )"></button>
+        {!! Form::open(['route' => ['images.destroy',$image->id],'method'=>'delete']) !!}
+            <a class="btn btn-danger" onClick="if (confirm('Delete image?')){ $(this).closest('form').submit();}; ">Delete</a>
         {!! Form::close() !!}
         
         
@@ -74,7 +74,8 @@
     <script language="Javascript">
         
         var jcrop_api;
-        
+            can_disable_save = false;
+            
         function showCoords(c)
         {
             // variables can be accessed here as
@@ -84,6 +85,31 @@
             $("#x2").val(c.x2);
             $("#y2").val(c.y2);
         };
+        
+        function onSelectionChange(c){
+            showCoords(c);
+            var disableSave = isSelectionEmpty(c) || isSelectionFull(c);
+            //if (can_disable_save){
+            $('#save_feature').prop('disabled',disableSave);
+            //}
+        }
+        
+        
+        function resetSelection(){
+            jcrop_api.release();
+            onSelectionChange({x:0,y:0,x2:0,y2:0});
+        }
+        
+        function isSelectionEmpty(c){
+            return c.x >= c.x2 || c.y >= c.y2;
+        }
+        
+        function isSelectionFull(c){
+            return $("#x1").attr('min') == c.x &&
+                   $("#y1").attr('min') == c.y && 
+                   $("#x2").attr('max') == c.x2 &&
+                   $("#y2").attr('max') == c.y2;
+        }
         
         function updateSelection(){
             var $form = $('#feature_form');
@@ -101,6 +127,7 @@
                 $.get( "/api/items/"+itemId+"/properties",{ feature_id : featureId }, function( data ) {
                     $( "#property_block" ).html( data );
                     $('.make_selectized').selectize();
+                    resetSelection();
                 });
         };
         
@@ -108,10 +135,10 @@
             $( "#feature_block" ).html( data );
             $('#item_id').on('change',itemOnChangeHandler);
             $('#save_feature').on('click',saveFeature);
+            //can_disable_save = $('#save_feature').prop('disable');
+            //console.log(can_disable_save);
             $('#delete_feature').on('click',deleteFeature);
-            $(".reset_coords").on('click',function(){
-                jcrop_api.release();
-            }); 
+            $(".reset_coords").on('click',resetSelection); 
             $('.coordinate').on('input',updateSelection);
             $('.make_selectized').selectize();
             updateSelection();
@@ -186,8 +213,8 @@
             setupFeatureList()
             
             $('#image').Jcrop({
-                    onSelect: showCoords,
-                    onChange: showCoords,
+                    onSelect: onSelectionChange,
+                    onChange: onSelectionChange,
                 },function(){
                     jcrop_api = this;
             });

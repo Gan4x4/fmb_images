@@ -17,8 +17,13 @@ class FeatureController extends Controller
     public function index($imageId)
     {
         $image = Image::findOrFail($imageId);
+        $features = $image->features;
+        $features = $features->sort(function($a,$b ){
+            return strcmp($a->getName(),$b->getName());
+        });
+        
         return view('feature.index',[
-            'features' => $image->features
+            'features' => $features
         ]);
     }
 
@@ -34,13 +39,14 @@ class FeatureController extends Controller
         $feature->image_id = $image->id;
         $items = Item::all();
         $item = $image->getPrposedItem();
-                
+               //dump($item->isFullImage(). "-".$item->name ); 
         return view('feature.edit')->with([
                     'feature' => $feature,
                     'items' => $items,
                     'item_id' => $item->id,
                     'properties' => $item->properties,
-                    'image' => $image
+                    'image' => $image,
+                    'disable_save' => ! $item->isFullImage()
                 ]);
     }
 
@@ -88,7 +94,8 @@ class FeatureController extends Controller
                     'item_id' => $item->id,
                     'items' => Item::all(),
                     'properties' => $feature->properties,
-                    'image' => $feature->image
+                    'image' => $feature->image,
+                    'disable_save' => false
                 ]);
     }
 

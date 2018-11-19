@@ -14,7 +14,7 @@ class AddExtraFieldsToImagesTable extends Migration
     public function up()
     {
         Schema::table('images', function (Blueprint $table) {
-            $table->integer('user_id')->nullable(false)->default(0);
+            $table->integer('user_id')->nullable(true)->default(null);
             $table->integer('source_id')->nullable(true)->default(null);
             $table->integer('status')->nullable(true)->default(null);
             

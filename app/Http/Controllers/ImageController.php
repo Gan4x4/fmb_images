@@ -21,21 +21,24 @@ class ImageController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $images = Image::orderBy('updated_at',"DESC");
-        if (! $user->isAdmin()){
-            $images->where('user_id',$user->id);
-        }
+        $images = Image::orderBy('status', "ASC")
+            ->orderBy('updated_at', "DESC");
         
         if ($request->has('new')){
-            $images->whereNull('status');
+            $images->whereNull('user_id');
             $active_tab = 1;
         }
         else{
             $active_tab = 0;
+            if ($user->isAdmin()){
+                $images->whereNotNull('user_id');
+            }else{
+                $images->where('user_id',$user->id);
+            }    
         }
         
         $tabs = [
-            route('images.index') => 'All',
+            route('images.index') => 'Labeled',
             route('images.index',['new' => true]) => 'New',
         ];
         
@@ -43,10 +46,14 @@ class ImageController extends Controller
             'images'=>$images->paginate(self::ITEMS_PER_PAGE),
             'items'=>Item::all(),
             'tabs' => $tabs,
-            'active_tab' => $active_tab
+            'active_tab' => $active_tab,
+            'count' => $user->getStat()
             
         ]);
     }
+    
+    
+    
 
     /**
      * Show the form for creating a new resource.
@@ -67,7 +74,8 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $image = new Image();
-        $image->user_id = Auth::user()->id;
+        //$image->user_id = 0; // New images don't has owner
+        //Auth::user()->id;
         
         if ($request->url){
             // TODO select parser
@@ -110,7 +118,13 @@ class ImageController extends Controller
      */
     public function show($id)
     {
-        return redirect()->route('images.edit',$id);
+        $image = Image::find($id);
+        
+        return view('image.show')->with([
+            'image' => $image,
+            'link' => $this->hasAccess($image)
+        ]);
+        //return redirect()->route('images.edit',$id);
     }
 
     /**
@@ -153,9 +167,11 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
+        if (! Auth::user()->isAdmin()){
+            abort(403, 'Unauthorized action.');
+        }
         $image = Image::findOrFail($id);
-        $this->checkAccess($image);
-        //$image->delete();
+        $image->delete();
         return redirect()->route('images.index');
     }
     
@@ -177,5 +193,16 @@ class ImageController extends Controller
         return response()->json($result);
     }
    
+    
+    public function take($id){
+        $image = Image::findOrFail($id);
+        $user = Auth::user();
+        
+        $image->user_id = $user->id;
+        $image->save();
+        
+         
+        return redirect()->route('images.edit',$image->id);
+    }
     
 }

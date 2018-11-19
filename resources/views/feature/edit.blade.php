@@ -8,6 +8,8 @@
             @include('feature.properties',['properties' => $properties])
         </div>
 
+        
+        
         Coordinates
         <div class="form-row ">
             <div class="form-group col-md-6">
@@ -43,12 +45,12 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text">y2</div>
                     </div>
-                    <input type="number"  name="y2" class='coordinate form-control' id="y2" min="0" max="{{ $image->width - 1 }}"  value="{{ $feature->y2 ? $feature->y2 : $image->height - 1  }}" >
+                    <input type="number"  name="y2" class='coordinate form-control' id="y2" min="0" max="{{ $image->height - 1 }}"  value="{{ $feature->y2 ? $feature->y2 : $image->height - 1  }}" >
                 </div>
             </div>
         </div>
     </form>
 
-    <button id="save_feature" class="btn btn-default">Save</button>
+    <button id="save_feature" class="btn btn-default" {{ $disable_save ? 'disabled' : ''  }} >Save</button>
     <button id="delete_feature" class="btn btn-default">Delete</button>
     <button class="btn btn-default reset_coords">Reset</button>

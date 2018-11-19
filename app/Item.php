@@ -60,4 +60,8 @@ class Item extends Model
         }
     }
     
+    public function isFullImage(){
+        return $this->name == 'Bike';
+    }
+    
 }
