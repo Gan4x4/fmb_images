@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Item extends Model
 {
@@ -62,6 +63,29 @@ class Item extends Model
     
     public function isFullImage(){
         return $this->name == 'Bike';
+    }
+    
+    public function count(){
+        return DB::table('bindings')
+            ->where('item_id',$this->id)
+            ->distinct('feature_id')
+            ->count('feature_id');
+    }
+    
+    public function canBeCopied(){
+        return $this->name != 'Label';
+    }
+    
+    public function getPrefilledProperties($image){
+        if (! $image){
+            return false;
+        }
+        $properties = $this->properties;
+        foreach($properties as $property){
+            $property->setEstimatedTag($image,$this);
+        }
+        return $properties;
+        
     }
     
 }

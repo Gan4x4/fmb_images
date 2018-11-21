@@ -7,6 +7,7 @@ use App\Item;
 use App\Property;
 use Illuminate\Support\Facades\Storage;
 use App\Dataset;
+use App\Image;
 
 class ItemController extends Controller
 {
@@ -152,18 +153,11 @@ class ItemController extends Controller
     
     public function properties(Request $request,$itemId){
         $item = Item::findOrFail($itemId);
-        $properties = $item->properties;
-        //dump($properties);
-        $featureId = $request->feature_id;
-        
-        if ($featureId){
-            foreach($properties as $property){
-                $property->setTagForFeature($featureId,$itemId);
-            }        
-        }
-        
+        $image = Image::find($request->image_id);
+        $properties = $item->getPrefilledProperties($image);
         return view('feature.properties',[
-            'properties' => $properties
+            'properties' => $properties,
+                'image' =>$image,
             ]);
     }
     

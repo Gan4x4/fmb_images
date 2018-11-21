@@ -10,12 +10,8 @@ class Property extends Model
 {
     //protected $guarded = ['id','created_at','updated_at'];
     protected $fillable = ['name','description'];
-    
-    /*
-    public static function getModel(){
-        return Property::where('name','Model')->first();
-    }
-    */
+    protected $estimated_tag_id = null;
+    public $estimation_source = null;
     
     public function items(){
         return $this->belongsToMany('App\Item');
@@ -26,11 +22,23 @@ class Property extends Model
     }
     
     public function tagId(){
-        if ($this->pivot){
+        if ($this->pivot && $this->pivot->tag_id){
             return $this->pivot->tag_id;
+        }
+        if ($this->estimated_tag_id){
+            return $this->estimated_tag_id;
         }
         return null;
     }
+    
+    private function getItemId(){
+        if ($this->pivot){
+            return $this->pivot->item_id;
+        }
+        return null;
+    }
+    
+    
     
     public function getTag(){
         if ($this->tagId()){
@@ -46,7 +54,7 @@ class Property extends Model
         }
         return null;
     }
-    
+    /*
     public function setTagForFeature($featureId,$itemId){
          $line =  DB::table('bindings')->
                 where('feature_id', $featureId)->
@@ -54,9 +62,41 @@ class Property extends Model
                 where('property_id', $this->id)->first();
          
         if ($line ){
-            $this->tag = Tag::findOrFail($line->tag_id);
+            //$this->pivot->tag_id = Tag::findOrFail($line->tag_id);
+            return true;
         }
+        return false;
     }
+    */
+    
+    /* If filled properties not exists
+    * try find another properties belonged to this image
+    * or it's siblings and copy its/ value 
+    */
+    public function setEstimatedTag($image,$item){
+        if ($this->tagId()){
+            // Tag already set
+            return;
+        }
+        $images = $image->getSiblings();
+        $images->add($image);
+        foreach($images as $image){
+            foreach($image->features as $f){
+                $f_item = $f->getItem();
+                if ($f_item && $f_item->canBeCopied()){
+                    foreach($f->properties as $p){
+                        if ( $p->id == $this->id && $f_item->id == $item->id && $p->tagId()){
+                            $this->estimated_tag_id = $p->tagId();
+                            $this->estimation_source = "From image #".$image->id.", ".$f_item->name;
+                            return true;
+                        } 
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
     
     // Override
     public function delete(){
@@ -92,5 +132,12 @@ class Property extends Model
         return $tag;
     }
     
+    
+    public function count(){
+        return DB::table('bindings')
+            ->where('property_id',$this->id)
+            ->distinct('feature_id')
+            ->count('feature_id');
+    }
     
 }

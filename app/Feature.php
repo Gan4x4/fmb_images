@@ -10,7 +10,7 @@ class Feature extends Model
     protected $fillable = ['image_id','x1','y1','x2','y2','description'];
 
     public function properties(){
-        return $this->belongsToMany('App\Property','bindings','feature_id','property_id')->withPivot('item_id', 'tag_id');;
+        return $this->belongsToMany('App\Property','bindings','feature_id','property_id')->withPivot('item_id', 'tag_id','feature_id');
     }
     
     protected function items(){

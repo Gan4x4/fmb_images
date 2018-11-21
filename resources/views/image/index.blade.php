@@ -96,6 +96,10 @@
                                 <i class="fab fa-yelp"></i>
                             @endif
                             
+                            @if ($image->getSiblings()->count() )
+                                <i class="fas fa-link"></i> {{ $image->getSiblings()->count() }}
+                            @endif
+                            
                             
                             
                             

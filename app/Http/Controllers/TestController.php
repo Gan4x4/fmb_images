@@ -10,7 +10,8 @@ class TestController extends Controller
 
     public function index()
     {
-        $parser = new Avito("https://www.avito.ru/moskva/velosipedy/velosiped_stels_navigator_660_md_27_5_v020_2018_1_1544486842");
+        $parser = Avito::createByUrl("https://www.avito.ru/moskva/velosipedy/trek_remedy_27.5_2015_1410772984");
+        dump($parser->getAllImages());
     }
 
     

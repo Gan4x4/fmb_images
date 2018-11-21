@@ -52,12 +52,35 @@
     </div>
     
     <div class="container-fluid">
-       <img class="img-responsive" src='{{ $image->getUrl() }}' id='image'>
+       <div class="row">
+           <div class="col-md-12">
+                <img class="img-responsive" src='{{ $image->getUrl() }}' id='image'>
+            </div>
+        </div>
+        <h4>Binded images</h4>
+        <div class="row">
+                @foreach($image->getSiblings() as $img)
+
+                     <div id="image_card_{{ $img->id }}" class="card" style="width:230px">
+                         <a href="{{ route('images.edit',[$img->id]) }}"><img class="card-img-top" src='{{ $img->getThumbUrl() }}' id='image'></a>
+                         <div class="card-body">
+                             
+                            <a  href="javascript:void(0)" onClick="deleteImagCardEntity({{ $img->id }})"><i class="fas fa-trash"></i></a> 
+                            <span class="small">
+                                {{ implode(', ',array_keys($img->getFeatureDescription())) }}
+                            </span>
+                         </div>
+                     </div>
+
+                 @endforeach
+        </div>
+       
     </div>        
         {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
             {!! Form::bsTextarea('description', 'Description'); !!}
             {!! Form::submit('Save') !!}
         {!! Form::close() !!}
+        
         
         
         
@@ -79,6 +102,28 @@
         var jcrop_api;
             can_disable_save = false;
             
+            
+        function deleteImagCardEntity(id){
+                if (confirm("Delete")){
+                    var path = '/images/'+id+'/ajax';
+                    $.ajax({
+                    url: path,
+                    type: 'DELETE',  
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                success: function(result) {
+                    if (result.error === 0){
+                        $("#image_card_"+id).remove();
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    }
+            
         function showCoords(c)
         {
             // variables can be accessed here as
@@ -90,6 +135,7 @@
         };
         
         function onSelectionChange(c){
+            
             showCoords(c);
             var disableSave = isSelectionEmpty(c) || isSelectionFull(c);
             //if (can_disable_save){
@@ -133,11 +179,11 @@
         function itemOnChangeHandler(){
             var featureId = $("#feature_id").val();
                 var itemId = $("#item_id").val();
-                $.get( "/api/items/"+itemId+"/properties",{ feature_id : featureId }, function( data ) {
+                $.get( "/api/items/"+itemId+"/properties",{ feature_id : featureId, image_id: {{ $image->id }}  }, function( data ) {
                     $( "#property_block" ).html( data );
                     $('.make_selectized').selectize();
                     enableTaginputs();
-                    resetSelection();
+                    //resetSelection();
                 });
         };
         
@@ -162,7 +208,7 @@
             $('.coordinate').on('input',updateSelection);
             $('.make_selectized').selectize();
             enableTaginputs();
-            updateSelection();
+            onSelectionChange(jcrop_api.tellSelect());
         }
         
         function setupFeatureList(){

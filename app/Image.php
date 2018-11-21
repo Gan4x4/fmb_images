@@ -97,5 +97,14 @@ class Image extends Model implements Owned
         parent::delete();
     }
     
+    /*
+     * Another images of the object
+     */
+    public function getSiblings(){
+        return Image::where('source_id',$this->source_id)->
+                where('id','<>',$this->id)->
+                get();
+    }
+    
     
 }

@@ -10,6 +10,7 @@ use App\Parser\Avito;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Auth;
+use App\Parser\Source;
 
 class ImageController extends Controller
 {
@@ -37,22 +38,41 @@ class ImageController extends Controller
             }    
         }
         
-        $tabs = [
-            route('images.index') => 'Labeled',
-            route('images.index',['new' => true]) => 'New',
-        ];
-        
         return view('image.index')->with([
             'images'=>$images->paginate(self::ITEMS_PER_PAGE),
             'items'=>Item::all(),
-            'tabs' => $tabs,
+            'tabs' => $this->getTabs(),
             'active_tab' => $active_tab,
-            'count' => $user->getStat()
-            
+            'count' => $user->getStat(),
         ]);
     }
     
     
+   
+    
+    private function getTabs(){
+        $user = Auth::user();
+        $images = Image::orderBy('status', "ASC")
+            ->orderBy('updated_at', "DESC");
+        
+        if ($user->isAdmin()){
+            $labeled_count = $images->whereNotNull('user_id')->count();;
+        }else{
+            $labeled_count = $images->where('user_id',$user->id)->count();
+        }
+        
+        $images = Image::orderBy('status', "ASC")
+            ->orderBy('updated_at', "DESC");
+        
+        $new_count = $images->whereNull('user_id')->count();
+        
+        $tabs = [
+            route('images.index') => "Labeled <span class='badge badge-light'>$labeled_count</span>",
+            route('images.index',['new' => true]) => "New <span class='badge badge-light'>$new_count</span>",
+        ];
+        return $tabs;
+        
+    }
     
 
     /**
@@ -79,7 +99,18 @@ class ImageController extends Controller
         
         if ($request->url){
             // TODO select parser
-            $parser = new Avito($request->url);
+            
+            $result = $this->saveAllImages($request->url);
+            if (is_object($result)){
+                // Images found
+                $image = $result;
+            }else{
+                // Result is id of duplicate image
+                 return redirect()->route('images.exists',[$result]);
+            }
+            
+            /*
+            $parser = Avito::createByUrl($request->url);
             $tmpImagePath = $parser->getImage(); 
             
             $duplicate = Image::findByHash($tmpImagePath);
@@ -90,6 +121,9 @@ class ImageController extends Controller
             $image->path = Storage::putFile('public/images', new File($tmpImagePath));
             $image->description = $parser->getDescription();
             $image->source_id = 1;
+             * 
+             */
+            
         }else{
             $request->validate([
                 'file' => 'required|image',
@@ -97,10 +131,44 @@ class ImageController extends Controller
             $image->path = $request->file->store('public/images');    
             $image->description = $request->description;
         }
-
+        //dd($image);
         $image->save();
         return redirect()->route('images.edit',$image->id);
     }
+    
+    private function saveAllImages($url){
+        $parser = Avito::createByUrl($url);
+        $tmpImagePaths = $parser->getAllImages();
+        $duplicates = [];
+        $images = [];
+
+        if (count($tmpImagePaths) > 0){
+            $source = Source::create(['link'=>$url]);
+            
+            foreach($tmpImagePaths as $newImagePath){
+                $duplicate = Image::findByHash($newImagePath);
+                if ($duplicate){
+                    $duplicates[] = $duplicate->id;
+                }else{
+                    $image = new Image();
+                    $image->path = Storage::putFile('public/images', new File($newImagePath));
+                    $image->description = $parser->getDescription();
+                    $image->source_id = $source->id;
+                    $image->save();
+                    $images[] = $image;
+                }
+            }
+        }
+
+        if (empty($images) && empty($duplicates)){
+            throw new \Exception("No images saved");
+        }elseif(empty($images)){
+            return $duplicates[0];
+        }else{
+            return $images[0];
+        }
+    }
+    
     
     public function alreadyExists($id){
         $image = Image::find($id);
@@ -171,13 +239,29 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
+        $this->delete($id);
+        return redirect()->route('images.index');
+    }
+    
+    public function destroyAjax($id)
+    {
+        $result = $this->getAjaxResponse();
+        try{
+            $this->delete($id);
+        }catch( \Exception $e){
+            $result = $this->getAjaxResponse(1, $e->getMessage());
+        }
+        return response()->json($result);
+    }
+    
+    private function delete($id){
         if (! Auth::user()->isAdmin()){
             abort(403, 'Unauthorized action.');
         }
         $image = Image::findOrFail($id);
         $image->delete();
-        return redirect()->route('images.index');
     }
+    
     
     public function deleteFeature($imageId,$featureId)
     {
@@ -203,6 +287,14 @@ class ImageController extends Controller
         $user = Auth::user();
         
         $image->user_id = $user->id;
+        
+        foreach($image->getSiblings() as $s){
+            if (! $s->user_id){
+                $s->user_id = $user->id;
+                $s->save();
+            }
+        }
+        
         $image->save();
         
          

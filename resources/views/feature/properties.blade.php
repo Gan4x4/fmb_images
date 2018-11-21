@@ -9,7 +9,9 @@
 
 @endphp
 
-
+@if( isset($info))
+    <p class="small">{{ $info }}</p>
+@endif
 @foreach($selectable as $p)
     @php
         $tagArray = App\Http\Controllers\Controller::collection2select($p->tags);
@@ -20,8 +22,16 @@
         }else{
             $attr = [];
         }
+        
+        $title = $p->name;
+        if ($p->estimation_source){
+            $title .= ' ('.$p->estimation_source.')';
+        }
+        
     @endphp
-    {!! Form::bsSelect('property_'.$p->id,$p->name,$tagArray,$p->tagId(),$attr) !!}
+    
+   
+    {!! Form::bsSelect('property_'.$p->id,$title,$tagArray,$p->tagId(),$attr) !!}
     
 @endforeach
 
@@ -31,8 +41,12 @@
     @php
         $strings = array_values( App\Http\Controllers\Controller::collection2select($p->tags) );
         $json = json_encode($strings);
+        $title = $p->name;
+        if ($p->estimation_source){
+            $title .= ' ('.$p->estimation_source.')';
+        }
     @endphp
     
-    {!! Form::bsText('manual_property_'.$p->id,$p->name,$p->getTagName(),['class' => 'tag_input', 'data' =>$json ]) !!}
+    {!! Form::bsText('manual_property_'.$p->id,$title,$p->getTagName(),['class' => 'tag_input', 'data' =>$json ]) !!}
     
 @endforeach
