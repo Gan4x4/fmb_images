@@ -42,12 +42,15 @@
 
 @section('content')
     <div class='row' >
-        <div class='col-8-md'>
+        <div class='col-6-md m-1'>
             <h2>Edit image </h2>
         </div>
-
-        <div class='col-4-md'>
+        <div class='col-2-md m-1'>
             <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
+        </div>
+
+        <div class='col-4-md m-1'>
+            <sapn id='selection_warning' class='badge badge-warning d-none'>Invalid selection </span>
         </div>
     </div>
     
@@ -135,19 +138,16 @@
         };
         
         function onSelectionChange(c){
-            
             showCoords(c);
             var disableSave = isSelectionEmpty(c) || isSelectionFull(c);
-            //if (can_disable_save){
-            console.log(disableSave);
+            //console.log(disableSave);
             if (disableSave){
                 $('#save_feature').addClass('disabled');
+                $('#selection_warning').removeClass('d-none');
             }else{
                 $('#save_feature').removeClass('disabled');
+                $('#selection_warning').addClass('d-none');
             }
-            
-            //$('#save_feature').prop('disabled',disableSave);
-            //}
         }
         
         function resetSelection(){
@@ -183,7 +183,6 @@
                     $( "#property_block" ).html( data );
                     $('.make_selectized').selectize();
                     enableTaginputs();
-                    //resetSelection();
                 });
         };
         
@@ -208,28 +207,43 @@
             $('.coordinate').on('input',updateSelection);
             $('.make_selectized').selectize();
             enableTaginputs();
-            onSelectionChange(jcrop_api.tellSelect());
         }
         
         function setupFeatureList(){
             $('#new_feature').on('click',function () {
-                $.get( "/api/images/{{ $image->id }}/features/create/", setupFeatureBlock);                
+                $.get( "/api/images/{{ $image->id }}/features/create/", function( data ){
+                    if ( $( "#feature_block" ).html()){
+                        // Call from another feature edit
+                        setupFeatureBlock(data);
+                        resetSelection();
+                    }
+                    else{
+                        // Call from empty page
+                        setupFeatureBlock(data);
+                        onSelectionChange(jcrop_api.tellSelect());
+                    }
+                });                
             });
             
             $('.feature-edit').on('click',function () {
                 var featureId = $(this).attr('data');
-                $.get( "/api/images/{{ $image->id }}/features/"+featureId+"/edit", setupFeatureBlock);
+                $.get( "/api/images/{{ $image->id }}/features/"+featureId+"/edit", function( data ){
+                        setupFeatureBlock(data);
+                        updateSelection();
+                });
             });
+            
         }
         
         function afterSave(result) {
             if (result.error === 0){
                 // Reload features list
+                resetSelection();
                 $.get( "/api/images/{{ $image->id }}/features/", function( data ) {
                     $( "#features_list" ).html( data );
                     setupFeatureList()
                     $( "#feature_block" ).html( "" );
-                    jcrop_api.release();
+                    $('#selection_warning').addClass('d-none');
                 });
             }else{
                 alert(result.message);

@@ -103,6 +103,7 @@ class Image extends Model implements Owned
     public function getSiblings(){
         return Image::where('source_id',$this->source_id)->
                 where('id','<>',$this->id)->
+                whereNotNull('source_id')->
                 get();
     }
     

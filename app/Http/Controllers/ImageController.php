@@ -39,16 +39,13 @@ class ImageController extends Controller
         }
         
         return view('image.index')->with([
-            'images'=>$images->paginate(self::ITEMS_PER_PAGE),
+            'images'=>$images->paginate(self::ITEMS_PER_PAGE)->appends($request->all()),
             'items'=>Item::all(),
             'tabs' => $this->getTabs(),
             'active_tab' => $active_tab,
             'count' => $user->getStat(),
         ]);
     }
-    
-    
-   
     
     private function getTabs(){
         $user = Auth::user();
@@ -154,6 +151,7 @@ class ImageController extends Controller
                     $image->path = Storage::putFile('public/images', new File($newImagePath));
                     $image->description = $parser->getDescription();
                     $image->source_id = $source->id;
+                    $image->user_id = null;
                     $image->save();
                     $images[] = $image;
                 }
