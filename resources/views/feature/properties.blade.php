@@ -14,6 +14,9 @@
 @endif
 @foreach($selectable as $p)
     @php
+    
+        $jq_id = 'property_'.$p->id;
+        
         $tagArray = App\Http\Controllers\Controller::collection2select($p->tags);
         //$tagArray[0] = "---";
         $tagArray =[0=>'-'] + App\Http\Controllers\Controller::collection2select($p->tags);
@@ -28,10 +31,22 @@
             $title .= ' ('.$p->estimation_source.')';
         }
         
+
+        $hints = []; //$p->getPopularTags(5);
+        foreach($p->getPopularTags() as $t){
+            if ($p->isSearchable()){
+                $hint_js = "$('#".$jq_id."')[0].selectize.addItem('".$t->id."')"; 
+            }
+            else{
+                $hint_js = "$('#".$jq_id."').val(".$t->id.")";
+            }
+            $hints[$hint_js] = $t->name;
+        }
+        
     @endphp
     
    
-    {!! Form::bsSelect('property_'.$p->id,$title,$tagArray,$p->tagId(),$attr) !!}
+    {!! Form::bsSelectHinted($jq_id,$title,$tagArray,$p->tagId(),$hints,$attr) !!}
     
 @endforeach
 

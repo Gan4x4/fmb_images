@@ -21,6 +21,19 @@ class Property extends Model
         return $this->belongsToMany('App\Tag');
     }
     
+    public function getPopularTags($count = 5){
+        if ($this->getItemId()){
+            $item = Item::findOrFail($this->getItemId()); 
+            $query = $item->tags()->where('property_id',$this->id);
+        }else{
+            $query = $this->tags();
+        }
+            
+        $query->withCount('features')->orderBy('features_count', 'desc')->take($count);
+        return $query->get();
+        
+    }
+    
     public function tagId(){
         if ($this->pivot && $this->pivot->tag_id){
             return $this->pivot->tag_id;
@@ -37,8 +50,6 @@ class Property extends Model
         }
         return null;
     }
-    
-    
     
     public function getTag(){
         if ($this->tagId()){
@@ -136,6 +147,9 @@ class Property extends Model
     public function count(){
         return DB::table('bindings')
             ->where('property_id',$this->id)
+            ->where('item_id',$this->getItemId())
+            ->whereNotNull('tag_id')
+            ->where('tag_id','<>',0)
             ->distinct('feature_id')
             ->count('feature_id');
     }

@@ -23,6 +23,16 @@ class Item extends Model
     }
     
     
+    /*
+     * Return all tags binded to this item
+     */
+    public function tags(){
+        return $this->belongsToMany('App\Tag','bindings','item_id','tag_id')->distinct('tag_id');
+    }
+    
+    
+    
+    
     public static function getDefault(){
         return Item::whereNull('parent_id')->first();
     }
@@ -68,6 +78,8 @@ class Item extends Model
     public function count(){
         return DB::table('bindings')
             ->where('item_id',$this->id)
+            ->whereNotNull('tag_id')
+            ->where('tag_id','<>',0)
             ->distinct('feature_id')
             ->count('feature_id');
     }

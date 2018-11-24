@@ -26,4 +26,10 @@ class Tag extends Model
         parent::delete();
     }
     
+    public function features(){
+         return $this->belongsToMany('App\Feature','bindings','tag_id','feature_id');
+    }
+    
+    
+    
 }

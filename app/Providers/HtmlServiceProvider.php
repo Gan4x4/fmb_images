@@ -16,6 +16,7 @@ class HtmlServiceProvider extends ServiceProvider
     {
         Form::component('bsText', 'components.text', ['name', 'title','value'=>null,'attr'=>[]]);
         Form::component('bsSelect', 'components.select', ['name','title','values'=>[1=>'Да',0=>'Нет'],'selected'=>null,'attr'=>[]]);
+        Form::component('bsSelectHinted', 'components.select_hinted', ['name','title','values'=>[1=>'Да',0=>'Нет'],'selected'=>null,'hints'=>[],'attr'=>[]]);
         Form::component('bsColorSelect', 'components.color_select', ['name','title','values'=>[
             null => '---',
             'black' => 'Black',

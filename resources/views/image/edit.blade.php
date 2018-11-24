@@ -41,25 +41,27 @@
 @endsection
 
 @section('content')
-    <div class='row' >
-        <div class='col-6-md m-1'>
-            <h2>Edit image </h2>
-        </div>
-        <div class='col-2-md m-1'>
-            <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
-        </div>
-
-        <div class='col-4-md m-1'>
-            <sapn id='selection_warning' class='badge badge-warning d-none'>Invalid selection </span>
-        </div>
-    </div>
-    
     <div class="container-fluid">
+        <div class='row' >
+            <div class='col-6-md m-1'>
+                <h2>Edit image </h2>
+            </div>
+            <div class='col-2-md m-1'>
+                <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
+            </div>
+
+            <div class='col-4-md m-1'>
+                <sapn id='selection_warning' class='badge badge-warning d-none'>Invalid selection </span>
+            </div>
+        </div>
+    
+    
        <div class="row">
            <div class="col-md-12">
                 <img class="img-responsive" src='{{ $image->getUrl() }}' id='image'>
             </div>
         </div>
+        
         <h4>Binded images</h4>
         <div class="row">
                 @foreach($image->getSiblings() as $img)
@@ -78,20 +80,17 @@
                  @endforeach
         </div>
        
-    </div>        
+    
         {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
             {!! Form::bsTextarea('description', 'Description'); !!}
             {!! Form::submit('Save') !!}
         {!! Form::close() !!}
         
-        
-        
-        
         {!! Form::open(['route' => ['images.destroy',$image->id],'method'=>'delete']) !!}
             <a class="btn btn-danger" onClick="if (confirm('Delete image?')){ $(this).closest('form').submit();}; ">Delete</a>
         {!! Form::close() !!}
         
-        
+    </div>            
     
 @endsection
 
