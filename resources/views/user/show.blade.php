@@ -13,7 +13,7 @@
 @section('content')
     <div class="container-fluid ">
         
-        <h2>{{ $user->name}}'s image list</h2>
+        <h2>{{ $user->name }}'s image list</h2>
 
         @include('image.list')
         

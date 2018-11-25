@@ -230,16 +230,17 @@
             $('.feature-add').on('click',function () {
                 var  item_id = $(this).attr('data');
                 $.get( "/api/images/{{ $image->id }}/features/create/", {item_id : item_id},function( data ){
-                    if ( $( "#feature_block" ).html()){
+                    //console.log($( "#feature_block" ).html());
+                    //if ( $( "#feature_block" ).html()){
                         // Call from another feature edit
-                        setupFeatureBlock(data);
-                        resetSelection();
-                    }
-                    else{
+                    //    setupFeatureBlock(data);
+                    //    resetSelection();
+                    //}
+                    //else{
                         // Call from empty page
                         setupFeatureBlock(data);
                         onSelectionChange(jcrop_api.tellSelect());
-                    }
+                    //}
                 });                
             });
             
