@@ -37,13 +37,7 @@
         
         {{ Html::bsTabs($tabs,$active_tab) }}
         
-         @include('image.list')
-        <hr>
-        <div class='row '>
-            <div class='col-lg-4 offset-lg-4  d-flex' >
-            {{ $images->links() }}
-            </div>
-        </div>
+        @include('image.list')
 
     </div>    
         
