@@ -55,7 +55,8 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $images = $user->images();
         return view('user.show')->with([
-            'images'=>$images->paginate(self::ITEMS_PER_PAGE)->appends($request->all()),
+            'user' => $user,
+            'images' => $images->paginate(self::ITEMS_PER_PAGE)->appends($request->all()),
             'count' => $user->getStat(),
         ]);
         
