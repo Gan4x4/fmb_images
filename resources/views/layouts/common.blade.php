@@ -23,7 +23,17 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css">
         
         <!-- Custom css -->
+        
+        <style>
+            .card-img-top {
+                width: 100%;
+                height: 15vw;
+                object-fit: cover;
+            }        
+        </style>
+        
         @yield('page-css')
+        
     </head>
     <body>
         <div id='app'> <!-- Start vue app block -->
