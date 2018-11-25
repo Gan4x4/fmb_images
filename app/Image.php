@@ -26,6 +26,8 @@ class Image extends Model implements Owned
         return $this->HasMany('App\Feature');
     }
     
+    
+    
     public function user(){
         return $this->BelongsTo('App\User');
     }
@@ -68,6 +70,18 @@ class Image extends Model implements Owned
             }
         }
         return $items->first(); 
+    }
+    
+    
+    public function hasItem($item_id){
+        $features = $this->features;
+        foreach($features as $feature){
+            $item = $feature->getItem();
+            if ($item && $item->id == $item_id){
+                return true;
+            }
+        }
+        return false;
     }
     
     // Override

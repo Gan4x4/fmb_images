@@ -8,9 +8,13 @@
     @endphp
     
     @if (! empty($hints))
-        @foreach($hints as $script => $h)
-            <a href="javascript:void(0)" class='small' onClick="{{ $script }}">{{ $h }}</a>,
-        @endforeach
+        @php 
+            $output = [];
+            foreach($hints as $script => $h){
+                $out[] = '<a href="javascript:void(0)" class="small" onClick="'.$script.'">'.$h.'</a>';
+            }
+        @endphp
+        {!! implode(',',$out) !!}
     @endif
     {!! Form::select($name,$values,$selected,App\Helper\Utils::mergeHtmlAttr(['class'=>'form-control','id'=>$name],$attr)); !!}
     

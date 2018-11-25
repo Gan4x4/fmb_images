@@ -42,9 +42,26 @@
 
 @section('content')
     <div class="container-fluid">
+        <h2>Edit image </h2>
         <div class='row' >
+            
+
             <div class='col-6-md m-1'>
-                <h2>Edit image </h2>
+                Click to add: 
+                @php
+                    $primary = 'btn-primary';
+                @endphp
+                @foreach($items as $item)
+                    @php
+                    
+                        if (! $image->hasItem($item->id) ){
+                            $new_item_class = $primary; 
+                            $primary = '';
+                        }
+                         $new_item_class = '';
+                    @endphp
+                    <a href='javascript:void(0)' data='{{ $item->id }}' class='btn  {{ $new_item_class }} feature-add  '>{{ $item->name }}</a>
+                @endforeach
             </div>
             <div class='col-2-md m-1'>
                 <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
@@ -174,7 +191,7 @@
                      $form.find('#y2').val()
                 ]);
         }
-        
+        /*
         function itemOnChangeHandler(){
             var featureId = $("#feature_id").val();
                 var itemId = $("#item_id").val();
@@ -184,7 +201,7 @@
                     enableTaginputs();
                 });
         };
-        
+        */
         
         function enableTaginputs(){
             $(".tag_input").each(function(i,val){
@@ -197,7 +214,7 @@
         
         function setupFeatureBlock(data){
             $( "#feature_block" ).html( data );
-            $('#item_id').on('change',itemOnChangeHandler);
+            //$('#item_id').on('change',itemOnChangeHandler);
             $('#save_feature').on('click',saveFeature);
             //can_disable_save = $('#save_feature').prop('disable');
             //console.log(can_disable_save);
@@ -208,6 +225,34 @@
             enableTaginputs();
         }
         
+        
+        function setupFeatureList(){
+            $('.feature-add').on('click',function () {
+                var  item_id = $(this).attr('data');
+                $.get( "/api/images/{{ $image->id }}/features/create/", {item_id : item_id},function( data ){
+                    if ( $( "#feature_block" ).html()){
+                        // Call from another feature edit
+                        setupFeatureBlock(data);
+                        resetSelection();
+                    }
+                    else{
+                        // Call from empty page
+                        setupFeatureBlock(data);
+                        onSelectionChange(jcrop_api.tellSelect());
+                    }
+                });                
+            });
+            
+            $('.feature-edit').on('click',function () {
+                var featureId = $(this).attr('data');
+                $.get( "/api/images/{{ $image->id }}/features/"+featureId+"/edit", function( data ){
+                        setupFeatureBlock(data);
+                        updateSelection();
+                });
+            });
+            
+        }
+        /*
         function setupFeatureList(){
             $('#new_feature').on('click',function () {
                 $.get( "/api/images/{{ $image->id }}/features/create/", function( data ){
@@ -233,7 +278,7 @@
             });
             
         }
-        
+        */
         function afterSave(result) {
             if (result.error === 0){
                 // Reload features list

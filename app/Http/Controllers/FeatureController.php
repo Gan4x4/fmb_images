@@ -23,8 +23,11 @@ class FeatureController extends Controller
             return strcmp($a->getName(),$b->getName());
         });
         
+        //$items = Item::sortBy('name')->get();
+        
         return view('feature.index',[
-            'features' => $features
+            'features' => $features,
+            //'items' => $items
         ]);
     }
 
@@ -33,19 +36,25 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($imageId)
+    public function create(Request $request, $imageId)
     {
         $image= Image::findOrFail($imageId);
         $feature = new Feature();
         $feature->image_id = $image->id;
         $items = Item::all();
-        $item = $image->getPrposedItem();
+        if ($request->item_id){
+            $item = Item::findOrFail($request->item_id);
+        }
+        else{
+            $item = $image->getPrposedItem();
+        }
+        
         $properties = $item->getPrefilledProperties($image);//$item->properties;
 
         return view('feature.edit')->with([
                     'feature' => $feature,
                     'items' => $items,
-                    'item_id' => $item->id,
+                    'item' => $item,
                     'properties' => $properties,
                     'image' => $image,
                     'disable_save' => ! $item->isFullImage()
@@ -93,7 +102,7 @@ class FeatureController extends Controller
         $item = $feature->getItem();
         return view('feature.edit')->with([
                     'feature' => $feature,
-                    'item_id' => $item->id,
+                    'item' => $item,
                     'items' => Item::all(),
                     'properties' => $feature->properties,
                     'image' => $feature->image,

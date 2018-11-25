@@ -1,8 +1,10 @@
 
     <form id="feature_form">
         {!! Form::hidden('feature_id',$feature->id,['id'=>'feature_id']) !!}
-
-        {!! Form::bsSelect('item_id','Item',$items,$item_id,['id'=>'item_id']) !!}
+        {!! Form::hidden('item_id',$item->id,['id'=>'item_id']) !!}
+        
+        <h5>{{ $item->name }}</h5>
+       
         
         <div id="property_block">
             @include('feature.properties')
