@@ -18,19 +18,19 @@ class FeatureController extends Controller
     public function index($imageId)
     {
         $image = Image::findOrFail($imageId);
-        $features = $image->features;
-        $features = $features->sort(function($a,$b ){
-            return strcmp($a->getName(),$b->getName());
-        });
-        
-        //$items = Item::sortBy('name')->get();
-        
+        $features = self::getSortedFeatures($image);
         return view('feature.index',[
             'features' => $features,
             //'items' => $items
         ]);
     }
-
+    
+    public static function getSortedFeatures($image){
+        return $image->features->sort(function($a,$b ){
+            return strcmp($a->getName(),$b->getName()) > 0;
+        });
+    }
+    
     /**
      * Show the form for creating a new resource.
      *

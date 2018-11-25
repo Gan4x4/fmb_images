@@ -29,7 +29,7 @@
                   </a>
             </h6>
             <div id="features_list">
-                @include('feature.index',['features' => $image->features])
+                @include('feature.index',['features' => $features])
             </div>
             
             <div id="feature_block">
@@ -286,7 +286,7 @@
                 resetSelection();
                 $.get( "/api/images/{{ $image->id }}/features/", function( data ) {
                     $( "#features_list" ).html( data );
-                    setupFeatureList()
+                    setupFeatureList();
                     $( "#feature_block" ).html( "" );
                     $('#selection_warning').addClass('d-none');
                 });

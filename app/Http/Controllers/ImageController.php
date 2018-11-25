@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Auth;
 use App\Parser\Source;
+use App\Http\Controllers\FeatureController;
 
 class ImageController extends Controller
 {
@@ -205,11 +206,14 @@ class ImageController extends Controller
         $this->checkAccess($image);
         
         //$model = Property::getModel();
-        
+        $features = $image->features->sort(function($a,$b ){
+            return strcmp($a->getName(),$b->getName());
+        });
         
         return view('image.edit')->with([
             'image' => $image,
-            'items' => Item::all(),
+            'items' => Item::orderBy('name')->get(),
+            'features' => FeatureController::getSortedFeatures($image)
         ]);
     }
 
