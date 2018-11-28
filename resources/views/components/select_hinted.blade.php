@@ -14,7 +14,7 @@
                 $out[] = '<a href="javascript:void(0)" class="small" onClick="'.$script.'">'.$h.'</a>';
             }
         @endphp
-        {!! implode(',',$out) !!}
+        {!! implode(', ',$out) !!}
     @endif
     {!! Form::select($name,$values,$selected,App\Helper\Utils::mergeHtmlAttr(['class'=>'form-control','id'=>$name],$attr)); !!}
     

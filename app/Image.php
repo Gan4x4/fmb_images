@@ -48,7 +48,12 @@ class Image extends Model implements Owned
     public function getFeatureDescription(){
         $out = [];
         foreach($this->features as $feature){
-            $out[$feature->getItem()->name] = $feature->getDescription();
+            $item = $feature->getItem();
+            if ($item){
+                $out[$feature->getItem()->name] = $feature->getDescription();
+            }else{
+                $out[] = "Invalid feature #".$feature->id;
+            }
         }
         return $out;
     }
