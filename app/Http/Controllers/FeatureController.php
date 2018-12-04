@@ -100,6 +100,7 @@ class FeatureController extends Controller
     {
         $feature = Feature::findOrFail($featureId);
         $item = $feature->getItem();
+        
         return view('feature.edit')->with([
                     'feature' => $feature,
                     'item' => $item,
@@ -162,7 +163,11 @@ class FeatureController extends Controller
                 $tag = $property->lookupTag($val);
                 if ($tag){
                     $out[$manualId] = $tag->id;    
+                }else{
+                    // Elsewere property not saved
+                    $out[$manualId] = 0;
                 }
+                    
             }
         }
         return $out;

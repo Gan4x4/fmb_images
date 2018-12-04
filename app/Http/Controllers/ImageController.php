@@ -257,10 +257,10 @@ class ImageController extends Controller
     }
     
     private function delete($id){
-        if (! Auth::user()->isAdmin()){
+        $image = Image::findOrFail($id);
+        if (! $this->owned($image) ){
             abort(403, 'Unauthorized action.');
         }
-        $image = Image::findOrFail($id);
         $image->delete();
     }
     

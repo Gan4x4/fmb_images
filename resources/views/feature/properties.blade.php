@@ -2,7 +2,7 @@
      $selectable = $properties->filter( function($property,$key){
         return ! $property->isManualInput();
       });
-
+      
       $manual_input = $properties->filter( function($property,$key){
         return $property->isManualInput();
       });

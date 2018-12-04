@@ -30,9 +30,6 @@ class Item extends Model
         return $this->belongsToMany('App\Tag','bindings','item_id','tag_id')->distinct('tag_id');
     }
     
-    
-    
-    
     public static function getDefault(){
         return Item::whereNull('parent_id')->first();
     }

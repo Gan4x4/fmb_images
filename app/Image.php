@@ -52,7 +52,7 @@ class Image extends Model implements Owned
             if ($item){
                 $out[$feature->getItem()->name] = $feature->getDescription();
             }else{
-                $out[] = "Invalid feature #".$feature->id;
+                $out[] = ["Invalid feature #".$feature->id];
             }
         }
         return $out;
