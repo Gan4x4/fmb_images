@@ -18,7 +18,7 @@
         $jq_id = 'property_'.$p->id;
         
         $tagArray = App\Http\Controllers\Controller::collection2select($p->tags);
-        //$tagArray[0] = "---";
+
         $tagArray =[0=>'-'] + App\Http\Controllers\Controller::collection2select($p->tags);
         if ( $p->isSearchable() ){
             $attr = ['class'=>'make_selectized'];
@@ -32,7 +32,7 @@
         }
         
 
-        $hints = []; //$p->getPopularTags(5);
+        $hints = []; 
         foreach($p->getPopularTags() as $t){
             if ($p->isSearchable()){
                 $hint_js = "$('#".$jq_id."')[0].selectize.addItem('".$t->id."')"; 

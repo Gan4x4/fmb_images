@@ -105,7 +105,7 @@ class FeatureController extends Controller
                     'feature' => $feature,
                     'item' => $item,
                     'items' => Item::all(),
-                    'properties' => $feature->properties,
+                    'properties' => $feature->getFilledProperties(),
                     'image' => $feature->image,
                     'disable_save' => false
                 ]);

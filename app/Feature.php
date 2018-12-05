@@ -29,7 +29,39 @@ class Feature extends Model
         $full_name  = $name.".jpeg";
         $image->save($dir.DIRECTORY_SEPARATOR.$full_name);
         return $full_name;
-       
+    }
+    
+    
+    /*
+     * Get all item props ant replace not empty 
+     * by filled from bindings page
+     * 
+     */
+    public function getFilledProperties(){
+        $item = $this->getItem();
+        $current = $this->properties;
+        if (! $item){
+            return $current;
+        }
+       // dump($current);
+        $out = [];
+        //dd($out);
+        $all = $item->getPrefilledProperties($this->image);
+       // dd($all);
+        foreach($all as $p){
+            
+            $filled = $current->first(function ($value, $key) use ($p){
+                return $value->id == $p->id && $value->getTag();
+            });
+            
+            if ($filled){
+                $out[] = $filled;
+            }else{
+                $out[] = $p;
+            }
+        }
+        
+        return collect($out);
     }
     
     
