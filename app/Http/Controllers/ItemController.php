@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use App\Item;
 use App\Property;
 use Illuminate\Support\Facades\Storage;
-use App\Dataset;
 use App\Image;
+use App\Dataset\ImageFolder;
+use App\Dataset\Darknet;
+
 
 class ItemController extends Controller
 {
+    const DARKNET = 1;
     /**
      * Display a listing of the resource.
      *
@@ -165,45 +168,33 @@ class ItemController extends Controller
    
     public function build(Request $request){
         
-        //dump($request->all());
-        $items = [];
-        foreach($request->items as $item_id){
-            $items[$item_id]=[];
-            $propKey = $item_id.'_propertys';
-            if ($request->has($propKey)){
-                //dump($request->$propKey);
-                foreach($request->$propKey as $prop_id){
-                    $items[$item_id][] = $prop_id;
+        $dir = 'public/features/'.uniqid("build_");
+        if ($request->type == self::DARKNET){
+            $dataset = new Darknet($request->items);
+        }else{
+        
+            $items = [];
+            foreach($request->items as $item_id){
+                $items[$item_id]=[];
+                $propKey = $item_id.'_propertys';
+                if ($request->has($propKey)){
+                    //dump($request->$propKey);
+                    foreach($request->$propKey as $prop_id){
+                        $items[$item_id][] = $prop_id;
+                    }
                 }
             }
+            $dataset = new ImageFolder($items);
+            $dataset->subdirs = $request->has('subdirs');
         }
         
-        
-        $dataset = new Dataset($items);
-        $dataset->subdirs = $request->has('subdirs');
-        $dir = 'public/features/'.uniqid("build_");
         $target = $dataset->build($dir);
-        //dump($target);
-        /*
-        Storage::makeDirectory($dir);
-        foreach($request->items as $item_id){
-            $item = Item::findOrFail($item_id);
-            $features = $item->features;
-            $item_dir = $dir.DIRECTORY_SEPARATOR.mb_strtolower($item->name);
-            Storage::makeDirectory($item_dir);
-            foreach($features as $feature){
-                $file =  $feature->extract(storage_path('app'.DIRECTORY_SEPARATOR.$item_dir),$feature->id);
-                $url = Storage::url($item_dir.DIRECTORY_SEPARATOR.$file);
-            }
-        }
-        $target = $dir.DIRECTORY_SEPARATOR.'compressed.zip';;
-        $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
-         * 
-         */
         return view('item.build')->with([
                 'zip' => Storage::url($target)
                 ]); 
         
     }
+    
+    
     
 }

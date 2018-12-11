@@ -23,6 +23,7 @@ class Item extends Model
     }
     
     
+    
     /*
      * Return all tags binded to this item
      */

@@ -3,14 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Http/Controllers/ImageController.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/edit.blade.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/feature/properties.blade.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Item.php</file>
             <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Feature.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/feature/edit.blade.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Http/Controllers/Controller.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Http/Controllers/FeatureController.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Darknet.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Image.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Http/Controllers/ItemController.php</file>
         </group>
     </open-files>
 </project-private>
