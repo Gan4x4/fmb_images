@@ -29,7 +29,9 @@
 
             </div>
         </div>
+        <a href="{{route('images.suspicious')}}">Find suspicious</a>
         <hr>
+        
     @endif
     
     

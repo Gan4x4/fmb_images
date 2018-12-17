@@ -22,6 +22,7 @@ Route::get('/home', function () {
 Auth::routes();  // Registration inside
 
 
+Route::middleware('auth.admin')->get('images/suspicious', 'ImageController@suspicious')->name('images.suspicious');
 Route::middleware('auth')->post('images/{id}/take', 'ImageController@take')->name('images.take');
 Route::middleware('auth')->get('images/{id}/exists', 'ImageController@alreadyExists')->name('images.exists');
 Route::middleware('auth')->delete('images/{id}/ajax', 'ImageController@destroyAjax')->name('images.destroy.ajax');

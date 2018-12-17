@@ -53,29 +53,17 @@ class Darknet extends Dataset{
             copy($source,$target);
             
             $features = $image->features;
-            
             $text = [];
             foreach($features as $feature){
                 $f_item = $feature->getItem();
                 if ($f_item && in_array($f_item->id,$itemIds )){
-                   // print "Yes";
-                    // add to txt file
-                    //$class_num =  
                     $class_num = $class_to_key[mb_strtolower($f_item->name)];
-                    $x = ($feature->x1 + ($feature->width / 2)) / $image->width;
-                    $y = ($feature->y1 +  ($feature->height /2 )) / $image->height;
-                    $text[] = [$class_num, $x, $y, $feature->width/$image->width, $feature->height/$image->height];
-                }else{
-                    //print "No";
+                    $coords = $this->coord2darknet($feature,$image);
+                    $text[] = array_merge([$class_num],$coords);
                 }
             }
             $text_file_name = $image->id.".txt";
-            //dump($text);
             $this->saveDescriptions(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir.DIRECTORY_SEPARATOR.$text_file_name),$text);
-            
-            // save txt file
-             
-            //$this->extractAndSaveImages($item_id);
         }
         
 
@@ -87,7 +75,22 @@ class Darknet extends Dataset{
         return $target;
 
     }
-    
+    private function coord2darknet($feature,$image){
+        
+        $x = ($feature->x1 + ($feature->width / 2)) / $image->width;
+        $y = ($feature->y1 +  ($feature->height /2 )) / $image->height;
+        $w = $feature->width/$image->width;
+        $h = $feature->height/$image->height;
+        
+        $out = [$x, $y, $w, $h];
+        
+        
+        array_walk($out, function(&$item,$key){
+            $item = number_format($item,6);
+        });
+        
+        return $out;
+    }
     
     private function divideToTranAndTest($img_files){
         

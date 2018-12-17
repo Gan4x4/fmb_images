@@ -12,6 +12,7 @@ use Illuminate\Http\File;
 use Illuminate\Support\Facades\Auth;
 use App\Parser\Source;
 use App\Http\Controllers\FeatureController;
+use Illuminate\Support\Facades\DB;
 
 class ImageController extends Controller
 {
@@ -301,6 +302,44 @@ class ImageController extends Controller
         
          
         return redirect()->route('images.edit',$image->id);
+    }
+    
+    
+    public function suspicious(){
+        $query = DB::table('images')
+            ->distinct()
+            ->join('features',function($join) {
+                $join->on('images.id', '=', 'features.image_id')
+                ->on('images.width','=','features.x2')
+                ->on('images.height','=','features.y2');
+            })
+            ->where('features.x1','=',0)
+            ->where('features.y1','=',0)
+            ->select('features.*');
+        
+        //dump($query->toSql());
+        $data = $query->get();
+        //dd($data);
+        //$array = (array) $data;
+        //foreach($data as $line){
+        //    $array[] = $line->id;
+        //}
+        //dump($array);
+        
+        //dd();
+        $features = Feature::hydrate($data->toArray());
+        //dump($features);
+        //foreach()
+        
+        return view('image.suspicious')->with([
+            'features' => $features
+        ]);
+        
+        
+        
+        
+        
+        //dump($data);
     }
     
 }

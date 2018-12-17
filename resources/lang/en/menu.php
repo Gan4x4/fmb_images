@@ -12,6 +12,8 @@
             route('properties.index') => 'Properties',
             route('tags.index' ) => 'Tags',
             route('users.index' ) => 'Users',
+            
+            
         ],
         
         'logged' => [
