@@ -310,8 +310,8 @@ class ImageController extends Controller
             ->distinct()
             ->join('features',function($join) {
                 $join->on('images.id', '=', 'features.image_id')
-                ->on('images.width','=','features.x2')
-                ->on('images.height','=','features.y2');
+                ->on('images.width','=','features.x2' )
+                ->on('images.height','=','features.y2' );
             })
             ->where('features.x1','=',0)
             ->where('features.y1','=',0)
