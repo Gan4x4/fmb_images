@@ -29,16 +29,16 @@ class Darknet extends Dataset{
     }
 
     public function build($dir) {
+
         $this->dir = $dir;
         Storage::makeDirectory($this->dir);
         $classes = $this->saveClasses(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir.DIRECTORY_SEPARATOR.'classes.names'));
+
         $class_to_key = array_flip($classes);
         // Properties ignored
-        //dump(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir));
+
         $itemIds = $this->getItemIds();
         $imageIds = $this->findImages($itemIds );
-        //dump($itemIds);
-        //dump($class_to_key);
         $img_files = [];
         $directory = 'fmb_data';
         foreach($imageIds as $image_id){

@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Item;
 use App\Property;
-use Illuminate\Support\Facades\Storage;
+
 use App\Image;
-use App\Dataset\ImageFolder;
-use App\Dataset\Darknet;
+use App\Jobs\DatasetBuilder;
+use App\Dataset\Build;
 
 
 class ItemController extends Controller
@@ -164,7 +164,7 @@ class ItemController extends Controller
             ]);
     }
     
-
+/*
    
     public function build(Request $request){
         
@@ -194,7 +194,22 @@ class ItemController extends Controller
                 ]); 
         
     }
-    
-    
+  */  
+    public function build(Request $request){
+        
+        $dir = 'public/features/'.uniqid("build_");
+
+        $build = new Build();
+        $build->params = $request->all();
+        $build->dir = $dir;
+        $build->save();
+        
+        DatasetBuilder::dispatch($build);
+       
+        return redirect()->route('builds.index');
+        
+       
+        
+    }
     
 }

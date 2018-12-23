@@ -9,7 +9,7 @@
 namespace App\Dataset;
 
 use Illuminate\Support\Facades\Storage;
-
+use App\Item;
 
 
 /**
@@ -23,15 +23,27 @@ class ImageFolder extends Dataset{
     public $subdirs = true;
     public $dir = null;
     
-    public function __construct($items) {
-       $this->items = $items;
+    public function __construct($params) {
+        
+        $tmp = [];
+        \Log::debug(var_export($params,true));
+        foreach($params['items'] as $item_id){
+            $tmp[$item_id] = [];
+            $propKey = $item_id.'_propertys';
+            if (isset($params[$propKey])){
+                foreach($params[$propKey] as $prop_id){
+                    $tmp[$item_id][] = $prop_id;
+                }
+            }
+        }
+       $this->items = $tmp;
     }
     
     
     public function build($dir){
         $this->dir = $dir;
         Storage::makeDirectory($this->dir);
-        
+        \Log::debug(var_export($this->items,true));
         foreach($this->items as $item_id => $propIds){
             $this->extractAndSaveImages($item_id);
         }

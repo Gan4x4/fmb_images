@@ -21,7 +21,6 @@ Route::get('/home', function () {
 
 Auth::routes();  // Registration inside
 
-
 Route::middleware('auth.admin')->get('images/suspicious', 'ImageController@suspicious')->name('images.suspicious');
 Route::middleware('auth')->post('images/{id}/take', 'ImageController@take')->name('images.take');
 Route::middleware('auth')->get('images/{id}/exists', 'ImageController@alreadyExists')->name('images.exists');
@@ -35,6 +34,7 @@ Route::middleware('auth.admin')->get('items/build', 'ItemController@build')->nam
 Route::middleware('auth.admin')->resource('items', 'ItemController');
 
 Route::middleware('auth.admin')->resource('users', 'UserController');
+Route::middleware('auth.admin')->resource('builds', 'BuildController');
 
 
 Route::get('test','TestController@index');
