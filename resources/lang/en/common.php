@@ -7,7 +7,12 @@
             1 => 'Generation',
             2 => 'Completed',
             3 => 'Error',
-        ] 
+        ],
+        
+        'build_type' => [
+            0 => 'FMB',
+            1 => 'Darknet'
+        ]
         
     ];
 

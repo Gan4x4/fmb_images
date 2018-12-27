@@ -10,22 +10,30 @@
 @section('content')
 
     <h2>Builds</h2>
-    <table>
+    <table class='table'>
+        <tr>
+        <th>Time</th>
+        <th>State</th>
+        <th>Description</th>
+        </tr>
         @foreach($builds as $build)
         <tr>
             <td>
                 {{ $build->updated_at }}
             </td>
-            
+            <td>
+                {{ $build->description }}
+            </td>
             <td>
                 {{ $build->getStateName() }}
             </td>
             
             <td>
-                <a href="{{ $build->getLink() }}">result</a>
+                <a href="{{ $build->getLink() }}"><i class="fas fa-download"></i></a>
             </td>
-            
-            
+            <td>
+             {!! Html::deleteLink(route('builds.destroy',$build->id)) !!}
+            </td>
         </tr>
         @endforeach
     </table>

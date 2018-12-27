@@ -22,8 +22,6 @@ class Item extends Model
         return $this->belongsToMany('App\Feature','bindings','item_id','feature_id')->distinct('feature_id');
     }
     
-    
-    
     /*
      * Return all tags binded to this item
      */

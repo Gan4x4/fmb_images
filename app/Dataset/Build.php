@@ -24,19 +24,32 @@ class Build extends Model
     // Override
     public function save(array $options = array()){
         $this->storeDatasetId();
+        $this->fillDescription();
         if ($this->state === null){
             $this->state = self::STATE_NEW;
         }
         parent::save($options);
     }
     
+    public function delete(){
+        $directory = $this->dir;
+        parent::delete();
+        Storage::deleteDirectory($directory);
+    }
+    
+    
+    protected function getTypeName(){
+        $types = __('common.build_type');
+        return $types[$this->params['type']];
+    }
+    
+    protected function fillDescription(){
+        $this->description = $this->getTypeName();
+    }
     
     protected function storeDatasetId(){
         $this->dataset_id = $this->params['type'];
     }
-    
-    
-    
     
     protected function getItems(){
         return $this->params['items'];

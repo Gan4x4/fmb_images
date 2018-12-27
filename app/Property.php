@@ -21,17 +21,31 @@ class Property extends Model
         return $this->belongsToMany('App\Tag');
     }
     
-    public function getPopularTags($count = 5){
-        if ($this->getItemId()){
-            $item = Item::findOrFail($this->getItemId()); 
-            $query = $item->tags()->where('property_id',$this->id);
-        }else{
-            $query = $this->tags();
-        }
-            
-        $query->withCount('features')->orderBy('features_count', 'desc')->take($count);
-        return $query->get();
+    public function getPopularTags($count = 5, $item = null){
+        $query = DB::table('bindings');
         
+        if (! $item){
+            $item = $this->getItemId();
+        }
+        if ($item){
+            $query->where('item_id',$item);
+        }
+        
+        $query->where('property_id',$this->id);
+        $query->whereNotNull('tag_id');
+        $query->where('tag_id','<>',0);
+        $query->select('tag_id',DB::raw('count(feature_id) as fc'));
+        $query->groupBy('tag_id');
+        $query->orderBy('fc','DESC');
+        $query->take($count);
+        $result = $query->get();
+        
+        $tagIds = [];
+        foreach($result as $line){
+            $tagIds[] = $line->tag_id;
+        }
+        
+        return Tag::whereIn('id', $tagIds)->OrderBy('name')->get();
     }
     
     public function tagId(){

@@ -227,22 +227,7 @@
         
         
         function setupFeatureList(){
-            $('.feature-add').on('click',function () {
-                var  item_id = $(this).attr('data');
-                $.get( "/api/images/{{ $image->id }}/features/create/", {item_id : item_id},function( data ){
-                    //console.log($( "#feature_block" ).html());
-                    //if ( $( "#feature_block" ).html()){
-                        // Call from another feature edit
-                    //    setupFeatureBlock(data);
-                    //    resetSelection();
-                    //}
-                    //else{
-                        // Call from empty page
-                        setupFeatureBlock(data);
-                        onSelectionChange(jcrop_api.tellSelect());
-                    //}
-                });                
-            });
+           
             
             $('.feature-edit').on('click',function () {
                 var featureId = $(this).attr('data');
@@ -335,6 +320,23 @@
         
         
         jQuery(function($) {
+            
+             $('.feature-add').on('click',function () {
+                var  item_id = $(this).attr('data');
+                $.get( "/api/images/{{ $image->id }}/features/create/", {item_id : item_id},function( data ){
+                    //console.log($( "#feature_block" ).html());
+                    //if ( $( "#feature_block" ).html()){
+                        // Call from another feature edit
+                    //    setupFeatureBlock(data);
+                    //    resetSelection();
+                    //}
+                    //else{
+                        // Call from empty page
+                        setupFeatureBlock(data);
+                        onSelectionChange(jcrop_api.tellSelect());
+                    //}
+                });                
+            });
             
             setupFeatureList()
             

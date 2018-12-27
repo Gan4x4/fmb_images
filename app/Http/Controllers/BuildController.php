@@ -84,6 +84,13 @@ class BuildController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = $this->getAjaxResponse();
+        try{
+            $build = Build::findOrFail($id);
+            $build->delete();
+        }catch( \Exception $e){
+            $result = $this->getAjaxResponse(1, $e->getMessage());
+        }
+        return response()->json($result);
     }
 }

@@ -49,7 +49,8 @@ class FeatureController extends Controller
             $item = $image->getPrposedItem();
         }
         
-        $properties = $item->getPrefilledProperties($image);//$item->properties;
+        $properties = $item->getPrefilledProperties($image);
+        //$properties = $item->properties;
 
         return view('feature.edit')->with([
                     'feature' => $feature,

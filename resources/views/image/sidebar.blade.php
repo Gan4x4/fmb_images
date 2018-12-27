@@ -13,7 +13,7 @@
                 @include('item.tree',['items'=>$items])
                 <hr>
                 {!! Form::bsCheckbox('subdirs','Subdirs',true) !!}
-                {!! Form::bsSelect('type','Type',[0=>'FMB',1=>'Darknet']) !!}
+                {!! Form::bsSelect('type','Type',__('common.build_type')) !!}
                 {!! Form::submit('Build') !!}
             {!! Form::close() !!}
             
