@@ -13,8 +13,9 @@
     <table class='table'>
         <tr>
         <th>Time</th>
-        <th>State</th>
         <th>Description</th>
+        <th>State</th>
+        
         </tr>
         @foreach($builds as $build)
         <tr>

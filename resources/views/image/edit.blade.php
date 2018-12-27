@@ -343,6 +343,7 @@
             $('#image').Jcrop({
                     onSelect: onSelectionChange,
                     onChange: onSelectionChange,
+                    trueSize: [{{ $image->width }},{{ $image->height }}]
                 },function(){
                     jcrop_api = this;
             });
