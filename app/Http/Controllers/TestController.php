@@ -20,7 +20,7 @@ class TestController extends Controller
     {
         
         //$images = Image::orderBy('id')->take(3)->get();
-        $images = Image::where('id',9)->take(3)->get();
+        $images = Image::all();
         foreach($images as $image){
             print " Image <a href='".route('images.edit',$image->id)."'>".$image->id."</a><br>";    
             $bike = null;
@@ -39,6 +39,12 @@ class TestController extends Controller
             if ($bike && $frame){
 
                 foreach($bike->properties as $bike_prop){
+                    
+                    if (! in_array($bike_prop->name,['Color','Second color'])){
+                        print "Not a color ".$bike_prop->name."<br>";
+                        continue;
+                    }
+                    
                     $frame_props = $frame->properties()->where('properties.id',$bike_prop->id)->get();
                     $frame_prop = $frame_props->first();
                     if ($bike_prop->tagId() &&  (! $frame_prop || (! $frame_prop->tagId()) ) ){
