@@ -38,3 +38,4 @@ Route::middleware('auth.admin')->resource('builds', 'BuildController');
 
 
 Route::get('test','TestController@index');
+Route::get('frame','TestController@withoutFrame');

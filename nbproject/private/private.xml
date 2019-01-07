@@ -4,14 +4,15 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/item/tree.blade.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Property.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/ImageFolder.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/config/queue.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Http/Controllers/ImageController.php</file>
             <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/ImageFolderClassifier.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Tag.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/edit.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Darknet.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/index.blade.php</file>
             <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/sidebar.blade.php</file>
             <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Build.php</file>
-            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/lang/en/common.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Http/Controllers/ItemController.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Tree.php</file>
         </group>
     </open-files>
 </project-private>
