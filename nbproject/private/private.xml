@@ -2,6 +2,16 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/item/tree.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Property.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/ImageFolder.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/config/queue.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/ImageFolderClassifier.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Tag.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/sidebar.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Build.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/lang/en/common.php</file>
+        </group>
     </open-files>
 </project-private>

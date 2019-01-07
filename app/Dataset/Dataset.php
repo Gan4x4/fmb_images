@@ -14,6 +14,8 @@ use RecursiveDirectoryIterator;
 
 abstract class Dataset {
     
+    public $test = .20;
+    
     abstract public function build($dir);
     
      // Helper 

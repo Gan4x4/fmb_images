@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Storage;
 class Build extends Model
 {
     
-    const STATE_NEW = NULL;
+    const STATE_NEW =0;
     const STATE_WORK = 1;
     const STATE_FINISH = 2;
     const STATE_ERROR = 3;
     
-    
     const DARKNET = 1;
+    const CLASSIFIER = 2;
     
      protected $casts = [
         'params' => 'array',
@@ -24,7 +24,7 @@ class Build extends Model
     // Override
     public function save(array $options = array()){
         $this->storeDatasetId();
-        $this->fillDescription();
+        
         if ($this->state === null){
             $this->state = self::STATE_NEW;
         }
@@ -65,12 +65,19 @@ class Build extends Model
             //\Log::debug(var_export($dataset,true));
             $this->file = $dataset->build($this->dir);
             $this->state = self::STATE_FINISH;
+            $this->fillDescription();
         }
         catch(\Exception $e){
             $this->description = $e->getMessage();
             $this->state = self::STATE_ERROR;
+            //\Log::debug($e->getMessage());
+            //\Log::debug($e->getMessage());
+            throw $e;
         }
-        $this->save();
+        finally{
+            $this->save();    
+        }
+        
     }
     
     
@@ -79,6 +86,10 @@ class Build extends Model
         switch ($this->params['type']) {
             case self::DARKNET:
                 $dataset = new Darknet($this->params['items']);
+                break;
+            
+            case self::CLASSIFIER:
+                $dataset = new ImageFolderClassifier($this->params);
                 break;
 
             default:
@@ -100,7 +111,10 @@ class Build extends Model
     public function getStateName(){
         $names = __('common.build_name');
         
-        return $names[$this->state];
+        if (isset($names[intval($this->state)])){
+            return $names[intval($this->state)];
+        }
+        return "Invalid state";
     }
     
 }

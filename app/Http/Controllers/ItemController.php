@@ -201,7 +201,10 @@ class ItemController extends Controller
 
         $build = new Build();
         $build->params = $request->all();
+        //dd($build->params);
         $build->dir = $dir;
+        //$build->minimalPropertyCount = intval($request->min_prop);
+        //$build->test = floatva($request->validate);
         $build->save();
         
         DatasetBuilder::dispatch($build);

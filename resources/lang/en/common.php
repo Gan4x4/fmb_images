@@ -1,6 +1,5 @@
 <?php
 
-
     return [
         'build_name' => [
             0 => 'New',
@@ -11,10 +10,10 @@
         
         'build_type' => [
             0 => 'FMB',
-            1 => 'Darknet'
+            1 => 'Darknet',
+            2 => 'Classifier'
         ]
         
     ];
-
 
 ?>

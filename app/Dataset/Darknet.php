@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 class Darknet extends Dataset{
     
     
-    public $test = .25;
+    
     protected $cfg_template = 'template/yolov3_fmb.cfg';
     
     public function __construct($items) {

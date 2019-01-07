@@ -21,6 +21,30 @@ class Property extends Model
         return $this->belongsToMany('App\Tag');
     }
     
+    public function getItemTags($item_id){
+        $query = DB::table('bindings');
+        $query->where('item_id',$item_id);
+        $query->where('property_id',$this->id);
+        $query->whereNotNull('tag_id');
+        $query->where('tag_id','<>',0);
+        $query->select('tag_id',DB::raw('count(tag_id) as count'));
+        $query->groupBy('tag_id');
+        $result = $query->get();
+        $tagIds = [];
+        $count = [];
+        foreach($result as $line){
+            $tagIds[] = $line->tag_id;
+            $count[$line->tag_id] = $line->count;
+        }
+        
+        $tags = Tag::whereIn('id', $tagIds)->OrderBy('name')->get();
+        foreach($tags as $t){
+            $t->count = $count[$t->id];
+        }
+        return $tags;
+    }
+    
+    
     public function getPopularTags($count = 5, $item = null){
         $query = DB::table('bindings');
         
