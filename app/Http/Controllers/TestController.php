@@ -15,11 +15,12 @@ class TestController extends Controller
         dump($parser->getAllImages());
     }
     
-    /*
+    
     public function bike2frame()
     {
         
-        $images = Image::orderBy('id')->take(3)->get();
+        //$images = Image::orderBy('id')->take(3)->get();
+        $images = Image::where('id',9)->take(3)->get();
         foreach($images as $image){
             print " Image <a href='".route('images.edit',$image->id)."'>".$image->id."</a><br>";    
             $bike = null;
@@ -38,21 +39,27 @@ class TestController extends Controller
             if ($bike && $frame){
 
                 foreach($bike->properties as $bike_prop){
-                    
                     $frame_props = $frame->properties()->where('properties.id',$bike_prop->id)->get();
-                    //dump($frame_props);
                     $frame_prop = $frame_props->first();
-                    if ($bike_prop->tagId() &&  (! $frame_prop || ! $frame_prop->tagId() ) ){
+                    if ($bike_prop->tagId() &&  (! $frame_prop || (! $frame_prop->tagId()) ) ){
                         
-                        $feature->properties()->detach($bike_prop->id);
+                        
                         $frame->properties()->attach($bike_prop->id,[
                                 'feature_id' => $frame->id,
                                 'tag_id' => $bike_prop->tagId(),
                                 'item_id' => $frame->getItem()->id
                             ]);
                         print "Attached prop ".$bike_prop->name." ".$bike_prop->getTagName()."<br>";
+                        $bike->properties()->detach($bike_prop->id);
                     }else{
-                       print "Bike pn ". $bike_prop->name." Frame pn ".$frame_prop->name." FP tn".$bike_prop->getTagName()."<br>"; 
+                       if ($bike_prop){
+                           print "Bike pn ". $bike_prop->name;
+                       }
+                       
+                       if ($frame_prop){
+                           print " Frame pn ".$frame_prop->name." FP tn".$frame_prop->getTagName();
+                       }
+                       print "<br>"; 
                     }
                 }
             }else{
@@ -63,9 +70,7 @@ class TestController extends Controller
         }
         
     }
-    
-     * 
-     */
+   
     public function withoutFrame()
     {
         
