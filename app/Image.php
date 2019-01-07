@@ -26,8 +26,6 @@ class Image extends Model implements Owned
         return $this->HasMany('App\Feature');
     }
     
-    
-    
     public function user(){
         return $this->BelongsTo('App\User');
     }
@@ -55,6 +53,7 @@ class Image extends Model implements Owned
                 $out[] = ["Invalid feature #".$feature->id];
             }
         }
+        ksort($out);
         return $out;
     }
     

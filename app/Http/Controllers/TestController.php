@@ -16,9 +16,13 @@ class TestController extends Controller
     }
     
     
+    /*
+     * Legacy script for move color properties from bike to frame
+     */
     public function bike2frame()
     {
-        
+        return "Blocked";
+        /*
         //$images = Image::orderBy('id')->take(3)->get();
         $images = Image::all();
         foreach($images as $image){
@@ -74,7 +78,7 @@ class TestController extends Controller
             
             print "<hr>";
         }
-        
+        */
     }
    
     public function withoutFrame()

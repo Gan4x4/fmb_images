@@ -97,15 +97,27 @@
                  @endforeach
         </div>
        
-    
-        {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
-            {!! Form::bsTextarea('description', 'Description'); !!}
-            {!! Form::submit('Save') !!}
-        {!! Form::close() !!}
+        @if ( $image->user || Auth::user()->isAdmin())
+            {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
+                {!! Form::bsTextarea('description', 'Description'); !!}
+                {!! Form::submit('Save') !!}
+            {!! Form::close() !!}
         
-        {!! Form::open(['route' => ['images.destroy',$image->id],'method'=>'delete']) !!}
-            <a class="btn btn-danger" onClick="if (confirm('Delete image?')){ $(this).closest('form').submit();}; ">Delete</a>
-        {!! Form::close() !!}
+            {!! Form::open(['route' => ['images.destroy',$image->id],'method'=>'delete']) !!}
+                <a class="btn btn-danger" onClick="if (confirm('Delete image?')){ $(this).closest('form').submit();}; ">Delete</a>
+            {!! Form::close() !!}
+        @else
+            <p>
+                {{ $image->description }}
+            </p>
+            
+        @endif
+        
+        @if( Auth::check() && ! $image->user)
+            {!! Form::open(['route' => ['images.take',$image->id],'method'=>'post']) !!}
+                {!! Form::submit('Take it',['class'=>'btn btn-primary']) !!}
+            {!! Form::close() !!}
+        @endif
         
     </div>            
     
