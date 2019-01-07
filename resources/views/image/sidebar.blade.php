@@ -15,7 +15,7 @@
                 {!! Form::bsCheckbox('subdirs','Subdirs',true) !!}
                 
                 {!! Form::bsText('min_prop','Min',10) !!}
-                {!! Form::bsText('validate','Validate %',0,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}
+                {!! Form::bsText('validate (0 .. 1)','Validate %',0.1,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}
                 {!! Form::bsSelect('type','Type',__('common.build_type')) !!}
                 {!! Form::submit('Build') !!}
             {!! Form::close() !!}
