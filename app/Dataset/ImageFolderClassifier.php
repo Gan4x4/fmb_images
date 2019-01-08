@@ -126,10 +126,9 @@ class ImageFolderClassifier extends Dataset{
                 
                 $tag = $property->getTag();
                 
-                
                 if ($tag && in_array($tag->id, $selectedTagIds)){
                     $tag_dir = $this->lookupTagDir($item,$property,$tag);
-                    $filename = self::name2file($tag->name);
+                    $filename = self::name2file($tag->name.'_'.$feature->image->id);
                     $feature->extract(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
                 }
             }

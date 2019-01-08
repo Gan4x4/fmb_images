@@ -6,7 +6,7 @@
 
 @endphp
 
-<a href="javascript:void(0)" $attributes onClick="deleteEntity('{{ $route }}','{{ $message }}')"><i class="fas fa-trash"></i></a>
+<a href="javascript:void(0)" {{ $attributes }} onClick="deleteEntity('{{ $route }}','{{ $message }}')"><i class="fas fa-trash"></i></a>
 
 
 

@@ -9,6 +9,8 @@
 
 @section('content')
 
+    {{ Html::bsTabs($menu) }}
+
     <h2>Builds</h2>
     <table class='table'>
         <tr>
@@ -30,10 +32,14 @@
             </td>
             
             <td>
-                <a href="{{ $build->getLink() }}"><i class="fas fa-download"></i></a>
+                @if( $build->getLink() )
+                    <a href="{{ $build->getLink() }}"><i class="fas fa-download"></i></a>
+                @endif
             </td>
             <td>
-             {!! Html::deleteLink(route('builds.destroy',$build->id)) !!}
+                @if( ! $build->isActive() )
+                    {!! Html::deleteLink(route('builds.destroy',$build->id)) !!}
+                @endif
             </td>
         </tr>
         @endforeach

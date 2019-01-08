@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Dataset\Build;
+use App\Item;
 
 class BuildController extends Controller
 {
+    
+    
     /**
      * Display a listing of the resource.
      *
@@ -15,21 +18,52 @@ class BuildController extends Controller
     public function index()
     {
         $builds = Build::all();
-       
+        
+        
+        
         return view('build.index')->with([
-                'builds' => $builds
+                'builds' => $builds,
+                'menu' => $this->getMenu()
                 ]); 
     }
 
+    
+    private function getMenu(){
+        $key = route('builds.index');
+        $menu[$key] = 'Result';
+        $data = __('common.build_type');
+        unset($data[3]);
+        foreach($data as $num => $name){
+            $link = route('builds.create',['type'=>$num]);
+            $menu[$link] = $name;    
+        }
+        return $menu;
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $view =  $this->getView($request->type);
+        return view($view)->with([
+                'items' => Item::all(),
+                 'menu' => $this->getMenu()
+            ]); 
     }
+    
+    
+    public function getView($type){
+        $views = [
+            Build::DARKNET => 'darknet',
+            Build::CLASSIFIER => 'classifier'
+        ];
+        
+        return 'build.'.$views[$type];
+    }
+    
 
     /**
      * Store a newly created resource in storage.

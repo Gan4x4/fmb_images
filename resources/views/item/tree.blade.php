@@ -14,7 +14,7 @@
                     @php($p_count += $property->count())
                     @php($list_id = $item->id.'_'.$property->id.'_list')
                     
-                    {{ $property->name }} {{ $property->count() }} <a href='#{{ $list_id }}' data-toggle="collapse" >+</a>
+                    {{ $property->name }} {{ $property->count() }} <a href='#{{ $list_id }}' data-toggle="collapse" ><i class="fas fa-angle-down"></i></a>
 
                     <ul id="{{ $list_id }}" style="list-style-type:none" class="collapse">
                         @php( $item_tags = $property->getItemTags($item->id) )
@@ -40,6 +40,9 @@ Total: {{ $i_count }} items ;  {{ $p_count }} tags
 
 
 @section('page-js-script')
+
+    @parent
+
     <script>
         
         jQuery(function($) {
@@ -54,6 +57,11 @@ Total: {{ $i_count }} items ;  {{ $p_count }} tags
                 }else{
                     $(this).parent().find('input[type="checkbox"]').prop('checked',false);
                 }
+                
+                if (typeof afterUpdate === "function"){
+                    afterUpdate();
+                }
+                
                  
             });
         });

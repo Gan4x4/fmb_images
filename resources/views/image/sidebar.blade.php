@@ -9,16 +9,8 @@
                   </a>
             </h6>
 
-            {!! Form::open(['route'=>['build'],'method'=>'get']) !!}
-                @include('item.tree',['items'=>$items])
-                <hr>
-                {!! Form::bsCheckbox('subdirs','Subdirs',true) !!}
-                
-                {!! Form::bsText('min_prop','Min',10) !!}
-                {!! Form::bsText('validate (0 .. 1)','Validate %',0.1,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}
-                {!! Form::bsSelect('type','Type',__('common.build_type')) !!}
-                {!! Form::submit('Build') !!}
-            {!! Form::close() !!}
+            
+            @include('item.tree',['items'=>$items])
             
         @else
         

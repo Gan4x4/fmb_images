@@ -71,7 +71,7 @@ class FeatureController extends Controller
     public function store(Request $request,$imageId)
     {
         try{
-            $request->request->add(['image_id'=>$imageId]);
+            $request->request->add(['image_id' => $imageId]);
             $feature = Feature::create($request->all());
             $this->updateProperties($request,$feature);
             return $this->getAjaxResponse();

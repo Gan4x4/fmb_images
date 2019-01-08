@@ -9,9 +9,9 @@
         ],
         
         'build_type' => [
-            0 => 'FMB',
             1 => 'Darknet',
-            2 => 'Classifier'
+            2 => 'Classifier',
+            3 => 'FMB',
         ]
         
     ];

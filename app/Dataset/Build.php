@@ -117,4 +117,8 @@ class Build extends Model
         return "Invalid state";
     }
     
+    public function isActive(){
+        return in_array($this->state,[self::STATE_WORK]);
+    }
+    
 }

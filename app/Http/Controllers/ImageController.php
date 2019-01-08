@@ -24,8 +24,8 @@ class ImageController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $images = Image::orderBy('status', "ASC")
-            ->orderBy('updated_at', "DESC");
+        $images = Image::orderBy('updated_at', "DESC");//orderBy('status', "ASC")
+            
         
         if ($request->has('new')){
             $images->whereNull('user_id');

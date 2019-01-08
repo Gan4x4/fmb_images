@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs">
-    
+   
     @php($i = 0)
     @foreach($items as $link => $name)
         <li class="nav-item">
