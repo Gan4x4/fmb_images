@@ -86,6 +86,7 @@ class Build extends Model
         switch ($this->params['type']) {
             case self::DARKNET:
                 $dataset = new Darknet($this->params['items']);
+                $dataset->test = floatval($this->params['validate']);
                 break;
             
             case self::CLASSIFIER:

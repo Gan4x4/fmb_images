@@ -25,7 +25,6 @@ class Darknet extends Dataset{
     protected $cfg_template = 'template/yolov3_fmb.cfg';
     
     public function __construct($items) {
-       $this->test = floatval($params['validate']);
        $this->items = $items;
     }
 
