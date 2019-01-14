@@ -60,6 +60,12 @@ Total: {{ $i_count }} items ;  {{ $p_count }} tags
                         $(item).find('input[type="checkbox"]').first().prop('checked',true);
                     });
                     
+                    $(this).siblings('ul')
+                            .removeClass('collapse')
+                            .find('input[type="checkbox"]')
+                            .prop('checked',true);
+                    
+                    
                 }else{
                     $(this).parent().find('input[type="checkbox"]').prop('checked',false);
                 }

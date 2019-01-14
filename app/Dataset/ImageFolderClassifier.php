@@ -36,12 +36,14 @@ class ImageFolderClassifier extends Dataset{
         foreach($params['items'] as $item_id){
             $tmp[$item_id] = [];
             $propKey = $item_id.'_propertys';
-            if (isset($params[$propKey])){
+            if (isset($params[$propKey]) ){
                 foreach($params[$propKey] as $prop_id){
                     $tmp[$item_id][$prop_id] = [];
                     $tagKey =  $item_id.'_'.$prop_id.'_tags';
-                    foreach($params[$tagKey] as $tag_id){
-                        $tmp[$item_id][$prop_id][] = $tag_id;
+                    if (isset($params[$tagKey])){
+                        foreach($params[$tagKey] as $tag_id){
+                            $tmp[$item_id][$prop_id][] = $tag_id;
+                        }
                     }
                 }
             }
