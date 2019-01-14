@@ -18,12 +18,18 @@
 
                     <ul id="{{ $list_id }}" style="list-style-type:none" class="collapse">
                         @php( $item_tags = $property->getItemTags($item->id) )
+                        @php( $filled = 0 )
                         @foreach( $item_tags as $tag )
                         <li>
                             {!! Form::checkbox($item->id.'_'.$property->id.'_tags[]',$tag->id) !!} 
                             {{ $tag->name }} {{ $tag->count }} 
+                            @php( $filled += $tag->count )
                         </li>
                         @endforeach
+                        <li>
+                            {!! Form::checkbox($item->id.'_'.$property->id.'_tags[]',0) !!} 
+                            Undefined {{  $item->count() - $filled }} 
+                        </li>
                     </ul>
                     
                     

@@ -10,7 +10,7 @@ namespace App\Dataset;
 
 use Illuminate\Support\Facades\Storage;
 use App\Item;
-
+use App\Tag;
 
 /**
  * Description of Dataset
@@ -32,7 +32,7 @@ class ImageFolderClassifier extends Dataset{
         
         $this->minimalPropertyCount = intval($params['min_prop']);
         $this->test = floatval($params['validate']);
-                
+        \Log::debug($params);
         foreach($params['items'] as $item_id){
             $tmp[$item_id] = [];
             $propKey = $item_id.'_propertys';
@@ -47,7 +47,7 @@ class ImageFolderClassifier extends Dataset{
             }
         }
         $this->items = $tmp;
-        $this->tree = new Tree(null,$this->test);//array_keys($this->items));
+        $this->tree = new Tree(array_keys($this->items),$this->test);//array_keys($this->items));
         
         
     }
@@ -112,18 +112,6 @@ class ImageFolderClassifier extends Dataset{
                 
                 $prop_dir = $this->lookupPropDir($item,$property);
                 $selectedTagIds = $this->items[$item->id][$property->id];
-                
-                /*
-                if ($this->test > 0){
-                    $key_count = round($this->test*count($selectedTagIds));
-                    $rand_keys = array_rand($selectedTagIds, $key_count);
-                    $validate_tag_ids = array_intersect_key($selectedTagIds, array_flip($rand_keys));
-                    $train_tag_ids = array_diff($selectedTagIds,$validate_tag_ids);
-                }else{
-                    $train_tag_ids = $selectedTagIds;
-                }
-                */
-                
                 $tag = $property->getTag();
                 
                 if ($tag && in_array($tag->id, $selectedTagIds)){
@@ -133,6 +121,20 @@ class ImageFolderClassifier extends Dataset{
                 }
             }
         }
+        
+        $undefined = $feature->getUndefinedProperties();
+        foreach($undefined as $property){
+            if ( in_array($property->id, array_keys($this->items[$item->id])) && in_array(0,$this->items[$item->id][$property->id])){
+                $prop_dir = $this->lookupPropDir($item,$property);
+                $tag = new Tag();
+                $tag->id = null;
+                $tag->name = 'Undefined';
+                $tag_dir = $this->lookupTagDir($item,$property,$tag);
+                $filename = self::name2file($tag->name.'_'.$feature->image->id);
+                $feature->extract(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+            }
+        }
+        
     }
     
     

@@ -107,6 +107,22 @@ class Feature extends Model
         return $this->properties()->where('properties.id',$property_id)->exists();
     }
     
+    public function getUndefinedProperties(){
+        $item = $this->getItem();
+        if (! $item){
+            return null;
+        }
+        $filled_ids = $this->properties()
+                ->whereNotNull('tag_id')
+                ->where('tag_id','>',0)
+                ->pluck('property_id')
+                ->toArray();
+        
+        $all = $this->getItem()->properties()->whereNotIn('properties.id',$filled_ids)->get();
+        return $all;
+    }
+    
+    
     public function delete(){
         parent::delete();
         $this->image->updateStatus();

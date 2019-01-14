@@ -45,6 +45,9 @@ class Property extends Model
     }
     
     
+   
+    
+    
     public function getPopularTags($count = 5, $item = null){
         $query = DB::table('bindings');
         
