@@ -32,7 +32,7 @@ class ImageFolderClassifier extends Dataset{
         
         $this->minimalPropertyCount = intval($params['min_prop']);
         $this->test = floatval($params['validate']);
-        \Log::debug($params);
+        //\Log::debug($params);
         foreach($params['items'] as $item_id){
             $tmp[$item_id] = [];
             $propKey = $item_id.'_propertys';

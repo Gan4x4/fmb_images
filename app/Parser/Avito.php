@@ -9,7 +9,7 @@ class Avito extends Parser{
     protected $raw = null;
     protected $cache = 'tmp_html';
     protected $crawler = null;
-    
+    public $image_size = '1280x960'; // '640x480'
     public function __construct($html) {
        // if (! Storage::exists($this->cache)){
         /*
@@ -64,7 +64,7 @@ class Avito extends Parser{
 
     public function getAllImages(){
         $list = [];
-        $images = $this->getImageUrls();
+        $images = $this->getImageUrls($this->image_size);
         foreach($images as $image){
             $url = $image->getAttribute('data-url');
             $list[] = $this->saveImage($url);
@@ -78,7 +78,7 @@ class Avito extends Parser{
      * Download first image and return it'stmp file path
      */    
     public function getImage(){
-            $images = $this->getImageUrls();
+            $images = $this->getImageUrls($this->image_size);
             //$imgUrl = "http:".$images->attr('data-url');
             return $this->saveImage($images->attr('data-url'));
             //$tempImage = tempnam(sys_get_temp_dir(),"avito_img");

@@ -22,15 +22,7 @@
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
         <div class="sidebar-sticky">
             
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                  <span>Features</span>
-                  <a class="d-flex align-items-center text-muted" href="#">
-                    <span data-feather="plus-circle"></span>
-                  </a>
-            </h6>
-            <div id="features_list">
-                @include('feature.index',['features' => $features])
-            </div>
+           
             
             <div id="feature_block">
                 <!-- place to edit feature properties -->
@@ -42,11 +34,16 @@
 
 @section('content')
     <div class="container-fluid">
-        <h2>Edit image </h2>
-        <div class='row' >
-            
-
-            <div class='col-6-md m-1'>
+        
+        
+    
+    
+       <div class="row" >
+           <div class="col-md-9">
+                <img class="img-fluid" src='{{ $image->getUrl() }}' id='image' style="max-height: 768px">
+            </div>
+           <div class="col-md-3">
+                
                 Click to add: 
                 @php
                     $primary = 'btn-primary';
@@ -62,21 +59,17 @@
                     @endphp
                     <a href='javascript:void(0)' data='{{ $item->id }}' class='btn  {{ $new_item_class }} feature-add  '>{{ $item->name }}</a>
                 @endforeach
-            </div>
-            <div class='col-2-md m-1'>
+                <br>
                 <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
-            </div>
-
-            <div class='col-4-md m-1'>
-                <sapn id='selection_warning' class='badge badge-warning d-none'>Invalid selection </span>
-            </div>
-        </div>
-    
-    
-       <div class="row">
-           <div class="col-md-12">
-                <img class="img-responsive" src='{{ $image->getUrl() }}' id='image'>
-            </div>
+                <br>
+                <span id='selection_warning' class='badge badge-warning d-none'>Invalid selection </span>
+                <hr>
+                
+                <h4>Features</h4>
+                <div id="features_list">
+                    @include('feature.index',['features' => $features])
+                </div>
+           </div>
         </div>
         
         <h4>Binded images</h4>
@@ -159,10 +152,10 @@
         {
             // variables can be accessed here as
             // c.x, c.y, c.x2, c.y2, c.w, c.h
-            $("#x1").val(c.x);
-            $("#y1").val(c.y);
-            $("#x2").val(c.x2);
-            $("#y2").val(c.y2);
+            $("#x1").val(Math.round(c.x));
+            $("#y1").val(Math.round(c.y));
+            $("#x2").val(Math.round(c.x2));
+            $("#y2").val(Math.round(c.y2));
         };
         
         function onSelectionChange(c){
