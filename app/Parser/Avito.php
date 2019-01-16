@@ -62,15 +62,18 @@ class Avito extends Parser{
         }
     }
 
-    public function getAllImages(){
+    public function getAllImages($selected = null){
         $list = [];
         $images = $this->getImageUrls($this->image_size);
+        $i = 0;
         foreach($images as $image){
+            $i++;
+            if (count($selected) > 0 && (! in_array($i,$selected))){
+                continue;
+            }
             $url = $image->getAttribute('data-url');
             $list[] = $this->saveImage($url);
-            //dump($image);
         }
-        //dd($images);
         return $list;
     }
 

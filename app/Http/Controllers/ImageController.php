@@ -26,7 +26,6 @@ class ImageController extends Controller
         $user = Auth::user();
         $images = Image::orderBy('updated_at', "DESC");//orderBy('status', "ASC")
             
-        
         if ($request->has('new')){
             $images->whereNull('user_id');
             $active_tab = 1;
@@ -99,7 +98,7 @@ class ImageController extends Controller
         if ($request->url){
             // TODO select parser
             
-            $result = $this->saveAllImages($request->url);
+            $result = $this->saveAllImages($request->url,$request->image_nums);
             if (is_object($result)){
                 // Images found
                 $image = $result;
@@ -107,21 +106,6 @@ class ImageController extends Controller
                 // Result is id of duplicate image
                  return redirect()->route('images.exists',[$result]);
             }
-            
-            /*
-            $parser = Avito::createByUrl($request->url);
-            $tmpImagePath = $parser->getImage(); 
-            
-            $duplicate = Image::findByHash($tmpImagePath);
-            if ($duplicate){
-                return redirect()->route('images.exists',[$duplicate->id]);
-            }
-                
-            $image->path = Storage::putFile('public/images', new File($tmpImagePath));
-            $image->description = $parser->getDescription();
-            $image->source_id = 1;
-             * 
-             */
             
         }else{
             $request->validate([
@@ -135,9 +119,9 @@ class ImageController extends Controller
         return redirect()->route('images.edit',$image->id);
     }
     
-    private function saveAllImages($url){
+    private function saveAllImages($url,$selected){
         $parser = Avito::createByUrl($url);
-        $tmpImagePaths = $parser->getAllImages();
+        $tmpImagePaths = $parser->getAllImages($selected);
         $duplicates = [];
         $images = [];
 
