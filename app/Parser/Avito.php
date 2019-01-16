@@ -68,7 +68,7 @@ class Avito extends Parser{
         $i = 0;
         foreach($images as $image){
             $i++;
-            if (count($selected) > 0 && (! in_array($i,$selected))){
+            if ($selected && count($selected) > 0 && (! in_array($i,$selected))){
                 continue;
             }
             $url = $image->getAttribute('data-url');
