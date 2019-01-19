@@ -119,7 +119,8 @@ class ImageFolderClassifier extends Dataset{
                 if ($tag && in_array($tag->id, $selectedTagIds)){
                     $tag_dir = $this->lookupTagDir($item,$property,$tag);
                     $filename = self::name2file($tag->name.'_'.$feature->image->id);
-                    $feature->extract(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+                    $feature->extractSquare(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+                    
                 }
             }
         }
@@ -133,7 +134,7 @@ class ImageFolderClassifier extends Dataset{
                 $tag->name = 'Undefined';
                 $tag_dir = $this->lookupTagDir($item,$property,$tag);
                 $filename = self::name2file($tag->name.'_'.$feature->image->id);
-                $feature->extract(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+                $feature->extractSquare(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
             }
         }
         

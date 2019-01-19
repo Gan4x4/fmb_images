@@ -33,6 +33,43 @@ class Feature extends Model
     }
     
     
+    public function extractSquare($dir,$name){
+        $x1 = $this->x1;
+        $y1 = $this->y1;
+        $h = $this->height;
+        $w = $this->width;
+        $image = $this->image;
+        if ($h > $w){
+            $w = $h;
+            if (($x1 + $w)  > $image->width){
+                $x1 =  $this->image->width -$w;
+                if ($x1 < 0 ){
+                    $x1 = 0;
+                }
+            }
+        }
+        
+        if ($h < $w){
+            $h = $w;
+            if (($y1 + $h)  > $image->height){
+                $y1 =  $this->image->height -$h;
+                if ($y1 < 0 ){
+                    $y1 = 0;
+                }
+            }
+        }
+        
+        $manager = new ImageManager();
+        $file = storage_path('app'.DIRECTORY_SEPARATOR.$image->path);
+        $image = $manager->make($file);
+        $image->crop($w,$h,$x1, $y1);
+        $full_name  = $name.".jpeg";
+        $image->save($dir.DIRECTORY_SEPARATOR.$full_name);
+        return $full_name;
+    }
+    
+    
+    
     /*
      * Get all item props ant replace not empty 
      * by filled from bindings page

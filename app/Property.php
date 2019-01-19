@@ -78,7 +78,7 @@ class Property extends Model
         $last_count = intval($count/2);
         $last = $this->getLastTagIds($last_count,$item);
         $tail = array_diff($popular,$last);
-        $tag_ids = array_slice(array_unique($last + $tail),0,$count);
+        $tag_ids = array_slice(array_unique(array_merge($last + $tail)),0,$count);
         return Tag::whereIn('id', $tag_ids)->OrderBy('name')->get();
     }
     
