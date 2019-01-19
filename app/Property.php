@@ -72,8 +72,7 @@ class Property extends Model
         $query->orderBy('updated_at','DESC');
         $query->take($count);
         return $query->pluck('tag_id')->toArray();
-   }
-    
+    }
     
     public function getPopularTags($count = 5, $item = null){
         $query = $this->prepareTagsQuery($item);
@@ -82,8 +81,10 @@ class Property extends Model
         $query->orderBy('fc','DESC');
         $query->take($count);
         $popular = $query->pluck('tag_id')->toArray();
-        $last = $this->getLastTagIds($count,$item);
-        $tag_ids = array_slice(array_unique($last+$popular),0,$count);
+        $last_count = intval($count/2);
+        $last = $this->getLastTagIds($last_count,$item);
+        $tail = array_diff($popular,$last);
+        $tag_ids = array_slice(array_unique($last + $tail),0,$count);
         return Tag::whereIn('id', $tag_ids)->OrderBy('name')->get();
     }
     
