@@ -83,8 +83,8 @@ class Property extends Model
         $query->take($count);
         $popular = $query->pluck('tag_id')->toArray();
         $last = $this->getLastTagIds($count,$item);
-        $tag_ids = array_unique($popular + $last);
-        return Tag::whereIn('id', $tag_ids)->OrderBy('name')->take($count)->get();
+        $tag_ids = array_slice(array_unique($last+$popular),0,$count);
+        return Tag::whereIn('id', $tag_ids)->OrderBy('name')->get();
     }
     
     public function tagId(){
