@@ -22,15 +22,7 @@ class Property extends Model
     }
     
     public function getItemTags($item_id){
-        /*
-        $query = DB::table('bindings');
-        $query->where('item_id',$item_id);
-        $query->where('property_id',$this->id);
-        $query->whereNotNull('tag_id');
-        $query->where('tag_id','<>',0);
-         * 
-         */
-        $query->prepareTagsQuery($item_id);
+        $query = $this->prepareTagsQuery($item_id);
         $query->select('tag_id',DB::raw('count(tag_id) as count'));
         $query->groupBy('tag_id');
         $result = $query->get();
