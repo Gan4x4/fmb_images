@@ -69,7 +69,7 @@ class Property extends Model
         $query = $this->prepareTagsQuery($item);
         $query->select('tag_id','updated_at');
         $query->distinct('tag_id');
-        $query->orderBy('updated_at');
+        $query->orderBy('updated_at','DESC');
         $query->take($count);
         return $query->pluck('tag_id')->toArray();
    }
