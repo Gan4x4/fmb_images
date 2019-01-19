@@ -40,7 +40,12 @@ class Feature extends Model
         $w = $this->width;
         $image = $this->image;
         if ($h > $w){
+            $x1 = $x1 - intval(($h - $w) / 2);
+            if ($x1 < 0 ){
+                $x1 = 0;
+            }
             $w = $h;
+            
             if (($x1 + $w)  > $image->width){
                 $x1 =  $this->image->width -$w;
                 if ($x1 < 0 ){
@@ -50,6 +55,10 @@ class Feature extends Model
         }
         
         if ($h < $w){
+            $y1 = $y1 - intval(($w - $h) / 2);
+            if ($y1 < 0 ){
+                $y1 = 0;
+            }
             $h = $w;
             if (($y1 + $h)  > $image->height){
                 $y1 =  $this->image->height -$h;
