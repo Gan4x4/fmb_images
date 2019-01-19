@@ -11,7 +11,7 @@ class Feature extends Model
 
     public function properties(){
         return $this->belongsToMany('App\Property','bindings','feature_id','property_id')
-                ->withPivot('item_id', 'tag_id','feature_id');
+                ->withPivot('item_id', 'tag_id','feature_id')->withTimestamps();
     }
     
     protected function items(){

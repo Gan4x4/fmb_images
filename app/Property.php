@@ -72,7 +72,7 @@ class Property extends Model
         $query->distinct('tag_id');
         $query->orderBy('updated_at','DESC');
         $query->take($count);
-        dump($query->toSql());
+        //dump($query->toSql());
         return $query->pluck('tag_id')->toArray();
     }
     

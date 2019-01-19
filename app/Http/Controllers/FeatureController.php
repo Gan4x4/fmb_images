@@ -129,8 +129,6 @@ class FeatureController extends Controller
     }
     
     private function updateProperties($request,$feature){
-        
-        
         $feature->properties()->detach();
         $prop_data = $this->extractProperties($request);
         //dd($prop_data);
