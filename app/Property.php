@@ -22,11 +22,15 @@ class Property extends Model
     }
     
     public function getItemTags($item_id){
+        /*
         $query = DB::table('bindings');
         $query->where('item_id',$item_id);
         $query->where('property_id',$this->id);
         $query->whereNotNull('tag_id');
         $query->where('tag_id','<>',0);
+         * 
+         */
+        $query->prepareTagsQuery($item_id);
         $query->select('tag_id',DB::raw('count(tag_id) as count'));
         $query->groupBy('tag_id');
         $result = $query->get();
@@ -45,34 +49,42 @@ class Property extends Model
     }
     
     
-   
-    
-    
-    public function getPopularTags($count = 5, $item = null){
+    private function prepareTagsQuery($item_id){
         $query = DB::table('bindings');
-        
-        if (! $item){
-            $item = $this->getItemId();
+        if (! $item_id){
+            $item_id = $this->getItemId();
         }
-        if ($item){
-            $query->where('item_id',$item);
+        if ($item_id){
+            $query->where('item_id',$item_id);
         }
-        
+
         $query->where('property_id',$this->id);
         $query->whereNotNull('tag_id');
         $query->where('tag_id','<>',0);
+        return $query;
+    }
+    
+    
+   public function getLastTagIds($count = 5, $item = null){
+        $query = $this->prepareTagsQuery($item);
+        $query->select('tag_id','updated_at');
+        $query->distinct('tag_id');
+        $query->orderBy('updated_at');
+        $query->take($count);
+        return $query->pluck('tag_id')->toArray();
+   }
+    
+    
+    public function getPopularTags($count = 5, $item = null){
+        $query = $this->prepareTagsQuery($item);
         $query->select('tag_id',DB::raw('count(feature_id) as fc'));
         $query->groupBy('tag_id');
         $query->orderBy('fc','DESC');
         $query->take($count);
-        $result = $query->get();
-        
-        $tagIds = [];
-        foreach($result as $line){
-            $tagIds[] = $line->tag_id;
-        }
-        
-        return Tag::whereIn('id', $tagIds)->OrderBy('name')->get();
+        $popular = $query->pluck('tag_id')->toArray();
+        $last = $this->getLastTagIds($count,$item);
+        $tag_ids = array_unique($popular + $last);
+        return Tag::whereIn('id', $tag_ids)->OrderBy('name')->take($count)->get();
     }
     
     public function tagId(){
