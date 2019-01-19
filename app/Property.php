@@ -68,9 +68,11 @@ class Property extends Model
    public function getLastTagIds($count = 5, $item = null){
         $query = $this->prepareTagsQuery($item);
         $query->select('tag_id','updated_at');
+        $query->whereNotNull('updated_at');
         $query->distinct('tag_id');
         $query->orderBy('updated_at','DESC');
         $query->take($count);
+        dump($query->toSql());
         return $query->pluck('tag_id')->toArray();
     }
     
