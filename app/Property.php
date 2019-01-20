@@ -57,9 +57,8 @@ class Property extends Model
     }
     
     
-   public function getLastTagIds($count = 5, $item = null,$except = []){
+   public function getLastTagIds($count = 5, $item = null){
         $query = $this->prepareTagsQuery($item);
-        $query->whereNotIn('tag_id',$except);
         $query->select('tag_id','updated_at');
         $query->whereNotNull('updated_at');
         $query->distinct('tag_id');
@@ -70,16 +69,19 @@ class Property extends Model
     }
     
     public function getPopularTags($count = 5, $item = null){
+        
+        $last_count = intval($count/2);
+        $last = $this->getLastTagIds($last_count,$item);
+        
+        
         $query = $this->prepareTagsQuery($item);
         $query->select('tag_id',DB::raw('count(feature_id) as fc'));
+        $query->whereNotIn('tag_id',$last);
         $query->groupBy('tag_id');
         $query->orderBy('fc','DESC');
-        $query->take($count);
-        $popular = array_unique($query->pluck('tag_id')->toArray());
-        $last_count = intval($count/2);
-        $last = $this->getLastTagIds($last_count,$item,$popular);
-        $tail = array_diff($popular,$last);
-        $tag_ids = array_slice(array_merge($last,$tail),0,$count);
+        $query->take($count-$last_count);
+        $popular = $query->pluck('tag_id')->toArray();
+        $tag_ids = array_merge($last,$popular);
         return Tag::whereIn('id', $tag_ids)->OrderBy('name')->get();
     }
     
