@@ -25,12 +25,12 @@ class ImageController extends Controller
     {
         $user = Auth::user();
         $images = Image::orderBy('updated_at', "DESC");//orderBy('status', "ASC")
-        $ids =  $this->filter($request);
+        $ids = $this->filter($request);
         if (! empty($ids)){
             $images->whereIn('id',$ids);
         }
                     
-        if ($request->has('new')){
+        if ($request->new){
             $images->whereNull('user_id');
             $active_tab = 1;
         }
@@ -46,12 +46,15 @@ class ImageController extends Controller
         return view('image.index')->with([
             'images'=>$images->paginate(self::ITEMS_PER_PAGE)->appends($request->all()),
             'items'=>Item::all(),
-            'tabs' => $this->getTabs(),
+            'tabs' => $this->getTabs($request->all()),
             'active_tab' => $active_tab,
             'count' => $user->getStat(),
-            'tree'=>$this->tree2array($request->all())
+            'tree'=>$this->tree2array($request->all()),
+            'enable_filter' => $request->filter
         ]);
     }
+    
+    
     
     
     private function filter($request){
@@ -107,7 +110,7 @@ class ImageController extends Controller
     
     
     
-    private function getTabs(){
+    private function getTabs($params = []){
         $user = Auth::user();
         $images = Image::orderBy('status', "ASC")
             ->orderBy('updated_at', "DESC");
@@ -122,10 +125,13 @@ class ImageController extends Controller
             ->orderBy('updated_at', "DESC");
         
         $new_count = $images->whereNull('user_id')->count();
+        $params1 = $params2 = $params;
+        unset($params1['new']);
+        $params2['new'] = true;
         
         $tabs = [
-            route('images.index') => "Labeled <span class='badge badge-light'>$labeled_count</span>",
-            route('images.index',['new' => true]) => "New <span class='badge badge-light'>$new_count</span>",
+            route('images.index',$params1) => "Labeled <span class='badge badge-light'>$labeled_count</span>",
+            route('images.index',$params2) => "New <span class='badge badge-light'>$new_count</span>",
         ];
         return $tabs;
         
