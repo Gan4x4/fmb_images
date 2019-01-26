@@ -136,8 +136,8 @@ class Property extends Model
     * or it's siblings and copy its/ value 
     */
     public function setEstimatedTag($image,$item){
-        if ($this->tagId()){
-            // Tag already set
+        if ($this->tagId() || ! $this->canBeCopied()){
+            // Tag already set or property can't be copied 
             return;
         }
         $images = $image->getSiblings();
@@ -205,4 +205,8 @@ class Property extends Model
             ->count('feature_id');
     }
     
+    
+    public function canBeCopied(){
+        return ! in_array($this->name,['Place']);
+    }
 }
