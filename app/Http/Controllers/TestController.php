@@ -47,21 +47,30 @@ class TestController extends Controller
                     continue;
                 }
                 
-                if (in_array($tag_name,['Dual suspension,','MTB','Road'])){
+  
+                
+                if (in_array($tag_name,['Dual suspension,','MTB','Road','BMX'])){
                     print "". " Image <a href='".route('images.edit',$image->id)."'>".$image->id."</a><br>";  
+                    $tag_id = $bike_type->getTag()->id;
+                    if ($tag_name == 'BMX'){
+                        $tag_id = 363; //small
+                    }
+                    
                     // TO create frame type
-                    /*
-                    $frame->properties()->attach($bike_type->id,[[
+                    
+                    $frame->properties()->attach(13,[
                         'feature_id' => $frame->id,
-                        'tag_id' => $bike_type->getTag()->tag_id,
+                        'tag_id' => $tag_id,
                         'item_id' => $frame->getItem()->id
-                    ]]);
-                    */
+                    ]);
+                    
                     print $bike_type->getTagName() ."to Frame";
                     print "<hr>";
+                    return;
+                    
                 }
+                
             }
-
             
         }
     }
