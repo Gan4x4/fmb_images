@@ -18,7 +18,7 @@ class TestController extends Controller
     
     public function new_prop()
     {
-        //return "Blocked";
+        return "Blocked";
         $images = Image::all();
         foreach($images as $image){
             
@@ -47,6 +47,7 @@ class TestController extends Controller
                     continue;
                 }
                 
+                
   
                 
                 if (in_array($tag_name,['Dual suspension,','MTB','Road','BMX'])){
@@ -56,7 +57,8 @@ class TestController extends Controller
                         $tag_id = 363; //small
                     }
                     
-                    // TO create frame type
+                   
+                    $frame->properties()->detach(13);
                     
                     $frame->properties()->attach(13,[
                         'feature_id' => $frame->id,
@@ -66,7 +68,7 @@ class TestController extends Controller
                     
                     print $bike_type->getTagName() ."to Frame";
                     print "<hr>";
-                    return;
+                    //return;
                     
                 }
                 

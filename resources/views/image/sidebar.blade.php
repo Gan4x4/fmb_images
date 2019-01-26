@@ -10,7 +10,12 @@
             </h6>
 
             
-            @include('item.tree',['items'=>$items])
+            {!! Form::open(['route' => ['images.index'],'method'=>'get']) !!}
+                
+            
+                @include('item.tree',['items'=>$items])
+                {!! Form::submit("Filter") !!}
+            {!! Form::close() !!}
             
         @else
         

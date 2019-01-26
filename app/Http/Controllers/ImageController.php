@@ -25,7 +25,11 @@ class ImageController extends Controller
     {
         $user = Auth::user();
         $images = Image::orderBy('updated_at', "DESC");//orderBy('status', "ASC")
-            
+        $ids =  $this->filter($request);
+        if (! empty($ids)){
+            $images->whereIn('id',$ids);
+        }
+                    
         if ($request->has('new')){
             $images->whereNull('user_id');
             $active_tab = 1;
@@ -45,19 +49,44 @@ class ImageController extends Controller
             'tabs' => $this->getTabs(),
             'active_tab' => $active_tab,
             'count' => $user->getStat(),
+            'tree'=>$this->tree2array($request->all())
         ]);
     }
     
-    /*
-    private function filter($images,$request){
-        $binding_ids = [];
+    
+    private function filter($request){
+        $selected = $this->tree2array($request->all());
+        if (! $selected){
+            return null;
+        }
+ 
+        $featureIds = [];
+        foreach($selected as $item_id=>$props){
+            foreach($props as $prop_id=>$tags){
+                $query =  DB::table('bindings')->distinct('feature_id');
+                $query->where('item_id',$item_id);
+                if (! empty($tags)){
+                    $query->where('property_id',$prop_id);
+                    $query->whereIn('tag_id',$tags);   
+                    $featureIds = array_merge($featureIds,$query->pluck('feature_id')->toArray());
+                }
+                        
+            }
+        }
         
-        
-        
+        $featureIds = array_unique($featureIds);
+        $ImageIds =  DB::table('features')
+                ->distinct('image_id')
+                ->whereIn('id',$featureIds)
+                ->pluck('image_id')->toArray();
+        return $ImageIds;
         
     }
     
-    private function tree2array($request){
+    private function tree2array($params){
+        if (! isset($params['items'])){
+            return null;
+        }
         foreach($params['items'] as $item_id){
             $tmp[$item_id] = [];
             $propKey = $item_id.'_propertys';
@@ -75,7 +104,7 @@ class ImageController extends Controller
         }
         return $tmp;
     }
-    */
+    
     
     
     private function getTabs(){

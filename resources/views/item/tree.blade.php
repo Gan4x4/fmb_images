@@ -3,25 +3,28 @@
 @foreach($items as $item)
     <li class="nav-item">
     
-        {!! Form::checkbox('items[]',$item->id) !!}
+        {!! Form::checkbox('items[]',$item->id,isset($tree[$item->id])) !!}
         {{ $item->name }} {{  $item->count() }}
         @php( $i_count += $item->count() )
         <ul style="list-style-type:none" >
             @foreach($item->properties as $property)
                 <li>
-                    {!! Form::checkbox($item->id.'_propertys[]',$property->id) !!} 
+                    {!! Form::checkbox($item->id.'_propertys[]',$property->id,isset($tree[$item->id][$property->id])) !!} 
                     
                     @php($p_count += $property->count())
                     @php($list_id = $item->id.'_'.$property->id.'_list')
                     
+                    
                     {{ $property->name }} {{ $property->count() }} <a href='#{{ $list_id }}' data-toggle="collapse" ><i class="fas fa-angle-down"></i></a>
+                    @php( $has_checked_tags =  ! empty($tree[$item->id][$property->id]))
 
-                    <ul id="{{ $list_id }}" style="list-style-type:none" class="collapse">
+                    <ul id="{{ $list_id }}" style="list-style-type:none" class="{{ $has_checked_tags ? '' : 'collapse' }}">
                         @php( $item_tags = $property->getItemTags($item->id) )
                         @php( $filled = 0 )
                         @foreach( $item_tags as $tag )
                         <li>
-                            {!! Form::checkbox($item->id.'_'.$property->id.'_tags[]',$tag->id) !!} 
+                            @php($checked = isset($tree[$item->id][$property->id]) ? in_array($tag->id,$tree[$item->id][$property->id]) : false)
+                            {!! Form::checkbox($item->id.'_'.$property->id.'_tags[]',$tag->id, $checked) !!} 
                             {{ $tag->name }} {{ $tag->count }} 
                             @php( $filled += $tag->count )
                         </li>
