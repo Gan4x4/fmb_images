@@ -16,6 +16,56 @@ class TestController extends Controller
     }
     
     
+    public function new_prop()
+    {
+        //return "Blocked";
+        $images = Image::all();
+        foreach($images as $image){
+            
+            $bike = null;
+            $frame = null;
+            foreach($image->features as $feature){
+                $item = $feature->getItem();
+                if ($item && $item->name == 'Bike' ){
+                    $bike = $feature;
+                }
+                elseif($item && $item->name == 'Frame' ){
+                    $frame = $feature;
+                }
+            }    
+            
+            if ($bike && $frame){
+                $bike_type = $bike->properties()->where('property_id',6)->first();
+                if (! $bike_type){
+                    continue;
+                }
+                //$bike_feature =  $bike->properties()->where('property_id',17)->first();
+                $tag_name = $bike_type->getTagName();
+                $frame_type = $frame->properties()->where('property_id',13)->first();
+                
+                if ($frame_type && $frame_type->getTag()){
+                    continue;
+                }
+                
+                if (in_array($tag_name,['Dual suspension,','MTB','Road'])){
+                    print "". " Image <a href='".route('images.edit',$image->id)."'>".$image->id."</a><br>";  
+                    // TO create frame type
+                    /*
+                    $frame->properties()->attach($bike_type->id,[[
+                        'feature_id' => $frame->id,
+                        'tag_id' => $bike_type->getTag()->tag_id,
+                        'item_id' => $frame->getItem()->id
+                    ]]);
+                    */
+                    print $bike_type->getTagName() ."to Frame";
+                    print "<hr>";
+                }
+            }
+
+            
+        }
+    }
+    
     /*
      * Legacy script for move color properties from bike to frame
      */

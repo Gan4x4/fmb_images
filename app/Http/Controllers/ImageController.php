@@ -48,6 +48,36 @@ class ImageController extends Controller
         ]);
     }
     
+    /*
+    private function filter($images,$request){
+        $binding_ids = [];
+        
+        
+        
+        
+    }
+    
+    private function tree2array($request){
+        foreach($params['items'] as $item_id){
+            $tmp[$item_id] = [];
+            $propKey = $item_id.'_propertys';
+            if (isset($params[$propKey]) ){
+                foreach($params[$propKey] as $prop_id){
+                    $tmp[$item_id][$prop_id] = [];
+                    $tagKey =  $item_id.'_'.$prop_id.'_tags';
+                    if (isset($params[$tagKey])){
+                        foreach($params[$tagKey] as $tag_id){
+                            $tmp[$item_id][$prop_id][] = $tag_id;
+                        }
+                    }
+                }
+            }
+        }
+        return $tmp;
+    }
+    */
+    
+    
     private function getTabs(){
         $user = Auth::user();
         $images = Image::orderBy('status', "ASC")
