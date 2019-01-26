@@ -65,6 +65,7 @@ class ImageController extends Controller
  
         $featureIds = [];
         foreach($selected as $item_id=>$props){
+            $un_props = [];
             foreach($props as $prop_id=>$tags){
                 $query =  DB::table('bindings')->distinct('feature_id');
                 $query->where('item_id',$item_id);
@@ -73,8 +74,27 @@ class ImageController extends Controller
                     $query->whereIn('tag_id',$tags);   
                     $featureIds = array_merge($featureIds,$query->pluck('feature_id')->toArray());
                 }
-                        
+                
+                if (in_array(0,$tags)){
+                    $un_props[] = $prop_id;
+                }
+                
+                
             }
+            
+            if (! empty($un_props)){
+                $item = Item::find($item_id);
+                $features = $item->features;
+                foreach($features as $feature){
+                    $undefined = $feature->getUndefinedProperties();
+                    foreach($undefined as $p){
+                        if (in_array($p->id,$un_props)){
+                            $featureIds[] = $feature->id;
+                        }
+                    }
+                }
+            }
+            
         }
         
         $featureIds = array_unique($featureIds);

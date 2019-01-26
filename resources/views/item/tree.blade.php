@@ -30,7 +30,8 @@
                         </li>
                         @endforeach
                         <li>
-                            {!! Form::checkbox($item->id.'_'.$property->id.'_tags[]',0) !!} 
+                            @php($checked = isset($tree[$item->id][$property->id]) ? in_array(0,$tree[$item->id][$property->id]) : false)
+                            {!! Form::checkbox($item->id.'_'.$property->id.'_tags[]',0,$checked) !!} 
                             Undefined {{  $item->count() - $filled }} 
                         </li>
                     </ul>
