@@ -65,7 +65,9 @@
 
                                     @if (Auth::check() && Auth::user()->isAdmin())
                                         <div class="dropdown-divider"></div>
+                                        <div class="px-4 py-3">
                                         @include('image.add')
+                                        </div>
                                     @endif
 
                                 </div>

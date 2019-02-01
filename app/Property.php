@@ -135,6 +135,7 @@ class Property extends Model
     * try find another properties belonged to this image
     * or it's siblings and copy its/ value 
     */
+    
     public function setEstimatedTag($image,$item){
         if ($this->tagId() || ! $this->canBeCopied()){
             // Tag already set or property can't be copied 
@@ -147,7 +148,7 @@ class Property extends Model
                 $f_item = $f->getItem();
                 if ($f_item && $f_item->canBeCopied()){
                     foreach($f->properties as $p){
-                        if ( $p->id == $this->id && $f_item->id == $item->id && $p->tagId()){
+                        if ( $p->id == $this->id && $this->canCopyFromThisItem($f_item,$item) && $p->tagId()){
                             $this->estimated_tag_id = $p->tagId();
                             $this->estimation_source = "From image #".$image->id.", ".$f_item->name;
                             return true;
@@ -159,6 +160,18 @@ class Property extends Model
         return false;
     }
     
+    private function canCopyFromThisItem($i1,$i2){
+        if ($i1->id == $i2->id){
+            return true;
+        }
+        $groups = [['Frame','Fork','Wheel']];
+        foreach($groups as $group){
+            if (in_array($i1->name,$group) && in_array($i2->name,$group)){
+                return true;
+            }
+        }
+        return false;
+    }
     
     // Override
     public function delete(){
