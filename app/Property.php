@@ -166,7 +166,7 @@ class Property extends Model
             return true;
         }
         
-        if ( in_array($this->name,['Brand','Model'])){
+        if ( ! in_array($this->name,['Wheel size'])){
             return false;
         }
         
