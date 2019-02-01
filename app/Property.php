@@ -166,7 +166,7 @@ class Property extends Model
             return true;
         }
         
-        if ($this->name == 'Brand'){
+        if ( in_array($this->name,['Brand','Model'])){
             return false;
         }
         
