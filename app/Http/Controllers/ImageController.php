@@ -411,4 +411,14 @@ class ImageController extends Controller
         //dump($data);
     }
     
+    public function editFirstNewImage(){
+        $image = Image::whereNull('user_id')->orderBy('updated_at', "DESC")->first();
+        if (! $image){
+            return redirect()->route('images.index',['new'=>1]);
+        }
+        
+        return redirect()->route('images.edit',$image->id);
+         
+    }
+    
 }

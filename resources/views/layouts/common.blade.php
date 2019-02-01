@@ -47,10 +47,30 @@
                     </button>
 
                     <div class="collapse navbar-collapse" id="navbarNav">
+                        
+                        
+                        
                         <ul class="navbar-nav">
-                            @foreach( __('menu.common') as $url => $title)
-                                <a class="nav-item nav-link {{ request()->url() == $url ? 'active' : '' }}" href="{{ $url }}">{{ $title }}</a>
-                            @endforeach
+                            
+                            <div class="dropdown">
+
+                                <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Images
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="{{ route('images.index') }}">Labeled</a>
+                                    <a class="dropdown-item" href="{{ route('images.index',['new'=>1]) }}">New</a>
+                                    <a class="dropdown-item" href="{{ route('images.new.first') }}">First new</a>
+
+                                    @if (Auth::check() && Auth::user()->isAdmin())
+                                        <div class="dropdown-divider"></div>
+                                        @include('image.add')
+                                    @endif
+
+                                </div>
+                            </div>
+                            <!-- Place to common menu items -->
                             @if (Auth::check() && Auth::user()->isAdmin())
                                 @foreach( __('menu.admin') as $url => $title)
                                     <a class="nav-item nav-link {{ request()->url() == $url ? 'active' : '' }}" href="{{ $url }}">{{ $title }}</a>
