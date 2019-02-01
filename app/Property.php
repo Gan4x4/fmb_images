@@ -161,9 +161,15 @@ class Property extends Model
     }
     
     private function canCopyFromThisItem($i1,$i2){
+        
         if ($i1->id == $i2->id){
             return true;
         }
+        
+        if ($this->name == 'Brand'){
+            return false;
+        }
+        
         $groups = [['Frame','Fork','Wheel']];
         foreach($groups as $group){
             if (in_array($i1->name,$group) && in_array($i2->name,$group)){
