@@ -18,12 +18,14 @@ class TestController extends Controller
     
     public function new_prop()
     {
-        return "Blocked";
+        //return "Blocked";
         $images = Image::all();
         foreach($images as $image){
             
             $bike = null;
             $frame = null;
+            $fork = null;
+            $wheel = null;
             foreach($image->features as $feature){
                 $item = $feature->getItem();
                 if ($item && $item->name == 'Bike' ){
@@ -32,8 +34,30 @@ class TestController extends Controller
                 elseif($item && $item->name == 'Frame' ){
                     $frame = $feature;
                 }
+                elseif($item && $item->name == 'Fork' ){
+                    $fork = $feature;
+                }
+                elseif($item && $item->name == 'Wheel' ){
+                    $wheel = $feature;
+                }
+                
             }    
             
+            print "". " Image <a href='".route('images.edit',$image->id)."'>".$image->id."</a><br>";  
+            
+            if ($wheel){
+                $features = [$frame, $fork];
+                foreach($features as $f){
+                    $this->attach_ws($f, $wheel);
+                    //if ($this->attach_ws($f, $wheel)){
+                    //    return;
+                    //}
+                }
+                
+                
+            }
+            
+            /*
             if ($bike && $frame){
                 $bike_type = $bike->properties()->where('property_id',6)->first();
                 if (! $bike_type){
@@ -73,9 +97,36 @@ class TestController extends Controller
                 }
                 
             }
-            
+            */
         }
     }
+    
+    private function attach_ws($feature,$wheel){
+        $wheel_size = $wheel->properties()->where('property_id',3)->first();
+        if (! $wheel_size || ! $wheel_size->getTag()){
+            return false;
+        }
+                
+        if ($feature){
+            $ws = $feature->properties()->where('property_id',3)->first();
+            if (! $ws || ($ws && ! $ws->getTag())){
+
+                $feature->properties()->attach(3,[
+                'feature_id' => $feature->id,
+                'tag_id' => $wheel_size->getTag()->id,
+                'item_id' => $feature->getItem()->id]);
+
+
+                print $wheel_size->getTagName() ."to ".$feature->getItem()->name;
+                print "<hr>";
+                //return true;
+
+            }
+
+        }
+        return false;
+    }
+    
     
     /*
      * Legacy script for move color properties from bike to frame
