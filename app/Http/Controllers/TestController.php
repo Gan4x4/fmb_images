@@ -18,7 +18,7 @@ class TestController extends Controller
     
     public function new_prop()
     {
-        //return "Blocked";
+        return "Blocked";
         $images = Image::all();
         foreach($images as $image){
             

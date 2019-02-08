@@ -22,7 +22,7 @@ class Darknet extends Dataset{
     
     
     
-    protected $cfg_template = 'template/yolov3_fmb.cfg';
+    protected $cfg_template = 'template/yolov3-tiny_fmb.cfg';
     
     public function __construct($items) {
        $this->items = $items;
