@@ -33,6 +33,23 @@ class Feature extends Model
     }
     
     
+    public function extractSquareCanvas($dir,$name){
+        $manager = new ImageManager();
+        $file = storage_path('app'.DIRECTORY_SEPARATOR.$this->image->path);
+        $image = $manager->make($file);
+        
+        $image->crop($this->width,$this->height,$this->x1, $this->y1);
+        
+        if ($this->width != $this->height){
+            $canvas = $this->width > $this->height ? $this->width : $this->height;
+            $image->resizeCanvas($canvas,$canvas);
+        }
+        $full_name  = $name.".jpeg";
+        $image->save($dir.DIRECTORY_SEPARATOR.$full_name);
+        return $full_name;
+    }
+    
+    
     public function extractSquare($dir,$name){
         $x1 = $this->x1;
         $y1 = $this->y1;

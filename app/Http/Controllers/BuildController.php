@@ -18,9 +18,6 @@ class BuildController extends Controller
     public function index()
     {
         $builds = Build::all();
-        
-        
-        
         return view('build.index')->with([
                 'builds' => $builds,
                 'menu' => $this->getMenu()

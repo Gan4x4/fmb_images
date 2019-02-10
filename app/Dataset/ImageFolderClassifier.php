@@ -19,11 +19,16 @@ use App\Tag;
  */
 class ImageFolderClassifier extends Dataset{
     
+    const CROP_FORM_ORIGINAL = 0;
+    const CROP_FORM_SQUARE = 1;
+    const CROP_FORM_SQUARE_CANVAS = 2;
+    
     private $items = [];
     public $subdirs = true;
     public $dir = null;
     public $minimalPropertyCount = 9;
     public $tree = null;
+    public $crop_form = null;
     
     private $other = 'other';
     
@@ -32,7 +37,10 @@ class ImageFolderClassifier extends Dataset{
         
         $this->minimalPropertyCount = intval($params['min_prop']);
         $this->test = floatval($params['validate']);
+        $this->crop_form = intval($params['crop_form']);
+        //dd($this->crop_form);
         //\Log::debug($params);
+        //\Log::debug($this->crop_form);
         foreach($params['items'] as $item_id){
             $tmp[$item_id] = [];
             $propKey = $item_id.'_propertys';
@@ -60,6 +68,7 @@ class ImageFolderClassifier extends Dataset{
         Storage::makeDirectory($this->dir);
         
         $itemIds = array_keys($this->items);
+        $i = 0;
         foreach($itemIds as $item_id){
             $this->extractAndSaveImages($item_id);
         }
@@ -119,7 +128,8 @@ class ImageFolderClassifier extends Dataset{
                 if ($tag && in_array($tag->id, $selectedTagIds)){
                     $tag_dir = $this->lookupTagDir($item,$property,$tag);
                     $filename = self::name2file($tag->name.'_'.$feature->image->id);
-                    $feature->extractSquare(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+                    $this->extractRegion($feature,storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+                    //$feature->extractSquare(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
                     
                 }
             }
@@ -134,12 +144,29 @@ class ImageFolderClassifier extends Dataset{
                 $tag->name = 'Undefined';
                 $tag_dir = $this->lookupTagDir($item,$property,$tag);
                 $filename = self::name2file($tag->name.'_'.$feature->image->id);
-                $feature->extractSquare(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+                $this->extractRegion($feature,storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
+                //$feature->extractSquare();
             }
         }
         
     }
     
+    private function extractRegion($feature,$dir,$filename){
+        switch ($this->crop_form) {
+            case self::CROP_FORM_SQUARE:
+                    $feature->extractSquare($dir,$filename);
+                break;
+
+            case self::CROP_FORM_SQUARE_CANVAS:
+                    $feature->extractSquareCanvas($dir,$filename);
+                break;
+            
+            default:
+                // Original
+                $feature->extract($dir,$filename);
+                break;
+        }
+    }
     
     
     
