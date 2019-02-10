@@ -9,7 +9,7 @@ use App\Tag;
 class Property extends Model
 {
     //protected $guarded = ['id','created_at','updated_at'];
-    protected $fillable = ['name','description'];
+    protected $fillable = ['name','description','order_priority'];
     protected $estimated_tag_id = null;
     public $estimation_source = null;
     

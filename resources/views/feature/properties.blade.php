@@ -1,11 +1,15 @@
 @php
-     $selectable = $properties->filter( function($property,$key){
+    $selectable = $properties->filter( function($property,$key){
         return ! $property->isManualInput();
-      });
+    });
       
-      $manual_input = $properties->filter( function($property,$key){
+    $selectable = $selectable->sortBy(function($property,$key){
+        return  $property->order_priority;
+    });
+      
+    $manual_input = $properties->filter( function($property,$key){
         return $property->isManualInput();
-      });
+    });
 
 @endphp
 

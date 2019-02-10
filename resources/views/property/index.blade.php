@@ -13,6 +13,7 @@
             @foreach($properties as $property) 
                 <li> 
                     {{ $property->name }} ( {{ implode(",",App\Http\Controllers\Controller::collection2select($property->tags)) }} )
+                    order priority: {{ $property->order_priority }}
                     <a href="{{ route('properties.edit',$property->id) }}" title="Edit"><i class="fas fa-edit"></i></a>
                     {!! Html::deleteLink(route('properties.destroy',$property->id)) !!}
                 </li>

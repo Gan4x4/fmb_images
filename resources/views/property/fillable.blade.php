@@ -8,6 +8,7 @@
 
 
 {!! Form::bsText('name','Property name') !!}
+{!! Form::bsText('order_priority','Order') !!}
 {!! Form::bsText('description','Property description') !!}
 
 
