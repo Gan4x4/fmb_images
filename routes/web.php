@@ -32,10 +32,12 @@ Route::middleware('auth')->resource('images', 'ImageController');
 Route::middleware('auth.admin')->resource('properties', 'PropertyController');
 Route::middleware('auth.admin')->resource('tags', 'TagController');
 
-Route::middleware('auth.admin')->get('items/build', 'ItemController@build')->name('build');
+
 Route::middleware('auth.admin')->resource('items', 'ItemController');
 
 Route::middleware('auth.admin')->resource('users', 'UserController');
+
+//Route::middleware('auth.admin')->get('items/build', '@build')->name('build');
 Route::middleware('auth.admin')->resource('builds', 'BuildController');
 
 

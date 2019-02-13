@@ -38,28 +38,9 @@ class ImageFolderClassifier extends Dataset{
         $this->minimalPropertyCount = intval($params['min_prop']);
         $this->test = floatval($params['validate']);
         $this->crop_form = intval($params['crop_form']);
-        //dd($this->crop_form);
-        //\Log::debug($params);
-        //\Log::debug($this->crop_form);
-        foreach($params['items'] as $item_id){
-            $tmp[$item_id] = [];
-            $propKey = $item_id.'_propertys';
-            if (isset($params[$propKey]) ){
-                foreach($params[$propKey] as $prop_id){
-                    $tmp[$item_id][$prop_id] = [];
-                    $tagKey =  $item_id.'_'.$prop_id.'_tags';
-                    if (isset($params[$tagKey])){
-                        foreach($params[$tagKey] as $tag_id){
-                            $tmp[$item_id][$prop_id][] = $tag_id;
-                        }
-                    }
-                }
-            }
-        }
-        $this->items = $tmp;
+        $this->items = self::tree2array($params);
         $this->tree = new Tree(array_keys($this->items),$this->test);//array_keys($this->items));
-        
-        
+
     }
     
     

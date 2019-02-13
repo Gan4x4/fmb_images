@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Dataset\Build;
 use App\Item;
+use App\Jobs\DatasetBuilder;
 
 class BuildController extends Controller
 {
@@ -47,7 +48,7 @@ class BuildController extends Controller
         $view =  $this->getView($request->type);
         return view($view)->with([
                 'items' => Item::all(),
-                 'menu' => $this->getMenu()
+                'menu' => $this->getMenu()
             ]); 
     }
     
@@ -63,14 +64,21 @@ class BuildController extends Controller
     
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     Old build from ItemController
      */
     public function store(Request $request)
     {
-        //
+        $dir = 'public/features/'.uniqid("build_");
+        //dd($request->all());
+        $build = new Build();
+        $build->params = $request->all();
+        
+        $build->dir = $dir;
+        $build->save();
+        
+        DatasetBuilder::dispatch($build);
+       
+        return redirect()->route('builds.index');
     }
 
     /**

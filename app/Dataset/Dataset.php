@@ -67,4 +67,31 @@ abstract class Dataset {
         return $zip->close();
     }
     
+    
+    /*
+     * transform request with tree to array 
+     * 
+     */
+    public static function tree2array($params){
+        if (! isset($params['items'])){
+            return null;
+        }
+        foreach($params['items'] as $item_id){
+            $tmp[$item_id] = [];
+            $propKey = $item_id.'_propertys';
+            if (isset($params[$propKey]) ){
+                foreach($params[$propKey] as $prop_id){
+                    $tmp[$item_id][$prop_id] = [];
+                    $tagKey =  $item_id.'_'.$prop_id.'_tags';
+                    if (isset($params[$tagKey])){
+                        foreach($params[$tagKey] as $tag_id){
+                            $tmp[$item_id][$prop_id][] = $tag_id;
+                        }
+                    }
+                }
+            }
+        }
+        return $tmp;
+    }
+    
 }

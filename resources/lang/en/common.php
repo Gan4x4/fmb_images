@@ -18,8 +18,14 @@
             App\Dataset\ImageFolderClassifier::CROP_FORM_ORIGINAL => 'Original',
             App\Dataset\ImageFolderClassifier::CROP_FORM_SQUARE => 'Square',
             App\Dataset\ImageFolderClassifier::CROP_FORM_SQUARE_CANVAS => 'Square canvas'
-        ]
+        ],
         
+        'darknet_templates' =>
+            [
+                'yolov3-tiny_fmb.cfg' => 'YOLOv3 tiny',
+                'yolov3_fmb.cfg' => 'YOLOv3 full'
+            ]
+            
     ];
 
 ?>

@@ -1,0 +1,5 @@
+classes={{$classes}}
+train={{$path}}train.txt
+valid={{$path}}test.txt
+names={{$path}}classes.names
+backup=backup/

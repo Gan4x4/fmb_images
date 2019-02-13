@@ -11,7 +11,7 @@
 
     {{ Html::bsTabs($menu,1) }} 
 
-    {!! Form::open(['route'=>['build'],'method'=>'get']) !!}
+    {!! Form::open(['route'=>['builds.store']]) !!}
     <div class='row'>
         <div id='tree' class='col-md-8'>
             @include('item.tree',['items'=>$items])
@@ -19,6 +19,8 @@
         <div class='col-md-4'>
             
             {!! Form::bsText('validate','Validate (0 .. 1) %  ',0.1,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}
+            {!! Form::bsText('path','Path') !!}
+            {!! Form::bsSelect('model','Model',__('common.darknet_templates')) !!}
             {!! Form::hidden('type',App\Dataset\Build::DARKNET) !!}
 
             {!! Form::submit('Build',['class' => 'btn btn-primary','id'=>'build', 'disabled']) !!}

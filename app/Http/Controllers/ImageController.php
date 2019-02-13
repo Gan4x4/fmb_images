@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Parser\Source;
 use App\Http\Controllers\FeatureController;
 use Illuminate\Support\Facades\DB;
+use App\Dataset\Dataset;
 
 class ImageController extends Controller
 {
@@ -49,16 +50,13 @@ class ImageController extends Controller
             'tabs' => $this->getTabs($request->all()),
             'active_tab' => $active_tab,
             'count' => $user->getStat(),
-            'tree'=>$this->tree2array($request->all()),
+            'tree'=>Dataset::tree2array($request->all()),
             'enable_filter' => $request->filter
         ]);
     }
     
-    
-    
-    
     private function filter($request){
-        $selected = $this->tree2array($request->all());
+        $selected = Dataset::tree2array($request->all());
         if (! $selected){
             return null;
         }
@@ -106,6 +104,7 @@ class ImageController extends Controller
         
     }
     
+    /*
     private function tree2array($params){
         if (! isset($params['items'])){
             return null;
@@ -127,7 +126,7 @@ class ImageController extends Controller
         }
         return $tmp;
     }
-    
+    */
     
     
     private function getTabs($params = []){

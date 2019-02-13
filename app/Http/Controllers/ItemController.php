@@ -7,8 +7,7 @@ use App\Item;
 use App\Property;
 
 use App\Image;
-use App\Jobs\DatasetBuilder;
-use App\Dataset\Build;
+
 
 
 class ItemController extends Controller
@@ -162,57 +161,6 @@ class ItemController extends Controller
             'properties' => $properties,
                 'image' =>$image,
             ]);
-    }
-    
-/*
-   
-    public function build(Request $request){
-        
-        $dir = 'public/features/'.uniqid("build_");
-        if ($request->type == self::DARKNET){
-            $dataset = new Darknet($request->items);
-        }else{
-        
-            $items = [];
-            foreach($request->items as $item_id){
-                $items[$item_id]=[];
-                $propKey = $item_id.'_propertys';
-                if ($request->has($propKey)){
-                    //dump($request->$propKey);
-                    foreach($request->$propKey as $prop_id){
-                        $items[$item_id][] = $prop_id;
-                    }
-                }
-            }
-            $dataset = new ImageFolder($items);
-            $dataset->subdirs = $request->has('subdirs');
-        }
-        
-        $target = $dataset->build($dir);
-        return view('item.build')->with([
-                'zip' => Storage::url($target)
-                ]); 
-        
-    }
-  */  
-    public function build(Request $request){
-        
-        $dir = 'public/features/'.uniqid("build_");
-
-        $build = new Build();
-        $build->params = $request->all();
-        //dd($build->params);
-        $build->dir = $dir;
-        //$build->minimalPropertyCount = intval($request->min_prop);
-        //$build->test = floatva($request->validate);
-        $build->save();
-        
-        DatasetBuilder::dispatch($build);
-       
-        return redirect()->route('builds.index');
-        
-       
-        
     }
     
 }

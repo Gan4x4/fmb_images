@@ -9,7 +9,7 @@
 @section('content')
     
     {{ Html::bsTabs($menu,2) }}
-    {!! Form::open(['route'=>['build'],'method'=>'get']) !!}
+    {!! Form::open(['route'=>['builds.store']]) !!}
     <div class='row'>
         <div id='tree' class='col-md-8'>
             @include('item.tree',['items'=>$items])
