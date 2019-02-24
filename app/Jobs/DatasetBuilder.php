@@ -16,7 +16,6 @@ class DatasetBuilder implements ShouldQueue
     
     public function __construct($build)
     {
-        \Log::debug("S1");
         $this->build = $build;
     }
 
@@ -27,9 +26,9 @@ class DatasetBuilder implements ShouldQueue
      */
     public function handle()
     {
-        \Log::debug("S2");
+        //\Log::debug("S2");
         $this->build->make();
-        \Log::debug("S3");
+        
     }
     
 }

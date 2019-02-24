@@ -134,7 +134,7 @@ class Darknet extends Dataset{
             if (empty($text)){
                 throw new Exception("Image without expected features: ".$image->id);
             }
-            dump($text);
+
             $text_file_name = $image->id.".txt";
             $this->saveDescriptions(storage_path('app'.DIRECTORY_SEPARATOR.$images_dir.DIRECTORY_SEPARATOR.$text_file_name),$text);
         }
@@ -289,7 +289,6 @@ class Darknet extends Dataset{
     protected function array2file($file,$arr){
         $handle = fopen($file, "a");
         foreach($arr as $line){
-            //$str = implode(' ',$line);
             fwrite($handle,$line.PHP_EOL);
         }
         fclose($handle);

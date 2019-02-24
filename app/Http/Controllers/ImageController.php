@@ -45,12 +45,12 @@ class ImageController extends Controller
         }
         
         return view('image.index')->with([
-            'images'=>$images->paginate(self::ITEMS_PER_PAGE)->appends($request->all()),
-            'items'=>Item::all(),
+            'images' => $images->paginate(self::ITEMS_PER_PAGE)->appends($request->all()),
+            'items' => Item::all(),
             'tabs' => $this->getTabs($request->all()),
             'active_tab' => $active_tab,
             'count' => $user->getStat(),
-            'tree'=>Dataset::tree2array($request->all()),
+            'tree' => Dataset::tree2array($request->all()),
             'enable_filter' => $request->filter
         ]);
     }
@@ -195,7 +195,7 @@ class ImageController extends Controller
             $request->validate([
                 'file' => 'required|image',
             ]);
-            $image->path = $request->file->store('public/images');    
+            $image->path = $request->file->store(env('IMAGES_DIR'));    
             $image->description = $request->description;
         }
         //dd($image);
@@ -218,7 +218,7 @@ class ImageController extends Controller
                     $duplicates[] = $duplicate->id;
                 }else{
                     $image = new Image();
-                    $image->path = Storage::putFile('public/images', new File($newImagePath));
+                    $image->path = Storage::putFile(env('IMAGES_DIR'), new File($newImagePath));
                     $image->description = $parser->getDescription();
                     $image->source_id = $source->id;
                     $image->user_id = null;
@@ -367,8 +367,6 @@ class ImageController extends Controller
         }
         
         $image->save();
-        
-         
         return redirect()->route('images.edit',$image->id);
     }
     
@@ -385,29 +383,11 @@ class ImageController extends Controller
             ->where('features.y1','=',0)
             ->select('features.*');
         
-        //dump($query->toSql());
         $data = $query->get();
-        //dd($data);
-        //$array = (array) $data;
-        //foreach($data as $line){
-        //    $array[] = $line->id;
-        //}
-        //dump($array);
-        
-        //dd();
         $features = Feature::hydrate($data->toArray());
-        //dump($features);
-        //foreach()
-        
         return view('image.suspicious')->with([
             'features' => $features
         ]);
-        
-        
-        
-        
-        
-        //dump($data);
     }
     
     public function editFirstNewImage(){
@@ -417,7 +397,6 @@ class ImageController extends Controller
         }
         
         return redirect()->route('images.edit',$image->id);
-         
     }
     
 }

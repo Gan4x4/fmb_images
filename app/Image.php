@@ -5,11 +5,20 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Item;
 use App\Interfaces\Owned;
+use Intervention\Image\ImageManagerStatic;
 
 class Image extends Model implements Owned
 {
     const STATUS_NEW = null;
     const STATUS_EDITED = 1;
+    public $thumb_dir = 'thumb';
+    public $thumb_width = 300; //px
+    
+    //public function __construct(){
+    //    $this->thumb_dir = env('IMAGES_DIR');
+    //}
+    
+    
     
     protected $fillable = ['description'];
     
@@ -32,8 +41,30 @@ class Image extends Model implements Owned
     
     
     public function getThumbUrl(){
-        return $this->getUrl();
+        $thumb_path = $this->getThumbPath();
+        //dump($thumb_path);
+        if (! file_exists(storage_path('app/'.$thumb_path))) {
+            $this->createThumb();
+        }
+        
+        return "/storage/".substr($thumb_path,7);
     }
+    
+    private function getThumbPath(){
+        $filename = pathinfo($this->path,PATHINFO_BASENAME);
+        $dir = pathinfo($this->path,PATHINFO_DIRNAME);
+        return $dir.DIRECTORY_SEPARATOR.$this->thumb_dir.DIRECTORY_SEPARATOR.$filename;
+    }
+    
+    private function createThumb(){
+        $img = ImageManagerStatic::make($this->getFullPath());
+        $img->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+        $path = storage_path('app/'.$this->getThumbPath());
+        $img->save($path);
+    }
+    
     
     public function getUrl(){
         return "/storage/".substr($this->path,7);
