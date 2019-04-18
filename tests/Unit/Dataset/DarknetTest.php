@@ -22,14 +22,13 @@ class DarknetTest extends TestCase
      * @return void
      */
     
-    
+    /* 
     public function testConstructor()
     {
         $darknet = new Darknet($this->input);
-        
         $this->assertTrue(count($darknet->classes) == 1);
     }
-    /*
+   
     public function testConstructorWithTags()
     {
         $input = $this->input;

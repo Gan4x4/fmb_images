@@ -9,6 +9,9 @@ class ParserTest extends TestCase
 {
     public function testBasicTest()
     {
+        
+        
+        
         $this->assertTrue(true);
     }
 }

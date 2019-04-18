@@ -19,9 +19,16 @@
                 <a href="{{route('images.create')}}" role="button" class="btn btn-default">Add</a>
                 <br>
                 <a href="{{route('images.suspicious')}}">Find suspicious</a>
+                
             </div>
-            <div class='col-md-10'>
+            <div class='col-md-8'>
                 @include('image.add')
+            </div>
+            
+            <div class='col-md-2'>
+                {!! Form::open(['route'=>'images.load.complaints'])  !!}
+                    {!! Form::submit("Load complaints",['class'=>'btn btn-default ']) !!}    
+                {!! Form::close() !!}
             </div>
         </div>
         <hr>

@@ -17,9 +17,7 @@ class Image extends Model implements Owned
     //public function __construct(){
     //    $this->thumb_dir = env('IMAGES_DIR');
     //}
-    
-    
-    
+
     protected $fillable = ['description'];
     
     public static function findByHash($path){
@@ -39,6 +37,9 @@ class Image extends Model implements Owned
         return $this->BelongsTo('App\User');
     }
     
+    public function source(){
+        return $this->BelongsTo('App\Parser\Source');
+    }
     
     public function getThumbUrl(){
         $thumb_path = $this->getThumbPath();
@@ -57,8 +58,10 @@ class Image extends Model implements Owned
     }
     
     private function createThumb(){
+        
         $img = ImageManagerStatic::make($this->getFullPath());
-        $img->resize(300, null, function ($constraint) {
+        
+        $img->resize($this->thumb_width, null, function ($constraint) {
             $constraint->aspectRatio();
         });
         $path = storage_path('app/'.$this->getThumbPath());
@@ -143,6 +146,12 @@ class Image extends Model implements Owned
         foreach($this->features as $feature){
             $feature->delete();
         }
+        
+        $source = $this->source;
+        if ($source->images->count() == 1){
+            $source->delete();
+        }
+        
         parent::delete();
     }
     

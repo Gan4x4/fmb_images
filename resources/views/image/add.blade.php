@@ -9,15 +9,13 @@
                 </div>
             @endfor
         </div>
-        <div class='col-md-9'>
+        <div class='col-md-12'>
 
                 <label for="url" class="sr-only">URL</label>
                 {!! Form::text('url',null,['class'=>'form-control', 'placeholder' => "URL",'size'=>70]) !!}
 
                 {!! Form::submit("Parse",['class'=>'btn btn-primary ']) !!}    
         </div>
-        <div class='col-md-3'>
-
-        </div>
+        
     </div>
 {!! Form::close() !!}

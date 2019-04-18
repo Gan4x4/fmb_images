@@ -4,45 +4,18 @@ namespace App\Parser;
 use Symfony\Component\DomCrawler\Crawler;
 
 use Illuminate\Support\Facades\Storage;
+use App\Helper\Utils;
 
 class Avito extends Parser{
+    const CODE = 2;
     protected $raw = null;
     protected $cache = 'tmp_html';
     protected $crawler = null;
     public $image_size = '1280x960'; // '640x480'
+    
     public function __construct($html) {
-       // if (! Storage::exists($this->cache)){
-        /*
-            $client = new Client();
-            $response = $client->request('GET', $url);
-            $this->raw = $response->getBody()->getContents();
-         * 
-         */
-            //Storage::put($this->cache,$html);
-        //}
-        //$this->raw = Storage::get($this->cache);
-        
-        //print substr($this->raw,0,2000);
-        //print $url;
-        //dd($this->raw);
         $this->raw = $html;
         $this->crawler = new Crawler($this->raw);
-          /*
-        $nodeValues = $images->each(function (Crawler $node, $i) {
-            return $node->attr('data-url');
-        });
-        
-        dump($nodeValues);
-        
-      
-        foreach ($crawler as $domElement) {
-            var_dump($domElement->nodeName);
-            print $domElement->attr('data-url');
-            }
-        
-        */
-        
-        //print $this->getDescription();
     }
     
     public static function createByUrl($url){
@@ -62,7 +35,7 @@ class Avito extends Parser{
         }
     }
 
-    public function getAllImages($selected = null){
+    public function getAllImages($selected = null,$pause = 0.1){
         $list = [];
         $images = $this->getImageUrls($this->image_size);
         $i = 0;
@@ -72,7 +45,8 @@ class Avito extends Parser{
                 continue;
             }
             $url = $image->getAttribute('data-url');
-            $list[] = $this->saveImage($url);
+            $list[] = Utils::saveImage($url);
+            sleep($pause);
         }
         return $list;
     }
@@ -81,27 +55,28 @@ class Avito extends Parser{
      * Download first image and return it'stmp file path
      */    
     public function getImage(){
-            $images = $this->getImageUrls($this->image_size);
-            //$imgUrl = "http:".$images->attr('data-url');
-            return $this->saveImage($images->attr('data-url'));
-            //$tempImage = tempnam(sys_get_temp_dir(),"avito_img");
-            //copy($imgUrl, $tempImage);
-            //return $tempImage;
-        
+        $images = $this->getImageUrls($this->image_size);
+        return Utils::saveImage($images->attr('data-url'));
     }
-    
-    private function saveImage($url){
-        $imgUrl = "http:".$url;
-        $tempImage = tempnam(sys_get_temp_dir(),"avito_img");
-        copy($imgUrl, $tempImage);
-        return $tempImage;
-    }
-    
+
     public function getDescription(){
-        $title = $this->crawler->filterXPath('//span[contains(@class, "title-info-title-text")]');
-        $body = $this->crawler->filterXPath('//div[contains(@class, "item-description-text")]');
+        //$title = $this->crawler->filterXPath('//span[contains(@class, "title-info-title-text")]');
+        //$body = $this->crawler->filterXPath('//div[contains(@class, "item-description-text")]');
         $price = $this->getPrice();
-        return $title->text()."\n".$body->text()."\n Цена: ".$price;
+        return $this->getTitle()."\n".$this->getShortDescription()."\n Цена: ".$price;
+    }
+    
+    public function getShortDescription(){
+        $body = $this->crawler->filterXPath('//div[contains(@class, "item-description-text") or contains(@class, "item-description-html")]');
+        if (! $body->count()){
+            return null;
+        }
+        return $body->text();
+    }
+    
+    public function getTitle(){
+        $title = $this->crawler->filterXPath('//span[contains(@class, "title-info-title-text")]');
+        return $title->text();
     }
     
     

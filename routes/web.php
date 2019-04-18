@@ -26,7 +26,13 @@ Route::middleware('auth.admin')->get('images/suspicious', 'ImageController@suspi
 Route::middleware('auth')->get('images/new/first', 'ImageController@editFirstNewImage')->name('images.new.first');
 Route::middleware('auth')->post('images/{id}/take', 'ImageController@take')->name('images.take');
 Route::middleware('auth')->get('images/{id}/exists', 'ImageController@alreadyExists')->name('images.exists');
+Route::middleware('auth')->post('images/load_complaints', 'ImageController@loadComplaints')->name('images.load.complaints');
+
+
 Route::middleware('auth')->delete('images/{id}/ajax', 'ImageController@destroyAjax')->name('images.destroy.ajax');
+
+
+
 Route::middleware('auth')->resource('images', 'ImageController');
 
 Route::middleware('auth.admin')->resource('properties', 'PropertyController');

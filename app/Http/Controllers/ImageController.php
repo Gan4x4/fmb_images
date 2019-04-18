@@ -14,6 +14,9 @@ use App\Parser\Source;
 use App\Http\Controllers\FeatureController;
 use Illuminate\Support\Facades\DB;
 use App\Dataset\Dataset;
+use App\Helper\Utils;
+use GuzzleHttp\Client;
+
 
 class ImageController extends Controller
 {
@@ -210,7 +213,7 @@ class ImageController extends Controller
         $images = [];
 
         if (count($tmpImagePaths) > 0){
-            $source = Source::create(['link'=>$url]);
+            $source = Source::create(['link'=>$url,'type' => Source::TYPE_AVITO]);
             
             foreach($tmpImagePaths as $newImagePath){
                 $duplicate = Image::findByHash($newImagePath);
@@ -397,6 +400,134 @@ class ImageController extends Controller
         }
         
         return redirect()->route('images.edit',$image->id);
+    }
+    
+    public function importFromFmb($bundle){
+        $url = $bundle->url;
+        $newImagePath = Utils::saveImage($url);
+        
+        $duplicate = Image::findByHash($newImagePath);
+        if ($duplicate){
+            //return $duplicate;
+            return route('images.exists',[$duplicate->id]);
+        }
+
+        $image = new Image();
+
+        $image->path = Storage::putFile(env('IMAGES_DIR'), new File($newImagePath));
+        unlink($newImagePath);
+        $image->user_id = null;
+       // $image->source_id = $source->id;
+        $image->description = $bundle->complaints;
+        $image->save();
+        
+        
+        $regions = json_decode($bundle->regions);
+        $this->addFeatures($image,$regions);
+        
+        return $image;
+        //return redirect()->route('images.show',[$image->id]);
+    }
+    
+    private function addFeatures($image,$regions){
+        foreach($regions as $region){
+            $item = Item::whereRaw('lower(name) = (?)',["{$region->item_name}"])->first();
+            if ($item){
+                $coords = $region->coords;
+                $feature = Feature::create([
+                    'image_id'=>$image->id,
+                    'x1' => $coords[0],
+                    'y1' => $coords[1],
+                    'x2' => $coords[2],
+                    'y2' => $coords[3],
+                    'description' => 'Created by NN'
+                    ]);
+                
+                foreach($item->properties as $property){
+                    $feature->properties()->attach($property->id,[
+                        'feature_id' => $feature->id,
+                        'tag_id' => 0,
+                        'item_id' => $item->id
+                        ]);    
+                }
+            }
+        }
+    }
+    
+    public function loadComplaints(){
+        //dd("Here");
+        
+        //$url = 'http://fmb.gan4x4.ru/api/images/2199/export';
+        $url = 'http://fmb.gan4x4.ru/api/images/complaints';
+        $list = $this->readUrl($url);
+//        dump($json_obj);
+        if ($list->error != 0){
+            dd($list->message);
+        }
+        
+        $out = [];
+                
+        foreach($list->images as $image_url){
+            $source = Source::where('link',$image_url)->first();
+            
+            $line = [
+                'url' =>$image_url
+            ];
+            if ($source){
+                // already loaded
+                $img = $source->images()->first();
+                if ($img){
+                    $line['image'] = route('images.edit',$img->id);
+                    $line['info'] = "Image already imported";
+                }
+                else{
+                    $line['image'] = '--';
+                    $line['info'] = "Source already exists but image not found";
+                }
+            }
+            else{
+                
+                $source = Source::create(['link'=>$image_url,'type' => Source::TYPE_FMB]);
+                $bundle = $this->readUrl($image_url);
+                $img = $this->importFromFmb($bundle);
+                if (is_object($img)){
+                    $img->source_id = $source->id;
+                    $img->save();
+                    $line['image'] = route('images.edit',$img->id);    
+                    $line['info'] = "Created new image";
+                }else{
+                    // Duplicate
+                    $line['image'] = $img;    
+                    $line['info'] = "Image already in db";
+                }
+                
+                
+            }
+            
+            $out[] = $line;
+            //print $image_url."<br>";
+        }
+        //dd("HH");
+        
+        //$wheel = 'wheel';
+        //dump(Item::whereRaw('lower(name) = (?)',["{$wheel}"])->toSql());
+        //dd(Item::whereRaw('lower(name) = (?)',["{$wheel}"])->first());
+        
+        
+        //dd(json_decode($json_obj->regions));
+        return view('image.import_complaints')->with([
+            'lines'=>$out
+        ]);
+    }
+    
+    private function readUrl($url){
+        $client = new Client();
+        $response = $client->request('GET', $url);
+        if ( $response->getStatusCode() != 200){
+            throw new \Exception("Invalid request code ". $response->getStatusCode()." ".$response->getBody()->getContents());
+        }
+        $data = $response->getBody()->getContents();
+        return json_decode($data);
     }
     
 }
