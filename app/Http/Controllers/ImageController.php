@@ -418,7 +418,7 @@ class ImageController extends Controller
         unlink($newImagePath);
         $image->user_id = null;
        // $image->source_id = $source->id;
-        $image->description = $bundle->complaints;
+        $image->description = "Complants: ".$bundle->complaints."--------------\n".$bundle->description;
         $image->save();
         
         
@@ -469,7 +469,6 @@ class ImageController extends Controller
                 
         foreach($list->images as $image_url){
             $source = Source::where('link',$image_url)->first();
-            
             $line = [
                 'url' =>$image_url
             ];
@@ -486,7 +485,6 @@ class ImageController extends Controller
                 }
             }
             else{
-                
                 $source = Source::create(['link'=>$image_url,'type' => Source::TYPE_FMB]);
                 $bundle = $this->readUrl($image_url);
                 $img = $this->importFromFmb($bundle);

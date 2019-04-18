@@ -90,6 +90,11 @@
                  @endforeach
         </div>
        
+        @if ($image->source )
+            <a href="{{ $image->source->link }}">{{ $image->source->link }}</a>
+        @endif
+        
+        
         @if ( $image->user || Auth::user()->isAdmin())
             {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
                 {!! Form::bsTextarea('description', 'Description'); !!}
