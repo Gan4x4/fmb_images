@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Dataset\Dataset;
 use App\Helper\Utils;
 use GuzzleHttp\Client;
+use App\Tag;
 
 
 class ImageController extends Controller
@@ -443,15 +444,32 @@ class ImageController extends Controller
                     'description' => 'Created by NN'
                     ]);
                 
+                $props = $region->properties;
+                //dump($props);
                 foreach($item->properties as $property){
+                    $key = mb_strtolower($item->name).'/'.mb_strtolower($property->name);
+                    //dump($key);
+                    $tag_id = 0;
+                    
+                    if ( is_object($props) && property_exists($props, $key)){
+                        $query = Tag::whereRaw('LOWER(name) = "'.mb_strtolower($props->$key).'"');
+                        //dump($query->toSql());
+                        $tag = $query->first();
+                        
+                        if ($tag){
+                            $tag_id = $tag->id;
+                        }
+                    }
+                    
                     $feature->properties()->attach($property->id,[
                         'feature_id' => $feature->id,
-                        'tag_id' => 0,
+                        'tag_id' => $tag_id,
                         'item_id' => $item->id
                         ]);    
                 }
             }
         }
+       
     }
     
     public function loadComplaints(){

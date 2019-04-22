@@ -148,7 +148,7 @@ class Image extends Model implements Owned
         }
         
         $source = $this->source;
-        if ($source->images->count() == 1){
+        if ($source && $source->images->count() == 1){
             $source->delete();
         }
         

@@ -45,7 +45,7 @@ class Utils {
     public static function saveImage($url){
         
         if (strpos($url, "http:") === false){
-            $imgUrl = "http:";
+            $imgUrl = "http:".$url;
         }else{
             $imgUrl = $url;    
         }
