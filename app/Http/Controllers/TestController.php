@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Parser\Avito;
 use App\Image;
+use App\Item;
+use Illuminate\Support\Facades\DB;
 
 class TestController extends Controller
 {
@@ -215,6 +217,51 @@ class TestController extends Controller
     }
 
 
+    public function requction(){
+        
+        return view('admin.requction');
+        
+    }
+    
+    public function getImagesCount(Request $request){
+        
+        $total = Image::count();
+        print "Total images ".$total."<br>";
+        $item = Item::findOrFail($request->item_id);
+        print $item->name."<br>";
+        foreach($item->properties as $property){
+            
+            $partial_counts = [];
+            foreach($property->tags as $tag){
+                
+                $query =  DB::table('bindings')->distinct('feature_id');
+                $query->where('item_id',$item->id);
+                $query->where('property_id',$property->id);
+                $query->where('tag_id',$tag->id);   
+                $featureIds = $query->pluck('feature_id')->toArray();
+                $featureIds = array_unique($featureIds);
+                $ImageIds =  DB::table('features')
+                ->distinct('image_id')
+                ->whereIn('id',$featureIds)
+                ->pluck('image_id')->toArray();
+                $key = strtr($property->name.'/'.$tag->name,' ','_');
+                $partial_counts[$key] = count($ImageIds);
+            }
+            
+            print $property->name."<br>";
+            $average = array_sum($partial_counts)/count($partial_counts);
+            var_dump($partial_counts);
+            print "Requction :". $average/$total;
+            print "<br>";
+            
+        }
+        
+        
+    
+   
+       
+    }
+    
     
     
 }

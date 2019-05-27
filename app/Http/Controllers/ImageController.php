@@ -419,7 +419,7 @@ class ImageController extends Controller
         unlink($newImagePath);
         $image->user_id = null;
        // $image->source_id = $source->id;
-        $image->description = "Complants: ".$bundle->complaints."--------------\n".$bundle->description;
+        $image->description = "Complants: ".$bundle->complaints."--------------\n".$bundle->title."\n".$bundle->description;
         $image->save();
         
         
@@ -447,13 +447,16 @@ class ImageController extends Controller
                 $props = $region->properties;
                 //dump($props);
                 foreach($item->properties as $property){
-                    $key = mb_strtolower($item->name).'/'.mb_strtolower($property->name);
-                    //dump($key);
+                    $key = strtr(mb_strtolower($item->name).'/'.mb_strtolower($property->name),' ','_');
+                    dump($key);
                     $tag_id = 0;
                     
                     if ( is_object($props) && property_exists($props, $key)){
-                        $query = Tag::whereRaw('LOWER(name) = "'.mb_strtolower($props->$key).'"');
-                        //dump($query->toSql());
+                        
+                        $name = strtr(mb_strtolower($props->$key),'_',' ');
+                        dump($name);
+                        $query = Tag::whereRaw('LOWER(name) = (?)',["{$name}"]);
+                        dump($query->toSql());
                         $tag = $query->first();
                         
                         if ($tag){

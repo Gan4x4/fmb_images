@@ -45,7 +45,15 @@ class Avito extends Parser{
                 continue;
             }
             $url = $image->getAttribute('data-url');
-            $list[] = Utils::saveImage($url);
+            
+            try{
+                // Bypass 504 error
+                $path = Utils::saveImage($url);
+                $list[] = $path;
+            }catch(\Exception $e){
+                print "Error on save image: ".$url."\n";
+                print $e->getMessage();
+            }
             sleep($pause);
         }
         return $list;

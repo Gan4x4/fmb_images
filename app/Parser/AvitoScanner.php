@@ -43,6 +43,7 @@ class AvitoScanner {
             'trek',
             'norco',
             'orbea',
+            'welt',
             //'stels'
             ];
         

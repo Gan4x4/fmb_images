@@ -51,3 +51,4 @@ Route::get('test','TestController@index');
 Route::get('bike2frame','TestController@bike2frame');
 Route::get('frame','TestController@withoutFrame');
 Route::get('new_prop','TestController@new_prop');
+Route::get('im_count','TestController@getImagesCount');
