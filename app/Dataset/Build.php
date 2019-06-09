@@ -15,6 +15,7 @@ class Build extends Model
     
     const DARKNET = 1;
     const CLASSIFIER = 2;
+    const VALIDATION = 4;
     
      protected $casts = [
         'params' => 'array',
@@ -45,6 +46,9 @@ class Build extends Model
     
     protected function fillDescription(){
         $this->description = $this->getTypeName();
+        if (! $this->file){
+            $this->description .= "Empty";
+        }
     }
     
     protected function storeDatasetId(){
@@ -92,6 +96,11 @@ class Build extends Model
             case self::CLASSIFIER:
                 $dataset = new ImageFolderClassifier($this->params);
                 break;
+            
+            case self::VALIDATION:
+                $dataset = new Validation($this->params);
+                break;
+
 
             default:
                 $dataset = new ImageFolder($this->params);

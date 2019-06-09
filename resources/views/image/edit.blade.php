@@ -98,6 +98,7 @@
         @if ( $image->user || Auth::user()->isAdmin())
             {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
                 {!! Form::bsTextarea('description', 'Description'); !!}
+                {!! Form::bsCheckbox('validation', 'Validation',1,$image->validation); !!}
                 {!! Form::submit('Save') !!}
             {!! Form::close() !!}
         

@@ -225,7 +225,9 @@ class TestController extends Controller
     
     public function getImagesCount(Request $request){
         
-        $total = Image::count();
+        $total = Image::whereNotNull('user_id')->count();
+        //dump($total->toSql());
+        //$total= $total->count();
         print "Total images ".$total."<br>";
         $item = Item::findOrFail($request->item_id);
         print $item->name."<br>";
@@ -247,12 +249,14 @@ class TestController extends Controller
                 $key = strtr($property->name.'/'.$tag->name,' ','_');
                 $partial_counts[$key] = count($ImageIds);
             }
-            
+            $key = strtr($property->name.'/undefined',',','_');
+            $partial_counts[$key] = $total - array_sum($partial_counts);
             print $property->name."<br>";
+            print "Sum ".array_sum($partial_counts)."<br>";
             $average = array_sum($partial_counts)/count($partial_counts);
             var_dump($partial_counts);
-            print "Requction :". $average/$total;
-            print "<br>";
+            print "Requction :". $average;
+            print "<hr>";
             
         }
         

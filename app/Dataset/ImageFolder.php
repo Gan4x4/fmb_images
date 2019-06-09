@@ -43,7 +43,7 @@ class ImageFolder extends Dataset{
     public function build($dir){
         $this->dir = $dir;
         Storage::makeDirectory($this->dir);
-        \Log::debug(var_export($this->items,true));
+        // \Log::debug(var_export($this->items,true));
         foreach($this->items as $item_id => $propIds){
             $this->extractAndSaveImages($item_id);
         }
@@ -60,6 +60,11 @@ class ImageFolder extends Dataset{
         if (! $features) return;
             
         foreach($features as $feature){
+            
+             if ($feature->image->validation){
+                 continue;
+             }
+            
             if (! $this->hasSelectedProps($item_id)){
                 $this->saveWithoutProps($item,$feature);
             }elseif($this->subdirs){

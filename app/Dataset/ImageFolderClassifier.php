@@ -68,8 +68,9 @@ class ImageFolderClassifier extends Dataset{
         }
          
         foreach($features as $feature){
-            $this->saveValuesInSubdirs($item,$feature);   
-            
+            if (! $feature->image->validation){
+                $this->saveValuesInSubdirs($item,$feature);   
+            }
         }
     }
     

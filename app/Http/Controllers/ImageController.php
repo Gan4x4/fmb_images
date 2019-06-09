@@ -302,6 +302,7 @@ class ImageController extends Controller
         $image = Image::findOrFail($id);
         $this->checkAccess($image);
         $image->fill($request->all()); // Update tag id
+        $image->validation = boolval($request->validation);
         $image->save();
         return redirect()->route('images.edit',$id);
     }

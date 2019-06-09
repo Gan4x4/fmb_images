@@ -255,7 +255,7 @@ class Darknet extends Dataset{
             $item = Item::findOrFail($item_id);
             $features = $item->features;
             foreach($features as $feature){
-                if ($this->getFeatureClass($feature)){
+                if (! $feature->image->validation  && $this->getFeatureClass($feature)){
                     $imageIds[] = $feature->image_id;
                 }
             }

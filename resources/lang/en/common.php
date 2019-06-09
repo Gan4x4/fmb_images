@@ -12,6 +12,7 @@
             1 => 'Darknet',
             2 => 'Classifier',
             3 => 'FMB',
+            4 => 'Validation',
         ],
         
         'crop_from' => [

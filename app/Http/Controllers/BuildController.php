@@ -56,7 +56,8 @@ class BuildController extends Controller
     public function getView($type){
         $views = [
             Build::DARKNET => 'darknet',
-            Build::CLASSIFIER => 'classifier'
+            Build::CLASSIFIER => 'classifier',
+            Build::VALIDATION => 'validation'
         ];
         
         return 'build.'.$views[$type];
