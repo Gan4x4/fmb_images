@@ -419,8 +419,14 @@ class ImageController extends Controller
         $image->path = Storage::putFile(env('IMAGES_DIR'), new File($newImagePath));
         unlink($newImagePath);
         $image->user_id = null;
-       // $image->source_id = $source->id;
-        $image->description = "Complants: ".$bundle->complaints."--------------\n".$bundle->title."\n".$bundle->description;
+        
+        if (property_exists($bundle,'source') ){
+            $source = $this->lookupSource($bundle->source);
+            $image->source_id = $source->id;
+        }
+        
+        //$image->description = "Complants: ".$bundle->complaints."--------------\n".$bundle->title."\n".$bundle->description;
+        $image->description = "Complants: ".$bundle->complaints;
         $image->save();
         
         
@@ -449,15 +455,15 @@ class ImageController extends Controller
                 //dump($props);
                 foreach($item->properties as $property){
                     $key = strtr(mb_strtolower($item->name).'/'.mb_strtolower($property->name),' ','_');
-                    dump($key);
+                    //dump($key);
                     $tag_id = 0;
                     
                     if ( is_object($props) && property_exists($props, $key)){
                         
                         $name = strtr(mb_strtolower($props->$key),'_',' ');
-                        dump($name);
+                        //dump($name);
                         $query = Tag::whereRaw('LOWER(name) = (?)',["{$name}"]);
-                        dump($query->toSql());
+                        //dump($query->toSql());
                         $tag = $query->first();
                         
                         if ($tag){
@@ -479,7 +485,7 @@ class ImageController extends Controller
     public function loadComplaints(){
         //dd("Here");
         
-        //$url = 'http://fmb.gan4x4.ru/api/images/2199/export';
+        //$url = 'http://fmb.gan4x4.ru/api/images/5175/export';
         $url = 'http://fmb.gan4x4.ru/api/images/complaints';
         $list = $this->readUrl($url);
 //        dump($json_obj);
@@ -507,12 +513,14 @@ class ImageController extends Controller
                 }
             }
             else{
-                $source = Source::create(['link'=>$image_url,'type' => Source::TYPE_FMB]);
                 $bundle = $this->readUrl($image_url);
                 $img = $this->importFromFmb($bundle);
                 if (is_object($img)){
-                    $img->source_id = $source->id;
-                    $img->save();
+                    if (! $img->source_id){
+                        $source = Source::create(['link'=>$image_url,'type' => Source::TYPE_FMB]);    
+                        $img->source_id = $source->id;
+                        $img->save();
+                    }
                     $line['image'] = route('images.edit',$img->id);    
                     $line['info'] = "Created new image";
                 }else{
@@ -548,6 +556,17 @@ class ImageController extends Controller
         }
         $data = $response->getBody()->getContents();
         return json_decode($data);
+    }
+    
+    
+     private function lookupSource($source_data){
+        $source_data->link = $source_data->url;
+        unset($source_data->url);
+        $source = Source::where('link',$source_data->link)->first();
+        if (! $source){
+            $source =  Source::create((array) $source_data);  
+        }
+        return $source;
     }
     
 }

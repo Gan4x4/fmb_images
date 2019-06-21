@@ -40,7 +40,7 @@
     
        <div class="row" >
            <div class="col-md-9">
-                <img class="img-fluid" src='{{ $image->getUrl() }}' id='image' style="max-height: 768px">
+                <img class="img-fluid" src='{{ $image->getUrl() }}' id='image' style="max-height: 768px; min-height: 640px">
             </div>
            <div class="col-md-3">
                 
