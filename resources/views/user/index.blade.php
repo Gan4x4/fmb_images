@@ -15,7 +15,7 @@
             @php( $count = $user->getStat())
                 <li> 
                     <a href="{{ route('users.show',$user->id) }}" >{{ $user->name }}</a> 
-                    images:{{ $count['images'] }} / items: {{ $count['features'] }} tags/ {{ $count['properties']}}
+                    images:{{ $count['all']['images'] }} / items: {{ $count['all']['features'] }} tags/ {{ $count['all']['properties']}}
                     
                 </li>
             @endforeach

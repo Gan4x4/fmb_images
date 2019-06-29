@@ -53,14 +53,12 @@ class UserController extends Controller
     public function show(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $images = $user->images();
+        $images = $user->images()->orderBy('updated_at','DESC');
         return view('user.show')->with([
             'user' => $user,
             'images' => $images->paginate(self::ITEMS_PER_PAGE)->appends($request->all()),
             'count' => $user->getStat(),
         ]);
-        
-       
     }
 
     /**

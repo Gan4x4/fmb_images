@@ -361,6 +361,12 @@ class ImageController extends Controller
     public function take($id){
         $image = Image::findOrFail($id);
         $user = Auth::user();
+        if ($image->user_id){
+            return view('image.already_taken',[
+                'image' => $image,
+                'user' => $user
+            ]);
+        }
         
         $image->user_id = $user->id;
         
@@ -494,7 +500,7 @@ class ImageController extends Controller
         }
         
         $out = [];
-                
+        //dump($list);        
         foreach($list->images as $image_url){
             $source = Source::where('link',$image_url)->first();
             $line = [

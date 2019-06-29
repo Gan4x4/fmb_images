@@ -22,7 +22,7 @@
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
         <div class="sidebar-sticky">
             
-           
+            
             
             <div id="feature_block">
                 <!-- place to edit feature properties -->
@@ -43,7 +43,12 @@
                 <img class="img-fluid" src='{{ $image->getUrl() }}' id='image' style="max-height: 768px; min-height: 640px">
             </div>
            <div class="col-md-3">
-                
+                @if( Auth::check() && ! $image->user)
+                {!! Form::open(['route' => ['images.take',$image->id],'method'=>'post']) !!}
+                    {!! Form::submit('Take it',['class'=>'btn btn-primary']) !!}
+                {!! Form::close() !!}
+                <br>
+            @endif
                 Click to add: 
                 @php
                     $primary = 'btn-primary';
@@ -112,11 +117,7 @@
             
         @endif
         
-        @if( Auth::check() && ! $image->user)
-            {!! Form::open(['route' => ['images.take',$image->id],'method'=>'post']) !!}
-                {!! Form::submit('Take it',['class'=>'btn btn-primary']) !!}
-            {!! Form::close() !!}
-        @endif
+       
         
     </div>            
     
