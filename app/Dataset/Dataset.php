@@ -15,6 +15,7 @@ use RecursiveDirectoryIterator;
 abstract class Dataset {
     
     public $test = .20;
+    protected $description = null;
     
     abstract public function build($dir);
     
@@ -92,6 +93,10 @@ abstract class Dataset {
             }
         }
         return $tmp;
+    }
+    
+    public function getDescription(){
+        return $this->description;
     }
     
 }

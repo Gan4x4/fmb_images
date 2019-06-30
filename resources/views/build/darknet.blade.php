@@ -17,7 +17,8 @@
             @include('item.tree',['items'=>$items])
         </div>
         <div class='col-md-4'>
-
+            
+            {!! Form::bsText('max_width','Max width(px)  ') !!}
             {!! Form::bsText('validate','Validate (0 .. 1) %  ',0.1,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}
             {!! Form::bsText('path','Path') !!}
             {!! Form::bsSelect('model','Model',__('common.darknet_templates')) !!}

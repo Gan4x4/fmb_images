@@ -76,7 +76,9 @@
                 </div>
            </div>
         </div>
-        
+        @if ($image->user)
+            {{ $image->user->name }}
+        @endif
         <h4>Binded images</h4>
         <div class="row">
                 @foreach($image->getSiblings() as $img)
@@ -84,7 +86,9 @@
                      <div id="image_card_{{ $img->id }}" class="card" style="width:230px">
                          <a href="{{ route('images.edit',[$img->id]) }}"><img class="card-img-top" src='{{ $img->getThumbUrl() }}' id='image'></a>
                          <div class="card-body">
-                             
+                            @if ($img->user)
+                                {{ $img->user->name}}
+                            @endif
                             <a  href="javascript:void(0)" onClick="deleteImagCardEntity({{ $img->id }})"><i class="fas fa-trash"></i></a> 
                             <span class="small">
                                 {{ implode(', ',array_keys($img->getFeatureDescription())) }}

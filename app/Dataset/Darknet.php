@@ -35,17 +35,19 @@ class Darknet extends Dataset{
     public $classes = null;
     protected $path = '';
     protected $model_cfg = null;
+    protected $max_width = null;
+    protected $image_count = 0;
     
     
     public function __construct($params) {
         $this->items = $params['items'];
         $this->path = $params['path'];
+        $this->max_width = $params['max_width'];
         $this->test = floatval($params['validate']);
         $this->input_tree = self::tree2array($params);
         //dump($this->input_tree);
         $this->classes = $this->extractClasses();
         $this->setCfgTemplate($params);
-
     }
     
     private function extractClasses(){
@@ -115,6 +117,11 @@ class Darknet extends Dataset{
         $directory = $this->path ? $this->path.DIRECTORY_SEPARATOR : '';
         foreach($imageIds as $image_id){
             $image = Image::find($image_id);
+            if (! $this->checkSize($image)){
+                // Bypass images that not statisfy size condition
+                continue;
+            }
+            
             $source = storage_path('app'.DIRECTORY_SEPARATOR.$image->path);
             $image_file_name = $image->id.".jpg";//.pathinfo($source,PATHINFO_EXTENSION);
             $img_files[] = $directory.self::IMAGES_SUBDIR.DIRECTORY_SEPARATOR.$image_file_name;
@@ -142,10 +149,15 @@ class Darknet extends Dataset{
 
         $this->makeCfg($this->getFilePath('yolo3_fmb.cfg'),count($this->classes));
         $this->makeDataFile($this->getFilePath('fmb.data'),count($this->classes));
-        $this->divideToTranAndTest($img_files);
+        
+        $this->image_count = count($img_files);
+        if ($this->image_count > 0){
+            $this->divideToTranAndTest($img_files);
+        }
         
         $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
         $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
+        $this->fillDescription();
         return $target;
 
     }
@@ -170,6 +182,13 @@ class Darknet extends Dataset{
         return true;
     }
     
+    private function checkSize($image){
+        if (! $this->max_width){
+            return true;
+        }
+        
+        return $image->width <= $this->max_width;
+    }
    
     
     private function coord2darknet($feature,$image){
@@ -292,6 +311,17 @@ class Darknet extends Dataset{
             fwrite($handle,$line.PHP_EOL);
         }
         fclose($handle);
+    }
+    
+    
+    public function fillDescription(){
+        $parts = [];
+        if ($this->max_width){
+            $parts[] = "Max width: ".$this->max_width;
+        }
+        $parts[] = $this->image_count. " imgs";
+        $parts[] = "Classes : ".implode(", ",$this->classes);
+        $this->description = implode("; ",$parts);
     }
     
 

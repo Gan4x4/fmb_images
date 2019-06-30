@@ -369,6 +369,7 @@ class ImageController extends Controller
         }
         
         $image->user_id = $user->id;
+        $image->save();
         
         foreach($image->getSiblings() as $s){
             if (! $s->user_id){
@@ -377,7 +378,7 @@ class ImageController extends Controller
             }
         }
         
-        $image->save();
+        
         return redirect()->route('images.edit',$image->id);
     }
     

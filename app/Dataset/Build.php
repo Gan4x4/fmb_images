@@ -44,10 +44,13 @@ class Build extends Model
         return $types[$this->params['type']];
     }
     
-    protected function fillDescription(){
+    protected function fillDescription($dataset = null){
         $this->description = $this->getTypeName();
         if (! $this->file){
             $this->description .= "Empty";
+        }
+        if ($dataset){
+            $this->description .= ": ".$dataset->getDescription();
         }
     }
     
@@ -69,7 +72,7 @@ class Build extends Model
             //\Log::debug(var_export($dataset,true));
             $this->file = $dataset->build($this->dir);
             $this->state = self::STATE_FINISH;
-            $this->fillDescription();
+            $this->fillDescription($dataset);
         }
         catch(\Exception $e){
             $this->description = $e->getMessage();
