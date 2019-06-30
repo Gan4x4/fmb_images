@@ -43,12 +43,19 @@
                 <img class="img-fluid" src='{{ $image->getUrl() }}' id='image' style="max-height: 768px; min-height: 640px">
             </div>
            <div class="col-md-3">
+               
+                @if($image->width < 500)
+                    <img id="preview" class="img-fluid d-none m-2" style="display: block" src='{{ $image->getUrl() }}' id='image' style="max-height: 250px; max-width: 350px">
+                    <button  class="btn btn-default" onClick="$('#preview').toggleClass('d-none')" title="Show original"><i class="fas fa-search"></i></button>
+                @endif
+               
                 @if( Auth::check() && ! $image->user)
-                {!! Form::open(['route' => ['images.take',$image->id],'method'=>'post']) !!}
-                    {!! Form::submit('Take it',['class'=>'btn btn-primary']) !!}
-                {!! Form::close() !!}
-                <br>
-            @endif
+                    {!! Form::open(['route' => ['images.take',$image->id],'method'=>'post']) !!}
+                        {!! Form::submit('Take it',['class'=>'btn btn-primary']) !!}
+                    {!! Form::close() !!}
+                    <br>
+                @endif
+                
                 Click to add: 
                 @php
                     $primary = 'btn-primary';
