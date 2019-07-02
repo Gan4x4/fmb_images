@@ -61,15 +61,7 @@
                     $primary = 'btn-primary';
                 @endphp
                 @foreach($items as $item)
-                    @php
-                    
-                        if (! $image->hasItem($item->id) ){
-                            $new_item_class = $primary; 
-                            $primary = '';
-                        }
-                         $new_item_class = '';
-                    @endphp
-                    <a href='javascript:void(0)' data='{{ $item->id }}' class='btn  {{ $new_item_class }} feature-add  '>{{ $item->name }}</a>
+                    <a href='javascript:void(0)' data='{{ $item->id }}' class='btn  btn-primary feature-add m-1 '>{{ $item->name }}</a>
                 @endforeach
                 <br>
                 <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
@@ -268,6 +260,13 @@
                         setupFeatureBlock(data);
                         updateSelection();
                 });
+            });
+            
+            
+            $('.feature-edit').each(function(){
+                var label = $(this).text();
+                $('.feature-add:contains('+label+')').removeClass("btn-primary"); 
+                //console.log($(this).text());
             });
             
         }
