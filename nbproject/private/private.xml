@@ -2,6 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/show.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/already_taken.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Http/Controllers/ImageController.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/edit.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/build/darknet.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Darknet.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/image/list.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/resources/views/layouts/common.blade.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Dataset.php</file>
+            <file>file:/home/gan/Code/Projects/FindMyBike/Sites/Images/app/Dataset/Build.php</file>
+        </group>
     </open-files>
 </project-private>

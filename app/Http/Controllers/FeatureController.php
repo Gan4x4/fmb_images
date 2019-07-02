@@ -200,6 +200,23 @@ class FeatureController extends Controller
         return response()->json($result);
     }
     
+    public function destroyAll($imageId)
+    {
+        
+        $result = $this->getAjaxResponse();
+        try {
+            //dd("Here");
+            $image = Image::findOrFail($imageId);    
+            foreach($image->features as $feature){
+                $feature->delete();    
+            }
+            $result['message'] = "All features deleted";
+        } catch (\Exception $exc) {
+            $result = $this->getAjaxResponse(1,$exc->getMessage);
+        }
+        return response()->json($result);
+    }
+    
     
     
 }

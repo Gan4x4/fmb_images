@@ -23,4 +23,5 @@ Route::get('/features/{feature_id}', 'ImageController@feature')->name('feature.p
 */
 
 Route::get('/items/{item_id}/properties/', 'ItemController@properties')->name('item.properties');
+Route::delete('/images/{id}/features/all', 'FeatureController@destroyAll')->name('images.features.delete.all');
 Route::resource('images.features', 'FeatureController');

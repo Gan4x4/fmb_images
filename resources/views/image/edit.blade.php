@@ -77,7 +77,7 @@
                 <span id='selection_warning' class='badge badge-warning d-none'>Invalid selection </span>
                 <hr>
                 
-                <h4>Features</h4>
+                <h4  class="d-inline p-4" >Features</h4><button id="delete-features" class="btn btn-warning "><i class="fas fa-trash"></i> Delete all</button>
                 <div id="features_list">
                     @include('feature.index',['features' => $features])
                 </div>
@@ -380,9 +380,18 @@
                 },function(){
                     jcrop_api = this;
             });
-            
            
-
+             $('#delete-features').on('click',function () {
+                
+                if ( confirm("Delete all features from this image?") ){
+                    $.ajax({
+                        url: "{{ route('images.features.delete.all',$image->id) }}",
+                        type: 'DELETE',  
+                        dataType: 'json',
+                        success: afterSave
+                       });
+                }         
+            });
             
         });
     </script>
