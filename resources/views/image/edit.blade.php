@@ -51,7 +51,7 @@
                
                 @if( Auth::check() && ! $image->user)
                     {!! Form::open(['route' => ['images.take',$image->id],'method'=>'post']) !!}
-                        {!! Form::submit('Take it',['class'=>'btn btn-primary']) !!}
+                        {!! Form::submit('Take it',['class'=>'btn btn-success']) !!}
                     {!! Form::close() !!}
                     <br>
                 @endif
@@ -61,7 +61,7 @@
                     $primary = 'btn-primary';
                 @endphp
                 @foreach($items as $item)
-                    <a href='javascript:void(0)' data='{{ $item->id }}' class='btn  btn-primary feature-add m-1 '>{{ $item->name }}</a>
+                    <a href='javascript:void(0)' data='{{ $item->id }}' class='btn  btn-info feature-add m-1 '>{{ $item->name }}</a>
                 @endforeach
                 <br>
                 <button class="btn btn-default reset_coords"><i class="far fa-file"></i> Reset</button>
@@ -116,7 +116,9 @@
         @if ( $image->user || Auth::user()->isAdmin())
             {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
                 {!! Form::bsTextarea('description', 'Description'); !!}
-                {!! Form::bsCheckbox('validation', 'Validation',1,$image->validation); !!}
+                @if (Auth::user()->isAdmin())
+                    {!! Form::bsCheckbox('validation', 'Validation',1,$image->validation); !!}
+                @endif
                 {!! Form::submit('Save') !!}
             {!! Form::close() !!}
         
@@ -265,38 +267,12 @@
             
             $('.feature-edit').each(function(){
                 var label = $(this).text();
-                $('.feature-add:contains('+label+')').removeClass("btn-primary"); 
-                //console.log($(this).text());
+                $('.feature-add:contains('+label+')').removeClass("btn-info"); 
+
             });
             
         }
-        /*
-        function setupFeatureList(){
-            $('#new_feature').on('click',function () {
-                $.get( "/api/images/{{ $image->id }}/features/create/", function( data ){
-                    if ( $( "#feature_block" ).html()){
-                        // Call from another feature edit
-                        setupFeatureBlock(data);
-                        resetSelection();
-                    }
-                    else{
-                        // Call from empty page
-                        setupFeatureBlock(data);
-                        onSelectionChange(jcrop_api.tellSelect());
-                    }
-                });                
-            });
-            
-            $('.feature-edit').on('click',function () {
-                var featureId = $(this).attr('data');
-                $.get( "/api/images/{{ $image->id }}/features/"+featureId+"/edit", function( data ){
-                        setupFeatureBlock(data);
-                        updateSelection();
-                });
-            });
-            
-        }
-        */
+        
         function afterSave(result) {
             if (result.error === 0){
                 // Reload features list
