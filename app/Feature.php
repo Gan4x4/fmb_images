@@ -196,5 +196,75 @@ class Feature extends Model
         $this->image->updateStatus();
         parent::save($options);
     }
+    
+    
+    public function cloneToSiblings(){
+        $item = $this->getItem();
+        if (! $item){
+            return;
+        }
+        
+        $image = $this->image;
+        if (! $image){
+            return;
+        }
+        
+        $siblings = $image->getSiblings();
+        if ($siblings->count() == 0 ){
+            return;
+        }
+        
+        foreach($siblings as $img){
+            foreach($img->features as $f){
+                $ai = $f->getItem();
+                if ($ai){ 
+              //      dump($ai->name);
+                    $this->copyPropertiesTo($f);
+                }
+            }
+        }
+        
+    }
+    
+    public function copyPropertiesTo($anotherFeature){
+        $item = $this->getItem();
+        
+        if (! $item || ! $item->canBeCopied()){
+            return;
+        }
+        
+        if ($anotherFeature->getItem()->id != $item->id){
+            //dump("Bad item ".$anotherFeature->getItem());
+            return;
+        }
+        
+        //$anotherFeature->properties()->detach();
+        //dump($this->properties);
+        foreach($this->properties as $property){
+            if (! $property->canBeCopied()){
+                continue;
+            }
+            
+            $tag = $property->getTag(); 
+            if (! $tag ){
+                continue;
+            }
+            //dump($tag->name);
+            
+            foreach($anotherFeature->properties as $ap){
+                if ($ap->id == $property->id && $ap->getTag()){
+                    //dump("Want to change ".$ap->name." tag ".$ap->getTag()->name." to ".$tag->name);
+                    
+                    if ($ap->pivot && $ap->pivot->tag_id){
+                        //dump("Change");
+                        $ap->pivot->tag_id = $tag->id;
+                        $ap->pivot->save();
+                    }
+                }
+            }
+        }
+        
+        $anotherFeature->save();
+    }
 
 }

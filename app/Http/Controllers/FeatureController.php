@@ -125,6 +125,8 @@ class FeatureController extends Controller
         $feature->fill($request->all()); // Update only coords and description
         $feature->save(); // To obtain id
         $this->updateProperties($request,$feature);
+        $feature = Feature::findOrFail($featureId);
+        $feature->cloneToSiblings();
         return $this->getAjaxResponse();
     }
     
@@ -142,6 +144,7 @@ class FeatureController extends Controller
         }
         
         $feature->save();
+        //$feature->refresh();
     }
     
     
