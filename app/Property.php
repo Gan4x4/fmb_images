@@ -170,7 +170,7 @@ class Property extends Model
             return false;
         }
         
-        $groups = [['Frame','Fork','Wheel']];
+        $groups = [['Frame','Fork','Wheel','Main_tube']];
         foreach($groups as $group){
             if (in_array($i1->name,$group) && in_array($i2->name,$group)){
                 return true;

@@ -39,10 +39,43 @@
     
     
        <div class="row" >
-           <div class="col-md-9">
+            <div class="col-md-9">
+                
                 <img class="img-fluid" src='{{ $image->getUrl() }}' id='image' style="max-height: 768px; min-height: 640px">
+           
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5>Binded images</h5>
+                    </div>
+                    <div class="col-md-9">
+                        #{{ $image->id }}
+                        @if ($image->user)
+                            {{ $image->user->name }}
+                        @endif
+                        {{ $image->width }}x{{ $image->height }} 
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach($image->getSiblings() as $img)
+                        <div id="image_card_{{ $img->id }}" class="card" style="width:230px">
+                            <a href="{{ route('images.edit',[$img->id]) }}"><img class="card-img-top" src='{{ $img->getThumbUrl() }}' id='image'></a>
+                            <div class="card-body">
+                               #{{ $img->id }} 
+                               @if ($img->user)
+                                   {{ $img->user->name}}
+                               @endif
+                               {{ $img->width }}x{{ $img->height }} 
+                               <a  href="javascript:void(0)" onClick="deleteImagCardEntity({{ $img->id }})"><i class="fas fa-trash"></i></a> 
+                               <span class="small">
+                                   {{ implode(', ',array_keys($img->getFeatureDescription())) }}
+                               </span>
+                            </div>
+                        </div>
+                   @endforeach
+                </div>
+                
             </div>
-           <div class="col-md-3">
+            <div class="col-md-3">
                
                 @if($image->width < 500)
                     <img id="preview" class="img-fluid d-none m-2" style="display: block" src='{{ $image->getUrl() }}' id='image' style="max-height: 250px; max-width: 350px">
@@ -75,38 +108,7 @@
                 </div>
            </div>
         </div>
-        <div class="row">
-            <div class="col-md-3">
-                <h5>Binded images</h5>
-            </div>
-            <div class="col-md-9">
-                #{{ $image->id }}
-                @if ($image->user)
-                    {{ $image->user->name }}
-                @endif
-                {{ $image->width }}x{{ $image->height }} 
-            </div>
-        </div>
-        <div class="row">
-                @foreach($image->getSiblings() as $img)
-
-                     <div id="image_card_{{ $img->id }}" class="card" style="width:230px">
-                         <a href="{{ route('images.edit',[$img->id]) }}"><img class="card-img-top" src='{{ $img->getThumbUrl() }}' id='image'></a>
-                         <div class="card-body">
-                            #{{ $img->id }} 
-                            @if ($img->user)
-                                {{ $img->user->name}}
-                            @endif
-                            {{ $img->width }}x{{ $img->height }} 
-                            <a  href="javascript:void(0)" onClick="deleteImagCardEntity({{ $img->id }})"><i class="fas fa-trash"></i></a> 
-                            <span class="small">
-                                {{ implode(', ',array_keys($img->getFeatureDescription())) }}
-                            </span>
-                         </div>
-                     </div>
-
-                 @endforeach
-        </div>
+       
        
         @if ($image->source )
             <a href="{{ $image->source->link }}">{{ $image->source->link }}</a>
