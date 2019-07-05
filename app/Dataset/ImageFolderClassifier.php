@@ -39,6 +39,7 @@ class ImageFolderClassifier extends Dataset{
         $this->minimalPropertyCount = intval($params['min_prop']);
         $this->test = floatval($params['validate']);
         $this->crop_form = intval($params['crop_form']);
+        $this->max_width = $params['max_width'];
         $this->items = self::tree2array($params);
         $this->tree = new Tree(array_keys($this->items),$this->test);//array_keys($this->items));
 
@@ -62,13 +63,13 @@ class ImageFolderClassifier extends Dataset{
     
     private function extractAndSaveImages($item_id){
         $item = Item::findOrFail($item_id);
-        $features = $item->features;
+        $features = $item->features;//()->inRandomOrder()->get();
         if (! $features) {
             return;
         }
          
         foreach($features as $feature){
-            if ($this->checkImage($feature)){
+            if ($this->checkImage($feature->image)){
                 $this->saveValuesInSubdirs($item,$feature);   
                 $this->image_count++;
             }
@@ -86,7 +87,7 @@ class ImageFolderClassifier extends Dataset{
             return true;
             
         }else{
-            return true;
+            return false;
         }
     }
     

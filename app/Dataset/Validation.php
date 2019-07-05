@@ -20,6 +20,7 @@ class Validation extends Dataset {
     public $subkeys = true;
     
      public function __construct($params) {
+        $this->max_width = $params['max_width'];
         $this->subkeys = isset($params['subkeys']) && boolval($params['subkeys']);
     }
     
@@ -28,6 +29,7 @@ class Validation extends Dataset {
         Storage::makeDirectory($dir);
         $images = Image::where('validation',true)->get();
         $count = 0;
+        $this->image_count = $images->count();
         foreach($images as $image){
             if (! $this->checkImage($image)){
                 continue;
@@ -44,7 +46,7 @@ class Validation extends Dataset {
             }
         }
 
-        $this->image_count = $count;
+        
         $this->fillDescription();
         if ($count){
             $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';

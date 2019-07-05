@@ -263,7 +263,7 @@ class Darknet extends Dataset{
         $imageIds = [];
         foreach($itemIds as $item_id){
             $item = Item::findOrFail($item_id);
-            $features = $item->features;
+            $features = $item->features()->inRandomOrder()->get();
             foreach($features as $feature){
                 if ( $this->checkImage($feature->image) && $this->getFeatureClass($feature)){
                     $imageIds[] = $feature->image_id;
