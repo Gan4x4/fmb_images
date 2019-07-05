@@ -16,8 +16,11 @@ abstract class Dataset {
     
     public $test = .20;
     protected $description = null;
+    protected $max_width = null;
+    protected $image_count = 0;
     
     abstract public function build($dir);
+    
     
      // Helper 
      /* https://stackoverflow.com/questions/45450209/how-to-zip-folder-in-laravel-5
@@ -97,6 +100,28 @@ abstract class Dataset {
     
     public function getDescription(){
         return $this->description;
+    }
+    
+    protected function fillDescription(){
+        $parts[] = $this->image_count. " imgs";
+        if ($this->max_width){
+            $parts[] = "Max width: ".$this->max_width;
+        }
+        $this->description = implode("; ",$parts);
+        return $this->description;
+    }
+    
+    protected function checkImage($image){
+        if (! $image->user){
+            return false;
+        }
+        
+        // If max_width set, bypass big images
+        if ( $this->max_width > 0){
+           return $image->width <= $this->max_width;    
+        }
+       
+        return true;
     }
     
 }

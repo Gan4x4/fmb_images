@@ -29,6 +29,9 @@ class Validation extends Dataset {
         $images = Image::where('validation',true)->get();
         $count = 0;
         foreach($images as $image){
+            if (! $this->checkImage($image)){
+                continue;
+            }
             $text = $this->extractDescription($image);
             if ($text){
                 $source = storage_path('app'.DIRECTORY_SEPARATOR.$image->path);
@@ -41,6 +44,8 @@ class Validation extends Dataset {
             }
         }
 
+        $this->image_count = $count;
+        $this->fillDescription();
         if ($count){
             $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
             $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
@@ -78,5 +83,6 @@ class Validation extends Dataset {
         return $text;
         
     }
+    
 
 }

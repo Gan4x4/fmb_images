@@ -29,6 +29,7 @@ class ImageFolderClassifier extends Dataset{
     public $minimalPropertyCount = 9;
     public $tree = null;
     public $crop_form = null;
+    protected $fragments_count = 0;
     
     private $other = 'other';
     
@@ -49,14 +50,13 @@ class ImageFolderClassifier extends Dataset{
         Storage::makeDirectory($this->dir);
         
         $itemIds = array_keys($this->items);
-        $i = 0;
         foreach($itemIds as $item_id){
             $this->extractAndSaveImages($item_id);
         }
         
         $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
         $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
-
+        $this->fillDescription();
         return $target;
     }
     
@@ -68,11 +68,28 @@ class ImageFolderClassifier extends Dataset{
         }
          
         foreach($features as $feature){
-            if (! $feature->image->validation){
+            if ($this->checkImage($feature)){
                 $this->saveValuesInSubdirs($item,$feature);   
+                $this->image_count++;
             }
         }
     }
+    
+    protected function checkImage($image){
+        
+        if ( parent::checkImage($image) ){
+            
+            // Bypass images from validation set
+            if ($image->validation){
+                return false;
+            }
+            return true;
+            
+        }else{
+            return true;
+        }
+    }
+    
     
     private function hasSelectedProps($itemId){
         return count($this->items[$itemId]) != 0; 
@@ -134,6 +151,8 @@ class ImageFolderClassifier extends Dataset{
     }
     
     private function extractRegion($feature,$dir,$filename){
+        
+        $this->fragments_count++;
         switch ($this->crop_form) {
             case self::CROP_FORM_SQUARE:
                     $feature->extractSquare($dir,$filename);
@@ -207,5 +226,12 @@ class ImageFolderClassifier extends Dataset{
         return uniqid(self::name2dir($str).'_');
     }
    
+    
+    public function fillDescription(){
+        $parts = [parent::fillDescription()];
+        $parts[] = $this->fragments_count. " fragments ";
+        $this->description = implode("; ",$parts);
+        return $this->description;
+    }
     
 }

@@ -29,14 +29,11 @@ class Darknet extends Dataset{
         1 =>'yolov3_fmb.cfg'
     ];
     
-    
-    
     protected $input_tree = null;
     public $classes = null;
     protected $path = '';
     protected $model_cfg = null;
-    protected $max_width = null;
-    protected $image_count = 0;
+    
     
     
     public function __construct($params) {
@@ -117,7 +114,7 @@ class Darknet extends Dataset{
         $directory = $this->path ? $this->path.DIRECTORY_SEPARATOR : '';
         foreach($imageIds as $image_id){
             $image = Image::find($image_id);
-            if (! $this->checkSize($image)){
+            if (! $this->checkImage($image)){
                 // Bypass images that not statisfy size condition
                 continue;
             }
@@ -182,13 +179,7 @@ class Darknet extends Dataset{
         return true;
     }
     
-    private function checkSize($image){
-        if (! $this->max_width){
-            return true;
-        }
-        
-        return $image->width <= $this->max_width;
-    }
+    
    
     
     private function coord2darknet($feature,$image){
@@ -274,13 +265,29 @@ class Darknet extends Dataset{
             $item = Item::findOrFail($item_id);
             $features = $item->features;
             foreach($features as $feature){
-                if (! $feature->image->validation  && $this->getFeatureClass($feature)){
+                if ( $this->checkImage($feature->image) && $this->getFeatureClass($feature)){
                     $imageIds[] = $feature->image_id;
                 }
             }
         }
         return array_unique($imageIds);
     }
+    
+    protected function checkImage($image){
+        
+        if ( parent::checkImage($image) ){
+            
+            // Bypass images from validation set
+            if ($image->validation){
+                return false;
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
     
     private function getFeatureClass($feature){
         $item = $feature->getItem(); 
@@ -315,13 +322,10 @@ class Darknet extends Dataset{
     
     
     public function fillDescription(){
-        $parts = [];
-        if ($this->max_width){
-            $parts[] = "Max width: ".$this->max_width;
-        }
-        $parts[] = $this->image_count. " imgs";
+        $parts = [parent::fillDescription()];
         $parts[] = "Classes : ".implode(", ",$this->classes);
         $this->description = implode("; ",$parts);
+        return $this->description;
     }
     
 
