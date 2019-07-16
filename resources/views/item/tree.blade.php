@@ -1,6 +1,6 @@
 <ul style="list-style-type:none" class="nav flex-column">
     @php( $i_count = $p_count = 0 )
-    @php( $val_features = isset($validation) ? App\Feature::getIdsOfValidationFeatures() : false )
+    @php( $val_features = isset($validation) ? App\Feature::getIdsOfValidationFeatures() : null )
 @foreach($items as $item)
     <li class="nav-item">
     
