@@ -46,6 +46,10 @@ class BuildController extends Controller
     public function create(Request $request)
     {
         $view =  $this->getView($request->type);
+        
+        
+        
+        
         return view($view)->with([
                 'items' => Item::all(),
                 'menu' => $this->getMenu()

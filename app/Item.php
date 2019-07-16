@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Feature;
 
 class Item extends Model
 {
@@ -71,13 +72,22 @@ class Item extends Model
         return $this->name == 'Bike';
     }
     
-    public function count(){
-        return DB::table('bindings')
+    public function count($validation = false){
+        
+        $query = DB::table('bindings')
             ->where('item_id',$this->id)
             ->whereNotNull('tag_id')
-            ->where('tag_id','<>',0)
-            ->distinct('feature_id')
-            ->count('feature_id');
+            ->where('tag_id','<>',0);
+        
+        if ($validation){
+            $features = Feature::getIdsOfValidationFeatures();
+            if (count($features) == 0){
+                return 0;
+            }
+            $query->whereIn('feature_id',$features);
+        }
+        
+        return $query->distinct('feature_id')->count('feature_id');
     }
     
     public function canBeCopied(){

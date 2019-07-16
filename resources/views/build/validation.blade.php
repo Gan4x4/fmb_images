@@ -14,9 +14,8 @@
     {!! Form::open(['route'=>['builds.store']]) !!}
     <div class='row'>
         <div id='tree' class='col-md-8'>
-            <!-- include('item.tree',['items'=>$items]) -->
-            
-            Validation set size: {{ App\Image::where('validation',true)->where('user_id','>',0)->count() }}
+            Validation set size: {{ App\Image::where('validation',true)->where('user_id','>',0)->count() }} images
+            @include('item.tree',['items'=>$items,'validation'=>true]) 
             
         </div>
         

@@ -9,6 +9,15 @@ class Feature extends Model
 {
     protected $fillable = ['image_id','x1','y1','x2','y2','description'];
 
+     public static function getIdsOfValidationFeatures(){
+        $features = [];
+        $images = Image::where('validation',true)->get();
+        foreach($images as $image){
+            $features = array_merge($features,$image->features()->pluck('id')->toArray());
+        }
+        return $features;
+    }
+    
     public function properties(){
         return $this->belongsToMany('App\Property','bindings','feature_id','property_id')
                 ->withPivot('item_id', 'tag_id','feature_id')->withTimestamps();
@@ -267,4 +276,5 @@ class Feature extends Model
         $anotherFeature->save();
     }
 
+   
 }

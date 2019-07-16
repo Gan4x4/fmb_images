@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Tag;
+use App\Feature;
 
 class Property extends Model
 {
@@ -21,8 +22,15 @@ class Property extends Model
         return $this->belongsToMany('App\Tag');
     }
     
-    public function getItemTags($item_id){
+    public function getItemTags($item_id,$validation = false){
         $query = $this->prepareTagsQuery($item_id);
+        
+        if ($validation){
+            $features = Feature::getIdsOfValidationFeatures();
+            $query->whereIn('feature_id',$features);
+        }
+        
+        
         $query->select('tag_id',DB::raw('count(tag_id) as count'));
         $query->groupBy('tag_id');
         $result = $query->get();
@@ -214,14 +222,22 @@ class Property extends Model
     }
     
     
-    public function count(){
-        return DB::table('bindings')
+    public function count($validation = false){
+        $query =  DB::table('bindings')
             ->where('property_id',$this->id)
             ->where('item_id',$this->getItemId())
             ->whereNotNull('tag_id')
-            ->where('tag_id','<>',0)
-            ->distinct('feature_id')
-            ->count('feature_id');
+            ->where('tag_id','<>',0);
+        
+        if ($validation){
+            $features = Feature::getIdsOfValidationFeatures();
+            if (count($features) == 0){
+                return 0;
+            }
+            $query->whereIn('feature_id',$features);
+        }
+                
+        return $query->distinct('feature_id')->count('feature_id');
     }
     
     
