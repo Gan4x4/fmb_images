@@ -30,6 +30,14 @@ class ImageFolderClassifier extends Dataset{
     public $tree = null;
     public $crop_form = null;
     protected $fragments_count = 0;
+    private $img_ids = [];
+    protected $min_width = 0;
+    protected $sources = [ ];
+    protected $f_count = [ ];
+    protected $sizes = [ 
+        'w' => 0,
+        'h' => 0
+    ];
     
     private $other = 'other';
     
@@ -40,6 +48,7 @@ class ImageFolderClassifier extends Dataset{
         $this->test = floatval($params['validate']);
         $this->crop_form = intval($params['crop_form']);
         $this->max_width = $params['max_width'];
+        $this->min_width = $params['min_width'];
         $this->items = self::tree2array($params);
         $this->tree = new Tree(array_keys($this->items),$this->test);//array_keys($this->items));
 
@@ -54,7 +63,7 @@ class ImageFolderClassifier extends Dataset{
         foreach($itemIds as $item_id){
             $this->extractAndSaveImages($item_id);
         }
-        
+        $this->image_count = count(array_unique($this->img_ids));
         $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
         $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
         $this->fillDescription();
@@ -63,17 +72,21 @@ class ImageFolderClassifier extends Dataset{
     
     private function extractAndSaveImages($item_id){
         $item = Item::findOrFail($item_id);
-        $features = $item->features;//()->inRandomOrder()->get();
+       
+        $features = $item->features()->inRandomOrder()->get();//shuffle();//()->inRandomOrder()->get();
         if (! $features) {
             return;
         }
-         
-        foreach($features as $feature){
+        //dump($features->count());
+        $shuffled = $features->shuffle();
+        foreach($shuffled as $feature){
             if ($this->checkImage($feature->image)){
+                //dump("IM: ".$feature->image->id);
                 $this->saveValuesInSubdirs($item,$feature);   
-                $this->image_count++;
+                $this->img_ids[] = $feature->image->id;
             }
         }
+       
     }
     
     protected function checkImage($image){
@@ -84,9 +97,16 @@ class ImageFolderClassifier extends Dataset{
             if ($image->validation){
                 return false;
             }
+            
+            if ($this->min_width > 0 && $image->width < $this->min_width){
+                //print "MW";
+                return false;
+            }
+            
             return true;
             
         }else{
+            //print "PT";
             return false;
         }
     }
@@ -117,7 +137,7 @@ class ImageFolderClassifier extends Dataset{
      */
     private function saveValuesInSubdirs($item,$feature){
         $item_dir = $this->lookupItemDir($item);//$this->dir.DIRECTORY_SEPARATOR.mb_strtolower($item->name);
-
+        $image = $feature->image;
         foreach($feature->properties as $property){
             if ( in_array($property->id, array_keys($this->items[$item->id]))){
                 
@@ -126,8 +146,8 @@ class ImageFolderClassifier extends Dataset{
                 $tag = $property->getTag();
                 
                 if ($tag && in_array($tag->id, $selectedTagIds)){
-                    $tag_dir = $this->lookupTagDir($item,$property,$tag);
-                    $filename = self::name2file($tag->name.'_'.$feature->image->id);
+                    $tag_dir = $this->lookupTagDir($item,$property,$tag,$image);
+                    $filename = self::name2file($tag->name.'_'.$image->id);
                     $this->extractRegion($feature,storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
                     //$feature->extractSquare(storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
                     
@@ -142,7 +162,7 @@ class ImageFolderClassifier extends Dataset{
                 $tag = new Tag();
                 $tag->id = null;
                 $tag->name = 'Undefined';
-                $tag_dir = $this->lookupTagDir($item,$property,$tag);
+                $tag_dir = $this->lookupTagDir($item,$property,$tag,$feature->image);
                 $filename = self::name2file($tag->name.'_'.$feature->image->id);
                 $this->extractRegion($feature,storage_path('app'.DIRECTORY_SEPARATOR.$tag_dir),$filename);
                 //$feature->extractSquare();
@@ -154,6 +174,9 @@ class ImageFolderClassifier extends Dataset{
     private function extractRegion($feature,$dir,$filename){
         
         $this->fragments_count++;
+        $this->sizes['w'] += $feature->width;
+        $this->sizes['h'] += $feature->height;
+        
         switch ($this->crop_form) {
             case self::CROP_FORM_SQUARE:
                     $feature->extractSquare($dir,$filename);
@@ -170,8 +193,6 @@ class ImageFolderClassifier extends Dataset{
         }
     }
     
-    
-    
     /*
     private function makeDir(){
         
@@ -181,6 +202,7 @@ class ImageFolderClassifier extends Dataset{
         }
     }
     */
+    
     private function lookupPropDir($item,$property){
         $item_dir = $this->lookupItemDir($item);
         $prop_dir = $item_dir.DIRECTORY_SEPARATOR.self::name2dir($property->name);
@@ -190,23 +212,49 @@ class ImageFolderClassifier extends Dataset{
         return $prop_dir;
     }
     
-     private function lookupTagDir($item,$property,$tag){
+     private function lookupTagDir($item,$property,$tag, $image){
         $prop_dir = $this->lookupPropDir($item,$property);
+        $base = $prop_dir;
+        if (! isset($this->sources[$base])){
+            $this->sources[$base] = [
+                'val' => [],
+                'train' => []
+                ];
+        }
         
-        if ($this->test > 0){
-            if ($this->tree->getValidateCount($item->id,$property->id,$tag->id)){
-                $this->tree->decValidateCount($item->id,$property->id,$tag->id);
-                $prop_dir = $prop_dir.DIRECTORY_SEPARATOR.'val';
+        if (! isset($this->f_count[$base])){
+            $this->f_count[$base] =  [
+                'val' => 0,
+                'train' => 0
+                ];
+        }
+        
+        if ( $this->toValidate($image,$base)){
+            
+            //$random = mt_rand ( 0, 99 ) / 100; 
+            //if ($random < $this->test){
+            //if ($this->tree->getValidateCount($item->id,$property->id,$tag->id)){
+            //    $this->tree->decValidateCount($item->id,$property->id,$tag->id);
+            $prop_dir = $prop_dir.DIRECTORY_SEPARATOR.'val';
+            $this->f_count[$base]['val'] ++;
+            if ($image->source){
+                $this->sources[$base]['val'][] = $image->source->id;
             }
-            else{
-                $prop_dir = $prop_dir.DIRECTORY_SEPARATOR.'train';
+        }
+        else{
+            $prop_dir = $prop_dir.DIRECTORY_SEPARATOR.'train';
+            $this->f_count[$base]['train'] ++;
+            if ($image->source){
+                $this->sources[$base]['train'][] = $image->source->id;
             }
         }
         
         if ($this->tree->count($item->id,$property->id,$tag->id) < $this->minimalPropertyCount){
             $tag_dir = $prop_dir.DIRECTORY_SEPARATOR.$this->other;
+            
         }else{
-            $tag_dir = $prop_dir.DIRECTORY_SEPARATOR.self::name2dir($tag->name);    
+            $tag_dir = $prop_dir.DIRECTORY_SEPARATOR.self::name2dir($tag->name);   
+            
         }
         
         if( ! Storage::exists($tag_dir)) {
@@ -215,10 +263,40 @@ class ImageFolderClassifier extends Dataset{
         return $tag_dir;
     }
     
-    public function toValidate($item_id,$property_id,$tag_id){
+    public function toValidate($image,$base){
+        if (! $this->test){
+            return false;
+        }
+        
+        if ($image->source){
+            if ( in_array($image->source->id,$this->sources[$base]['val'])){
+                return true;                
+            }
+            if ( in_array($image->source->id,$this->sources[$base]['train'])){
+                return false;                
+            }
+        }
+        
+        if ( isset($this->f_count[$base]['train']) && 
+            isset($this->f_count[$base]['val']) &&
+                $this->f_count[$base]['train'] > 0 && 
+                $this->f_count[$base]['val']/$this->f_count[$base]['train'] < $this->test){
+            // Images selected from DB in random order
+            return true;
+        }
+        
+        return false;
+        //$random = mt_rand ( 0, 99 ) / 100;
         
     }
     
+    
+    
+    /*
+    public function toValidate($item_id,$property_id,$tag_id){
+        
+    }
+    */
     public static function name2dir($str){
         return mb_strtolower(strtr($str,' ','_'));
     }
@@ -231,6 +309,14 @@ class ImageFolderClassifier extends Dataset{
     public function fillDescription(){
         $parts = [parent::fillDescription()];
         $parts[] = $this->fragments_count. " fragments ";
+        if ($this->min_width){
+            $parts[] = " Min img width:  ".$this->min_width;
+        }
+        
+        $mw = round($this->sizes['w'] / $this->fragments_count);
+        $mh = round($this->sizes['h'] / $this->fragments_count);
+        
+        $parts[] = " Mean fragment size $mw x $mh";
         $this->description = implode("; ",$parts);
         return $this->description;
     }

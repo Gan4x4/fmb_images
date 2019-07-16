@@ -15,6 +15,7 @@
             @include('item.tree',['items'=>$items])
         </div>
         <div class='col-md-4'>
+            {!! Form::bsText('min_width','Min width(px)  ') !!}
             {!! Form::bsText('max_width','Max width(px)  ') !!}
             {!! Form::bsText('min_prop','Min',10) !!}
             {!! Form::bsText('validate','Validate (0 .. 1) %  ',0.1,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}

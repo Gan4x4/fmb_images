@@ -73,7 +73,7 @@ class BuildController extends Controller
         //dd($request->all());
         $build = new Build();
         $build->params = $request->all();
-        
+        dd($build->params);
         $build->dir = $dir;
         $build->save();
         
