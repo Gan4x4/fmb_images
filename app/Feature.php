@@ -15,7 +15,7 @@ class Feature extends Model
         foreach($images as $image){
             $features = array_merge($features,$image->features()->pluck('id')->toArray());
         }
-        return $features;
+        return array_unique($features);
     }
     
     public function properties(){

@@ -22,11 +22,11 @@ class Property extends Model
         return $this->belongsToMany('App\Tag');
     }
     
-    public function getItemTags($item_id,$validation = false){
+    public function getItemTags($item_id,$features = null){
         $query = $this->prepareTagsQuery($item_id);
         
-        if ($validation){
-            $features = Feature::getIdsOfValidationFeatures();
+        if ($features !== null){
+            //$features = Feature::getIdsOfValidationFeatures();
             $query->whereIn('feature_id',$features);
         }
         
@@ -222,15 +222,14 @@ class Property extends Model
     }
     
     
-    public function count($validation = false){
+    public function count($features = null){
         $query =  DB::table('bindings')
             ->where('property_id',$this->id)
             ->where('item_id',$this->getItemId())
             ->whereNotNull('tag_id')
             ->where('tag_id','<>',0);
         
-        if ($validation){
-            $features = Feature::getIdsOfValidationFeatures();
+        if ($features !== null){
             if (count($features) == 0){
                 return 0;
             }

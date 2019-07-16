@@ -72,15 +72,17 @@ class Item extends Model
         return $this->name == 'Bike';
     }
     
-    public function count($validation = false){
+    public function count($features = null){
         
         $query = DB::table('bindings')
             ->where('item_id',$this->id)
             ->whereNotNull('tag_id')
             ->where('tag_id','<>',0);
         
-        if ($validation){
-            $features = Feature::getIdsOfValidationFeatures();
+        if ($features !== null){
+            //if ( ! is_array($features)){
+            //    dd($features);
+            //}
             if (count($features) == 0){
                 return 0;
             }

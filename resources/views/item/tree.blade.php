@@ -1,26 +1,26 @@
 <ul style="list-style-type:none" class="nav flex-column">
     @php( $i_count = $p_count = 0 )
-    @php( isset($validation) ? $validation : false)
+    @php( $val_features = isset($validation) ? App\Feature::getIdsOfValidationFeatures() : false )
 @foreach($items as $item)
     <li class="nav-item">
     
         {!! Form::checkbox('items[]',$item->id,isset($tree[$item->id])) !!}
-        {{ $item->name }} {{  $item->count($validation) }}
-        @php( $i_count += $item->count($validation) )
+        {{ $item->name }} {{  $item->count($val_features) }}
+        @php( $i_count += $item->count($val_features) )
         <ul style="list-style-type:none" >
             @foreach($item->properties as $property)
                 <li>
                     {!! Form::checkbox($item->id.'_propertys[]',$property->id,isset($tree[$item->id][$property->id])) !!} 
                     
-                    @php($p_count += $property->count( $validation ))
+                    @php($p_count += $property->count( $val_features ))
                     @php($list_id = $item->id.'_'.$property->id.'_list')
                     
                     
-                    {{ $property->name }} {{ $property->count($validation) }} <a href='#{{ $list_id }}' data-toggle="collapse" ><i class="fas fa-angle-down"></i></a>
+                    {{ $property->name }} {{ $property->count($val_features) }} <a href='#{{ $list_id }}' data-toggle="collapse" ><i class="fas fa-angle-down"></i></a>
                     @php( $has_checked_tags =  ! empty($tree[$item->id][$property->id]))
 
                     <ul id="{{ $list_id }}" style="list-style-type:none" class="{{ $has_checked_tags ? '' : 'collapse' }}">
-                        @php( $item_tags = $property->getItemTags($item->id,$validation) )
+                        @php( $item_tags = $property->getItemTags($item->id,$val_features) )
                         @php( $filled = 0 )
                         @foreach( $item_tags as $tag )
                         <li>
@@ -33,7 +33,7 @@
                         <li>
                             @php($checked = isset($tree[$item->id][$property->id]) ? in_array(0,$tree[$item->id][$property->id]) : false)
                             {!! Form::checkbox($item->id.'_'.$property->id.'_tags[]',0,$checked) !!} 
-                            Undefined {{  $item->count( $validation ) - $filled }} 
+                            Undefined {{  $item->count( $val_features ) - $filled }} 
                         </li>
                     </ul>
                     
