@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Dataset\Build;
 use App\Item;
 use App\Jobs\DatasetBuilder;
+use App\User;
 
 class BuildController extends Controller
 {
@@ -45,17 +46,24 @@ class BuildController extends Controller
      */
     public function create(Request $request)
     {
+        $users = $this->getUserSelect();
         $view =  $this->getView($request->type);
-        
-        
-        
         
         return view($view)->with([
                 'items' => Item::all(),
-                'menu' => $this->getMenu()
+                'menu' => $this->getMenu(),
+                'user_ids' => $users,
             ]); 
     }
     
+    public function getUserSelect(){
+        $users = User::all();
+        $out = [0=>'All'];
+        foreach($users as $user){
+            $out[$user->id] = $user->name;
+        }
+        return $out;
+    }
     
     public function getView($type){
         $views = [
@@ -77,12 +85,9 @@ class BuildController extends Controller
         //dd($request->all());
         $build = new Build();
         $build->params = $request->all();
-        dd($build->params);
         $build->dir = $dir;
         $build->save();
-        
         DatasetBuilder::dispatch($build);
-       
         return redirect()->route('builds.index');
     }
 

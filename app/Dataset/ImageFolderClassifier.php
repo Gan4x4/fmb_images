@@ -38,6 +38,7 @@ class ImageFolderClassifier extends Dataset{
         'w' => 0,
         'h' => 0
     ];
+    protected $user_id = null;
     
     private $other = 'other';
     
@@ -49,6 +50,7 @@ class ImageFolderClassifier extends Dataset{
         $this->crop_form = intval($params['crop_form']);
         $this->max_width = $params['max_width'];
         $this->min_width = $params['min_width'];
+        $this->user_id = $params['user_id'] > 0 ? $params['user_id'] : null;
         $this->items = self::tree2array($params);
         $this->tree = new Tree(array_keys($this->items),$this->test);//array_keys($this->items));
 
@@ -100,6 +102,10 @@ class ImageFolderClassifier extends Dataset{
             
             if ($this->min_width > 0 && $image->width < $this->min_width){
                 //print "MW";
+                return false;
+            }
+            
+            if ($this->user_id > 0 && $image->user_id != $this->user_id){
                 return false;
             }
             

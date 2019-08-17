@@ -19,6 +19,7 @@
             {!! Form::bsText('max_width','Max width(px)  ') !!}
             {!! Form::bsText('min_prop','Min',10) !!}
             {!! Form::bsText('validate','Validate (0 .. 1) %  ',0.1,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}
+            {!! Form::bsSelect('user_id','User',$user_ids,0) !!}
             {!! Form::bsSelect('crop_form','Crop form',__('common.crop_from'),0) !!}
             {!! Form::hidden('type',App\Dataset\Build::CLASSIFIER) !!}
 
