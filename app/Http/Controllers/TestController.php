@@ -267,5 +267,14 @@ class TestController extends Controller
     }
     
     
+    public function frame($filename){
+        $path = storage_path('app/frames/'.$filename);
+        
+        if (file_exists($path)){
+            return response()->file($path);
+        }
+        dump($path);
+        return null;
+    }
     
 }
