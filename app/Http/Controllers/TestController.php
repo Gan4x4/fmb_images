@@ -273,8 +273,7 @@ class TestController extends Controller
         if (file_exists($path)){
             return response()->file($path);
         }
-        dump($path);
-        return null;
+        abort(404);
     }
     
 }

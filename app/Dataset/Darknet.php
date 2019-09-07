@@ -110,6 +110,7 @@ class Darknet extends Dataset{
 
         $imageIds = $this->findImages();
         $img_files = [];
+        $i = 0;
         
         $directory = $this->path ? $this->path.DIRECTORY_SEPARATOR : '';
         foreach($imageIds as $image_id){
@@ -141,9 +142,14 @@ class Darknet extends Dataset{
 
             $text_file_name = $image->id.".txt";
             $this->saveDescriptions(storage_path('app'.DIRECTORY_SEPARATOR.$images_dir.DIRECTORY_SEPARATOR.$text_file_name),$text);
+            unset($image);
+            $i++;
+            if ($i % 100){
+                \Log::debug(" Images processed :".$i." of ".count($imageIds));
+            }
         }
         
-
+        \Log::debug("All Images processed.");
         $this->makeCfg($this->getFilePath('yolo3_fmb.cfg'),count($this->classes));
         $this->makeDataFile($this->getFilePath('fmb.data'),count($this->classes));
         
@@ -151,9 +157,10 @@ class Darknet extends Dataset{
         if ($this->image_count > 0){
             $this->divideToTranAndTest($img_files);
         }
-        
+        \Log::debug("Divide to train and test finished.");
         $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
         $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
+        \Log::debug("Zip file created.");
         $this->fillDescription();
         return $target;
 
