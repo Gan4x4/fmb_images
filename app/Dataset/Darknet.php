@@ -144,7 +144,7 @@ class Darknet extends Dataset{
             $this->saveDescriptions(storage_path('app'.DIRECTORY_SEPARATOR.$images_dir.DIRECTORY_SEPARATOR.$text_file_name),$text);
             unset($image);
             $i++;
-            if ($i % 100){
+            if ($i % 1000 == 0){
                 \Log::debug(" Images processed :".$i." of ".count($imageIds));
             }
         }
@@ -159,7 +159,9 @@ class Darknet extends Dataset{
         }
         \Log::debug("Divide to train and test finished.");
         $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
-        $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
+        //$this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
+        self::zip2(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), 'compressed.zip');
+        
         \Log::debug("Zip file created.");
         $this->fillDescription();
         return $target;

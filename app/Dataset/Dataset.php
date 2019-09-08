@@ -11,6 +11,9 @@ namespace App\Dataset;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use \Exception;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 abstract class Dataset {
     
@@ -124,4 +127,18 @@ abstract class Dataset {
         return true;
     }
     
+    
+    public static function zip2($source,$target){
+        //$target = 'compressed.zip';
+        $process = new Process("zip -r $target .");
+        $process->setWorkingDirectory($source);
+        // use start() for async executing
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+        $raw_output = $process->getOutput();
+        return $raw_output;
+    }
 }
