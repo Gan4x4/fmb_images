@@ -66,8 +66,10 @@ class ImageFolderClassifier extends Dataset{
             $this->extractAndSaveImages($item_id);
         }
         $this->image_count = count(array_unique($this->img_ids));
+        \Log::debug(" All Images processed: ".$this->image_count);
         $target = $this->dir.DIRECTORY_SEPARATOR.'compressed.zip';
-        $this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
+        //$this->zip(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), storage_path('app'.DIRECTORY_SEPARATOR.$target));
+        self::zip2(storage_path('app'.DIRECTORY_SEPARATOR.$this->dir), 'compressed.zip');
         $this->fillDescription();
         return $target;
     }
