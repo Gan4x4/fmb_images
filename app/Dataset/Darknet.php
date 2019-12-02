@@ -40,6 +40,7 @@ class Darknet extends Dataset{
         $this->items = $params['items'];
         $this->path = $params['path'];
         $this->max_width = $params['max_width'];
+        $this->free_only = boolval($params['free']);
         $this->test = floatval($params['validate']);
         $this->input_tree = self::tree2array($params);
         //dump($this->input_tree);

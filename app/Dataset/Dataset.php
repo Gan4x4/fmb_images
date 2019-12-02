@@ -14,12 +14,14 @@ use RecursiveDirectoryIterator;
 use \Exception;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Parser\Source;
 
 abstract class Dataset {
     
     public $test = .20;
     protected $description = null;
     protected $max_width = null;
+    protected $free_only = false;
     protected $image_count = 0;
     
     abstract public function build($dir);
@@ -123,6 +125,14 @@ abstract class Dataset {
         if ( $this->max_width > 0){
            return $image->width <= $this->max_width;    
         }
+        
+         // If max_width set, bypass big images
+        if ( $this->free_only && $image->source){
+           if ($image->source->type == Source::TYPE_FMB){
+               return false;
+           }    
+        }
+       
        
         return true;
     }
