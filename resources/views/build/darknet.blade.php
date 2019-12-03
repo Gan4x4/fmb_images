@@ -6,7 +6,6 @@
     
 @endsection
 
-
 @section('content')
 
     {{ Html::bsTabs($menu,1) }} 
@@ -17,6 +16,7 @@
             @include('item.tree',['items'=>$items])
         </div>
         <div class='col-md-4'>
+            {!! Form::bsCheckbox('fullframe_only','FullFrame only ') !!}
             {!! Form::bsCheckbox('free','Free only ') !!}
             {!! Form::bsText('max_width','Max width(px)  ') !!}
             {!! Form::bsText('validate','Validate (0 .. 1) %  ',0.1,['min'=>0, 'max'=>1, 'step'=>0.01]) !!}

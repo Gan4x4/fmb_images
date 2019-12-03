@@ -18,7 +18,7 @@ class Image extends Model implements Owned
     //    $this->thumb_dir = env('IMAGES_DIR');
     //}
 
-    protected $fillable = ['description'];
+    protected $fillable = ['description','fullframe'];
     
     public static function findByHash($path){
         $hash =  self::hashFunction($path);

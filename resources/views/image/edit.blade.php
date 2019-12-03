@@ -117,6 +117,7 @@
         
         @if ( $image->user || Auth::user()->isAdmin())
             {!! Form::model($image,['route' => ['images.update',$image->id],'method'=>'put']) !!}
+                {!! Form::bsCheckbox('fullframe', 'FullFrame',1,$image->fullframe); !!}
                 {!! Form::bsTextarea('description', 'Description'); !!}
                 @if (Auth::user()->isAdmin())
                     {!! Form::bsCheckbox('validation', 'Validation',1,$image->validation); !!}

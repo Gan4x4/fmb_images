@@ -201,6 +201,7 @@ class ImageController extends Controller
             ]);
             $image->path = $request->file->store(env('IMAGES_DIR'));    
             $image->description = $request->description;
+            $image->fullframe = boolval($request->fullframe);
         }
         //dd($image);
         $image->save();
@@ -302,6 +303,7 @@ class ImageController extends Controller
         $image = Image::findOrFail($id);
         $this->checkAccess($image);
         $image->fill($request->all()); // Update tag id
+        $image->fullframe = boolval($request->fullframe);
         $user = Auth::user();
         if ($user->isAdmin()){
             $image->validation = boolval($request->validation);
@@ -437,8 +439,8 @@ class ImageController extends Controller
         
         //$image->description = "Complants: ".$bundle->complaints."--------------\n".$bundle->title."\n".$bundle->description;
         $image->description = "Complants: ".$bundle->complaints;
+        $image->fullframe = boolval($bundle->fullframe);
         $image->save();
-        
         
         $regions = json_decode($bundle->regions);
         $this->addFeatures($image,$regions);

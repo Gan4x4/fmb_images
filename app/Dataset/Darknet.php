@@ -40,7 +40,8 @@ class Darknet extends Dataset{
         $this->items = $params['items'];
         $this->path = $params['path'];
         $this->max_width = $params['max_width'];
-        $this->free_only = boolval($params['free']);
+        $this->free_only = isset($params['free']);
+        $this->fullframe_only = isset($params['fullframe_only']);
         $this->test = floatval($params['validate']);
         $this->input_tree = self::tree2array($params);
         //dump($this->input_tree);
@@ -291,6 +292,11 @@ class Darknet extends Dataset{
             if ($image->validation){
                 return false;
             }
+            
+            if ($this->fullframe_only && ! $image->fullframe){
+                return false;
+            }
+            
             return true;
         }
         else{
