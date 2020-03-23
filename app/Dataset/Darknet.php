@@ -26,7 +26,8 @@ class Darknet extends Dataset{
     
     protected $cfg_templates = [
         0 =>'yolov3-tiny_fmb.cfg',
-        1 =>'yolov3_fmb.cfg'
+        1 =>'yolov3_fmb.cfg',
+        2 =>'yolov3-608_fmb.cfg'
     ];
     
     protected $input_tree = null;

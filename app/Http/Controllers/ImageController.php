@@ -495,18 +495,15 @@ class ImageController extends Controller
     }
     
     public function loadComplaints(){
-        //dd("Here");
-        
         //$url = 'http://fmb.gan4x4.ru/api/images/5175/export';
-        $url = 'http://fmb.gan4x4.ru/api/images/complaints';
+        //$url = 'http://fmb.gan4x4.ru/api/images/complaints';
+        //$url = 'https://cctv.findmybike.ru/api/images/complaints';
+        $url = env('COMPLAINTS_URL');
         $list = $this->readUrl($url);
-//        dump($json_obj);
         if ($list->error != 0){
             dd($list->message);
         }
-        
         $out = [];
-        //dump($list);        
         foreach($list->images as $image_url){
             $source = Source::where('link',$image_url)->first();
             $line = [
@@ -545,16 +542,9 @@ class ImageController extends Controller
             }
             
             $out[] = $line;
-            //print $image_url."<br>";
-        }
-        //dd("HH");
+           
+        }      
         
-        //$wheel = 'wheel';
-        //dump(Item::whereRaw('lower(name) = (?)',["{$wheel}"])->toSql());
-        //dd(Item::whereRaw('lower(name) = (?)',["{$wheel}"])->first());
-        
-        
-        //dd(json_decode($json_obj->regions));
         return view('image.import_complaints')->with([
             'lines'=>$out
         ]);

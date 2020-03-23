@@ -24,6 +24,7 @@
         'darknet_templates' =>
             [
                 'yolov3-tiny_fmb.cfg' => 'YOLOv3 tiny',
+                'yolov3-608_fmb.cfg' => 'YOLOv3 608',
                 'yolov3_fmb.cfg' => 'YOLOv3 full'
             ]
             

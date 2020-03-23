@@ -44,7 +44,7 @@ class Utils {
     // Save Image from URL to local temp dir
     public static function saveImage($url,$token = null){
         
-        if (strpos($url, "http:") === false){
+        if (strpos($url, "http:") === false && strpos($url, "https:") === false ){
             $imgUrl = "http:".$url;
         }else{
             $imgUrl = $url;    
