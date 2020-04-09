@@ -537,12 +537,9 @@ class ImageController extends Controller
                     $line['image'] = $img;    
                     $line['info'] = "Image already in db";
                 }
-                
-                
             }
             
             $out[] = $line;
-           
         }      
         
         return view('image.import_complaints')->with([
